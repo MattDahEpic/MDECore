@@ -3,7 +3,7 @@
   "modid": "mdecore",
   "name": "MattDahEpic Core",
   "description": "Base Mod for all MattDahEpic mods.",
-  "version": "v1.0-mc1.7.10",
+  "version": "v1.0-mc1.8",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",

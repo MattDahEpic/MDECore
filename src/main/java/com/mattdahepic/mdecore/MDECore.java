@@ -8,10 +8,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.common.config.Configuration;
 
-@Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,acceptedMinecraftVersions = "1.7.10")
+@Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,acceptedMinecraftVersions = "1.8")
 public class MDECore {
     public static final String MODID = "mdecore";
-    public static final String VERSION = "v1.0-mc1.7.10";
+    public static final String VERSION = "v1.0-mc1.8";
     public static final String NAME = "MattDahEpic Core";
 
     @Mod.Instance(MDECore.MODID)
