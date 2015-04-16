@@ -1,0 +1,16 @@
+[
+{
+  "modid": "mdecore",
+  "name": "MattDahEpic Core",
+  "description": "Base Mod for all MattDahEpic mods.",
+  "version": "v1.0-mc1.7.10",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["MattDahEpic"],
+  "credits": "MattDahEpic for being awesome, other people for having open source mods that I steal stuff from.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
