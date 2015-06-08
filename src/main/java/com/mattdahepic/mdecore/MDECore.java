@@ -1,18 +1,22 @@
 package com.mattdahepic.mdecore;
 
+import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.Config;
-import com.mattdahepic.mdecore.helpers.LoadStateHelper;
 import com.mattdahepic.mdecore.update.UpdateChecker;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 @Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,acceptedMinecraftVersions = "1.8")
 public class MDECore {
     public static final String MODID = "mdecore";
-    public static final String VERSION = "v1.0-mc1.8";
+    public static final String VERSION = "1.8-1.1";
     public static final String NAME = "MattDahEpic Core";
+    public static final String UPDATE_URL = "https://raw.githubusercontent.com/MattDahEpic/MDECore1.8/master/version.txt";
 
     @Mod.Instance(MDECore.MODID)
     public static MDECore instance;
@@ -23,41 +27,24 @@ public class MDECore {
 
     @Mod.EventHandler
     public static void load (FMLPreInitializationEvent event) {
-        LoadStateHelper.logLoadState(MODID,event);
         FMLCommonHandler.instance().bus().register(instance);
         Config.load(event);
     }
     @Mod.EventHandler
-    public static void init (FMLInitializationEvent event) {
-        LoadStateHelper.logLoadState(MODID,event);
-    }
+    public static void init (FMLInitializationEvent event) {}
     @Mod.EventHandler
-    public static void postInit (FMLPostInitializationEvent event) {
-        LoadStateHelper.logLoadState(MODID,event);
-    }
+    public static void postInit (FMLPostInitializationEvent event) {}
     @Mod.EventHandler
     public static void loadComplete (FMLLoadCompleteEvent event) {
-        LoadStateHelper.logLoadState(MODID,event);
-        UpdateChecker.updateCheck(MODID,NAME,"https://raw.githubusercontent.com/MattDahEpic/MDECore1.8/master/version.txt",VERSION);
-    }
-    @Mod.EventHandler
-    public static void serverAboutToStart (FMLServerAboutToStartEvent event) {
-        LoadStateHelper.logLoadState(MODID,event);
-    }
-    @Mod.EventHandler
-    public static void serverStarted (FMLServerStartedEvent event) {
-        LoadStateHelper.logLoadState(MODID,event);
+        UpdateChecker.updateCheck(MODID, NAME, UPDATE_URL, VERSION,false,null);
     }
     @Mod.EventHandler
     public static void serverStarting (FMLServerStartingEvent event) {
-        LoadStateHelper.logLoadState(MODID,event);
+        event.registerServerCommand(new CommandMDE());
     }
-    @Mod.EventHandler
-    public static void serverStopped (FMLServerStoppedEvent event) {
-        LoadStateHelper.logLoadState(MODID,event);
-    }
-    @Mod.EventHandler
-    public static void serverStopping (FMLServerStoppingEvent event) {
-        LoadStateHelper.logLoadState(MODID,event);
+    @SubscribeEvent
+    public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent event) {
+        EntityPlayer player = event.player;
+        UpdateChecker.updateCheck(MODID,NAME,UPDATE_URL,VERSION,true,player);
     }
 }

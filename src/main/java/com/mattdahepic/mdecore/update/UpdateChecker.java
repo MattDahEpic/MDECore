@@ -2,6 +2,9 @@ package com.mattdahepic.mdecore.update;
 
 import com.mattdahepic.mdecore.config.Config;
 import com.mattdahepic.mdecore.helpers.LogHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -13,21 +16,27 @@ public class UpdateChecker {
     public static String changelog = null;
     private UpdateChecker () {}
     public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion) {
+        updateCheck(modid, modName, remoteUrl, currentVersion, false, null);
+    }
+    public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
         if (updateCheckEnabled) {
-            if (checkUpdateAvaliable(modid, remoteUrl, currentVersion)) {
-                LogHelper.info(modid,"---~===~---");
-                LogHelper.info(modid,"Update for "+modName+" avaliable!");
-                LogHelper.info(modid,"Version "+remoteVersion+" avaliable! You are currently running version "+currentVersion+". Changes include:");
-                LogHelper.info(modid,changelog);
-                LogHelper.info(modid,"---~===~---");
-                //TODO: in game chat
-                //TODO: fancy colors n' shit
+            if (checkUpdateAvailable(modid, remoteUrl, currentVersion)) {
+                if (inChat) {
+                    if (player != null) {
+                        player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE+"Update for " + modName + " available!"));
+                    }
+                } else {
+                    LogHelper.info(modid, "---~===~---");
+                    LogHelper.info(modid, "Update for " + modName + " available!");
+                    LogHelper.info(modid, "Version " + remoteVersion + " available! You are currently running version " + currentVersion + ". Changes include:");
+                    LogHelper.info(modid, changelog);
+                    LogHelper.info(modid, "---~===~---");
+                    //TODO: fancy colors n' shit
+                }
             }
-        } else {
-            LogHelper.info(modid,"Checking of updates is disabled, ignoring update check for mod "+modName+".");
         }
     }
-    private static boolean checkUpdateAvaliable (String modid,String remoteUrl,String currentVersion) {
+    private static boolean checkUpdateAvailable(String modid, String remoteUrl, String currentVersion) {
         try {
             URL updateUrl = new URL(remoteUrl);
             BufferedReader reader = new BufferedReader(new InputStreamReader(updateUrl.openStream()));

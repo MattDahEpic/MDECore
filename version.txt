@@ -1,2 +1,2 @@
-v1.0-mc1.8
-Initial Release!
+1.8-1.1
+Add tpx command.
