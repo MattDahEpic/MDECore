@@ -4,6 +4,7 @@ import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.Config;
 import com.mattdahepic.mdecore.update.UpdateChecker;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
@@ -20,6 +21,8 @@ public class MDECore {
 
     @Mod.Instance(MDECore.MODID)
     public static MDECore instance;
+
+    public static MinecraftServer server;
 
     //sided proxy
 
@@ -40,6 +43,7 @@ public class MDECore {
     }
     @Mod.EventHandler
     public static void serverStarting (FMLServerStartingEvent event) {
+        server = event.getServer();
         event.registerServerCommand(new CommandMDE());
     }
     @SubscribeEvent
