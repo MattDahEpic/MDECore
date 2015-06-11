@@ -15,15 +15,16 @@ public class UpdateChecker {
     public static String remoteVersion = null;
     public static String changelog = null;
     private UpdateChecker () {}
+    @Deprecated
     public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion) {
         updateCheck(modid, modName, remoteUrl, currentVersion, false, null);
     }
     public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
         if (updateCheckEnabled) {
-            if (checkUpdateAvailable(modid, remoteUrl, currentVersion)) {
+            if (isUpToDate(modid,remoteUrl,currentVersion)) {
                 if (inChat) {
                     if (player != null) {
-                        player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE+"Update for " + modName + " available!"));
+                        player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "Update for " + modName + " available!"));
                     }
                 } else {
                     LogHelper.info(modid, "---~===~---");
@@ -31,12 +32,11 @@ public class UpdateChecker {
                     LogHelper.info(modid, "Version " + remoteVersion + " available! You are currently running version " + currentVersion + ". Changes include:");
                     LogHelper.info(modid, changelog);
                     LogHelper.info(modid, "---~===~---");
-                    //TODO: fancy colors n' shit
                 }
             }
         }
     }
-    private static boolean checkUpdateAvailable(String modid, String remoteUrl, String currentVersion) {
+    private static void getRemoteVersion(String modid, String remoteUrl, String currentVersion) {
         try {
             URL updateUrl = new URL(remoteUrl);
             BufferedReader reader = new BufferedReader(new InputStreamReader(updateUrl.openStream()));
@@ -48,8 +48,13 @@ public class UpdateChecker {
             LogHelper.error(modid,"Error during attempted update check!");
             LogHelper.trace(modid,e);
             remoteVersion = null;
-            return false;
+            return;
         }
-        return !remoteVersion.equalsIgnoreCase(currentVersion);
+    }
+    private static boolean isUpToDate (String modid, String remoteUrl, String currentVersion) {
+        if (remoteVersion == null) {
+            getRemoteVersion(modid, remoteUrl, currentVersion);
+        }
+        return remoteVersion.equalsIgnoreCase(currentVersion);
     }
 }
