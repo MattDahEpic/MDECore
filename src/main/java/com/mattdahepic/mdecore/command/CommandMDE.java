@@ -257,7 +257,7 @@ public class CommandMDE extends CommandBase {
                     throw new WrongUsageException("Invalid Usage! Type /mde help for usage");
                 }
             } else { //invalid command
-                throw new WrongUsageException("Invalid Useage! Type /mde help for usage")
+                throw new WrongUsageException("Invalid Usage! Type /mde help for usage");
             }
         }
     }
