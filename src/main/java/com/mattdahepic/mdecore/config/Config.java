@@ -10,7 +10,6 @@ import net.minecraftforge.common.config.Configuration;
 public class Config {
     public static boolean updateCheckEnabled = true;
     public static final String DEBUG_CATEGORY = "debug_tools";
-    public static boolean loadStateLogEnabled = false;
     public static void load (FMLPreInitializationEvent event) {
         MDECore.configFile = new Configuration(event.getSuggestedConfigurationFile());
         syncConfig();
@@ -35,6 +34,5 @@ public class Config {
     }
     public static void processConfig (Configuration c) {
         updateCheckEnabled = c.getBoolean("updateCheckEnabled", Configuration.CATEGORY_GENERAL, updateCheckEnabled, "Enable update checking for mods that implement MattDahEpic Core?");
-        loadStateLogEnabled = c.getBoolean("loadStateLogEnabled", DEBUG_CATEGORY, loadStateLogEnabled, "Enable a log entry when forge loading enters a different state?");
     }
 }

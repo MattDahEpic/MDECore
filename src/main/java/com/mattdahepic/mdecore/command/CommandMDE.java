@@ -4,6 +4,7 @@ import com.google.common.base.Throwables;
 import com.mattdahepic.mdecore.MDECore;
 import net.minecraft.command.*;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S1DPacketEntityEffect;
@@ -46,6 +47,7 @@ public class CommandMDE extends CommandBase {
             if (args[0].equalsIgnoreCase("help")) {
                 sender.addChatMessage(new ChatComponentText("/mde tpx {<player>|<dimension>} {<player>|<dimension>|<x><y><z>}"));
                 sender.addChatMessage(new ChatComponentText("/mde tps {o|a|<dimension>}"));
+                sender.addChatMessage(new ChatComponentText("/mde pos <player>"));
             } else if (args[0].equalsIgnoreCase("tpx")) { //disclaimer: ripped straight from COFHCore, as it's not updated to 1.8
                 String[] arguments = args.clone();
                 switch (arguments.length) {
@@ -232,6 +234,30 @@ public class CommandMDE extends CommandBase {
                             + "%) - Tick: " + floatfmt.format(tickms) + " ms of " + floatfmt.format(50L) + " ms"));
                     sender.addChatMessage(new ChatComponentText("Entities: " + world.loadedEntityList.size() + " - Tile entities: " + world.loadedTileEntityList.size()));
                 }
+            } else if (args[0].equalsIgnoreCase("pos")) {
+                if (args.length == 2) {
+                    EntityPlayerMP senderPlayer = CommandBase.getCommandSenderAsPlayer(sender);
+                    EntityPlayerMP targetPlayer;
+                    try {
+                        targetPlayer = CommandBase.getPlayer(sender, args[1]);
+                    } catch (PlayerNotFoundException e) {
+                        throw new WrongUsageException("Specified player does not exist!");
+                    }
+                    String playerName = "";
+                    if (senderPlayer.equals(targetPlayer)) {
+                        playerName = "You are";
+                    } else {
+                        playerName = targetPlayer.getName()+" is";
+                    }
+                    int posX = MathHelper.floor_double(targetPlayer.posX);
+                    int posY = MathHelper.floor_double(targetPlayer.posY);
+                    int posZ = MathHelper.floor_double(targetPlayer.posZ);
+                    sender.addChatMessage(new ChatComponentText(playerName + " at the coordinates ("+posX+","+posY+","+posZ+") in the dimension "+targetPlayer.dimension+"."));
+                } else {
+                    throw new WrongUsageException("Invalid Usage! Type /mde help for usage");
+                }
+            } else { //invalid command
+                throw new WrongUsageException("Invalid Useage! Type /mde help for usage")
             }
         }
     }
