@@ -20,6 +20,8 @@ public class UpdateChecker {
         updateCheck(modid, modName, remoteUrl, currentVersion, false, null);
     }
     public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
+        remoteVersion = null;
+        changelog = null;
         if (updateCheckEnabled) {
             if (isUpToDate(modid,remoteUrl,currentVersion)) {
                 if (inChat) {
