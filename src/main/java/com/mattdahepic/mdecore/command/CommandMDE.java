@@ -10,6 +10,7 @@ import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
@@ -88,7 +89,7 @@ public class CommandMDE extends CommandBase {
                             if (playerSender.dimension != dimension) {
                                 transferPlayerToDimension(playerSender, dimension, playerSender.mcServer.getConfigurationManager());
                             }
-                            playerSender.setPositionAndUpdate(playerSender.posX, playerSender.posY, playerSender.posZ);
+                            sendPlayerToSpawnInCurrentWorld(playerSender);
                         }
                         break;
                     case 3: // (tpx <player> {<player>|<dimension>}) teleporting player to player or player to dimension
@@ -119,7 +120,7 @@ public class CommandMDE extends CommandBase {
                             if (player.dimension != dimension) {
                                 transferPlayerToDimension(player, dimension, player.mcServer.getConfigurationManager());
                             }
-                            player.setPositionAndUpdate(player.posX, player.posY, player.posZ);
+                            sendPlayerToSpawnInCurrentWorld(player);
                         }
                         break;
                     case 4: // (tpx <x> <y> <z>) teleporting self within dimension
@@ -318,6 +319,14 @@ public class CommandMDE extends CommandBase {
         oldWorld.theProfiler.endSection();
 
         entity.setWorld(newWorld);
+    }
+    private static void sendPlayerToSpawnInCurrentWorld (EntityPlayerMP player) {
+        WorldServer worldServer = MDECore.server.worldServerForDimension(player.dimension);
+        BlockPos spawn = worldServer.getSpawnPoint();
+        double spawnX = spawn.getX()+0.5;
+        double spawnY = spawn.getY()+0.5;
+        double spawnZ = spawn.getZ()+0.5;
+        player.setPositionAndUpdate(spawnX,spawnY,spawnZ);
     }
     private double getTickTimeSum(long[] times) {
         long timesum = 0L;

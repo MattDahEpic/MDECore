@@ -23,7 +23,7 @@ public class UpdateChecker {
         remoteVersion = null;
         changelog = null;
         if (updateCheckEnabled) {
-            if (isUpToDate(modid,remoteUrl,currentVersion)) {
+            if (!isUpToDate(modid,remoteUrl,currentVersion)) {
                 if (inChat) {
                     if (player != null) {
                         player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "Update for " + modName + " available!"));
@@ -56,7 +56,7 @@ public class UpdateChecker {
     }
     private static boolean isUpToDate (String modid, String remoteUrl, String currentVersion) {
         if (remoteVersion == null) {
-            if (!getRemoteVersion(modid, remoteUrl)) return false;
+            if (!getRemoteVersion(modid, remoteUrl)) return true;
         }
         return remoteVersion.equalsIgnoreCase(currentVersion);
     }
