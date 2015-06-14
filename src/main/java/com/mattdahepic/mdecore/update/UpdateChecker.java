@@ -11,15 +11,15 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 public class UpdateChecker {
-    public boolean updateCheckEnabled = Config.updateCheckEnabled;
-    public String remoteVersion = null;
-    public String changelog = null;
+    public static boolean updateCheckEnabled = Config.updateCheckEnabled;
+    private static String remoteVersion = null;
+    private static String changelog = null;
     private UpdateChecker () {}
     @Deprecated
-    public void updateCheck (String modid,String modName,String remoteUrl,String currentVersion) {
+    public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion) {
         updateCheck(modid, modName, remoteUrl, currentVersion, false, null);
     }
-    public void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
+    public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
         if (updateCheckEnabled) {
             if (isUpToDate(modid,remoteUrl,currentVersion)) {
                 if (inChat) {
@@ -36,7 +36,7 @@ public class UpdateChecker {
             }
         }
     }
-    private boolean getRemoteVersion(String modid, String remoteUrl) {
+    private static boolean getRemoteVersion(String modid, String remoteUrl) {
         try {
             URL updateUrl = new URL(remoteUrl);
             BufferedReader reader = new BufferedReader(new InputStreamReader(updateUrl.openStream()));
@@ -52,7 +52,7 @@ public class UpdateChecker {
             return false;
         }
     }
-    private boolean isUpToDate (String modid, String remoteUrl, String currentVersion) {
+    private static boolean isUpToDate (String modid, String remoteUrl, String currentVersion) {
         if (remoteVersion == null) {
             if (!getRemoteVersion(modid, remoteUrl)) return false;
         }
