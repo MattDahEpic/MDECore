@@ -85,7 +85,5 @@ curse {
     apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
     releaseType = 'release'
 
-    displayName = 'MattDahEpic Core for Minecraft 1.8'
-
     additionalArtifact devJar
 }

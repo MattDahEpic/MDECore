@@ -26,18 +26,25 @@ import java.util.List;
 
 public class CommandMDE extends CommandBase {
     @Override
-    public String getCommandName () {
-        return "mde";
-    }
-    @Override
-    public String getCommandUsage(ICommandSender sender) {
-        return "/mde help";
+    public int getRequiredPermissionLevel() {
+        return 2;
     }
     @Override
     public List getCommandAliases() {
         List aliases = new ArrayList();
         aliases.add("mde");
         return aliases;
+    }
+    @Override
+    public String getCommandName () {
+        return "mde";
+    }
+    public String getName () {
+        return getCommandName();
+    }
+    @Override
+    public String getCommandUsage(ICommandSender sender) {
+        return "/mde help";
     }
     @Override
     public void processCommand (ICommandSender sender, String[] args) throws CommandException {
@@ -331,9 +338,5 @@ public class CommandMDE extends CommandBase {
     private double getTps(World world) {
         double tps = 1000.0D / getTickMs(world);
         return tps > 20.0D ? 20.0D : tps;
-    }
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 2;
     }
 }

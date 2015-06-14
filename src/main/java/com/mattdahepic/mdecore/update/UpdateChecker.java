@@ -11,15 +11,15 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 public class UpdateChecker {
-    public static boolean updateCheckEnabled = Config.updateCheckEnabled;
-    public static String remoteVersion = null;
-    public static String changelog = null;
+    public boolean updateCheckEnabled = Config.updateCheckEnabled;
+    public String remoteVersion = null;
+    public String changelog = null;
     private UpdateChecker () {}
     @Deprecated
-    public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion) {
+    public void updateCheck (String modid,String modName,String remoteUrl,String currentVersion) {
         updateCheck(modid, modName, remoteUrl, currentVersion, false, null);
     }
-    public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
+    public void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
         if (updateCheckEnabled) {
             if (isUpToDate(modid,remoteUrl,currentVersion)) {
                 if (inChat) {
@@ -36,7 +36,7 @@ public class UpdateChecker {
             }
         }
     }
-    private static void getRemoteVersion(String modid, String remoteUrl, String currentVersion) {
+    private boolean getRemoteVersion(String modid, String remoteUrl) {
         try {
             URL updateUrl = new URL(remoteUrl);
             BufferedReader reader = new BufferedReader(new InputStreamReader(updateUrl.openStream()));
@@ -44,16 +44,17 @@ public class UpdateChecker {
             //TODO: critical updates
             changelog = reader.readLine();
             reader.close();
+            return true;
         } catch (Exception e) {
             LogHelper.error(modid,"Error during attempted update check!");
             LogHelper.trace(modid,e);
             remoteVersion = null;
-            return;
+            return false;
         }
     }
-    private static boolean isUpToDate (String modid, String remoteUrl, String currentVersion) {
+    private boolean isUpToDate (String modid, String remoteUrl, String currentVersion) {
         if (remoteVersion == null) {
-            getRemoteVersion(modid, remoteUrl, currentVersion);
+            if (!getRemoteVersion(modid, remoteUrl)) return false;
         }
         return remoteVersion.equalsIgnoreCase(currentVersion);
     }
