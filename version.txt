@@ -1,2 +1,2 @@
-1.8-1.1.1
-Add tpx command.
+1.8-1.1.2
+Add pos command and mae version checker work when multiple mods installed.
