@@ -15,10 +15,6 @@ public class UpdateChecker {
     private static String remoteVersion = null;
     private static String changelog = null;
     private UpdateChecker () {}
-    @Deprecated
-    public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion) {
-        updateCheck(modid, modName, remoteUrl, currentVersion, false, null);
-    }
     public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
         remoteVersion = null;
         changelog = null;

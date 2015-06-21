@@ -2,6 +2,7 @@ package com.mattdahepic.mdecore;
 
 import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.Config;
+import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.update.UpdateChecker;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -32,6 +33,7 @@ public class MDECore {
     public static void load (FMLPreInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(instance);
         Config.load(event);
+        LoginMessage.init(event.getModConfigurationDirectory());
     }
     @Mod.EventHandler
     public static void init (FMLInitializationEvent event) {}
@@ -50,5 +52,6 @@ public class MDECore {
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent event) {
         EntityPlayer player = event.player;
         UpdateChecker.updateCheck(MODID,NAME,UPDATE_URL,VERSION,true,player);
+        LoginMessage.tell(player);
     }
 }
