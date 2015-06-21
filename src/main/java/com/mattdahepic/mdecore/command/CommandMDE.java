@@ -320,13 +320,18 @@ public class CommandMDE extends CommandBase {
 
         entity.setWorld(newWorld);
     }
-    private static void sendPlayerToSpawnInCurrentWorld (EntityPlayerMP player) {
-        WorldServer worldServer = MDECore.server.worldServerForDimension(player.dimension);
-        BlockPos spawn = worldServer.getSpawnPoint();
-        double spawnX = spawn.getX()+0.5;
-        double spawnY = spawn.getY()+0.5;
-        double spawnZ = spawn.getZ()+0.5;
-        player.setPositionAndUpdate(spawnX,spawnY,spawnZ);
+    private static void sendPlayerToSpawnInCurrentWorld (ICommandSender sender) {
+        World world = sender.getEntityWorld();
+        BlockPos spawn = world.getSpawnPoint();
+        double spawnX = spawn.getX() + 0.5;
+        double spawnY = spawn.getY() + 0.5;
+        double spawnZ = spawn.getZ() + 0.5;
+        while (!world.canSeeSky(new BlockPos(spawnX,spawnY-1,spawnZ))) { //make sure ur on the surface
+            spawnY++;
+        }
+        try {
+            CommandBase.getCommandSenderAsPlayer(sender).setPositionAndUpdate(spawnX, spawnY, spawnZ);
+        } catch (Exception e) {}
     }
     private double getTickTimeSum(long[] times) {
         long timesum = 0L;
