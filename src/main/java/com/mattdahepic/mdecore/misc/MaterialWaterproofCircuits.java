@@ -10,7 +10,7 @@ public class MaterialWaterproofCircuits extends Material {
         this.setNoPushMobility();
     }
     public boolean isSolid() {
-        return true;
+        return false;
     }
     /**
      * Will prevent grass from growing on dirt underneath and kill any grass below it if it returns true
@@ -25,6 +25,6 @@ public class MaterialWaterproofCircuits extends Material {
      */
     public boolean blocksMovement()
     {
-        return false;
+        return true;
     }
 }
