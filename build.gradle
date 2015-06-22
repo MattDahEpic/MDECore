@@ -79,10 +79,3 @@ idea {
         inheritOutputDirs = true
     }
 }
-
-jar {
-    manifest {
-        attributes 'FMLCorePlugin': 'com.mattdahepic.mdecore.asm.MDECorePlugin'
-        attributes 'FMLCorePluginContainsFMLMod': 'true'
-    }
-}

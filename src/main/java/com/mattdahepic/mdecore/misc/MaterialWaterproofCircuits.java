@@ -1,4 +1,4 @@
-package com.mattdahepic.mdecore.asm.transformer;
+package com.mattdahepic.mdecore.misc;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -7,6 +7,7 @@ public class MaterialWaterproofCircuits extends Material {
     public MaterialWaterproofCircuits(MapColor color) {
         super(color);
         this.setAdventureModeExempt();
+        this.setNoPushMobility();
     }
     public boolean isSolid() {
         return true;
