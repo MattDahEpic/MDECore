@@ -17,7 +17,7 @@ public class WaterproofRedstone {
                 modifiersField.setAccessible(true);
 
                 LogHelper.info(MDECore.MODID,"Disabling water breaking redstone components.");
-                Object[] waterproofable = new Object[]{Blocks.redstone_wire,Blocks.powered_repeater,Blocks.unpowered_repeater,Blocks.redstone_torch,Blocks.unlit_redstone_torch,Blocks.powered_comparator,Blocks.unpowered_comparator};
+                Object[] waterproofable = new Object[]{Blocks.redstone_wire,Blocks.powered_repeater,Blocks.unpowered_repeater,Blocks.redstone_torch,Blocks.unlit_redstone_torch,Blocks.powered_comparator,Blocks.unpowered_comparator,Blocks.rail,Blocks.activator_rail,Blocks.detector_rail,Blocks.golden_rail};
                 for (Object obj : waterproofable) {
                     Class c = ((Block) obj).getClass().getSuperclass();
                     while (!c.getTypeName().equalsIgnoreCase("net.minecraft.block.Block")) {
