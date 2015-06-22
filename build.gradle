@@ -80,10 +80,9 @@ idea {
     }
 }
 
-curse {
-    projectId = '229595-mattdahepic-core'
-    apiKey = project.hasProperty('curseForgeApiKey') ? project.curseForgeApiKey : ''
-    releaseType = 'release'
-
-    additionalArtifact devJar
+jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'com.mattdahepic.mdecore.asm.MDECorePlugin'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
+    }
 }
