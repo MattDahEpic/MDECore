@@ -1,4 +1,4 @@
-package com.mattdahepic.mdecore.misc;
+package com.mattdahepic.mdecore.redstone;
 
 import com.mattdahepic.mdecore.MDECore;
 import com.mattdahepic.mdecore.config.Config;

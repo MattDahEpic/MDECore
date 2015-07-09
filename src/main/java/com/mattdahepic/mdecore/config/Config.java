@@ -35,6 +35,6 @@ public class Config {
     }
     public static void processConfig (Configuration c) {
         updateCheckEnabled = c.getBoolean("updateCheckEnabled", Configuration.CATEGORY_GENERAL, updateCheckEnabled, "Enable update checking for mods that implement MattDahEpic Core?");
-        waterBreaksRedstone = c.getBoolean("waterBreaksRedstone",Configuration.CATEGORY_GENERAL,waterBreaksRedstone,"If true, water will wash away redstone. True is vanilla behaviour.");
+        //waterBreaksRedstone = c.getBoolean("waterBreaksRedstone",Configuration.CATEGORY_GENERAL,waterBreaksRedstone,"If true, water will wash away redstone. True is vanilla behaviour.");
     }
 }

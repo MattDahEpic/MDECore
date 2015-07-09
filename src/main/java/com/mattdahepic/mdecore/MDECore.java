@@ -3,8 +3,8 @@ package com.mattdahepic.mdecore;
 import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.Config;
 import com.mattdahepic.mdecore.config.LoginMessage;
-import com.mattdahepic.mdecore.misc.MaterialWaterproofCircuits;
-import com.mattdahepic.mdecore.misc.WaterproofRedstone;
+import com.mattdahepic.mdecore.redstone.MaterialWaterproofCircuits;
+import com.mattdahepic.mdecore.redstone.WaterproofRedstone;
 import com.mattdahepic.mdecore.update.UpdateChecker;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -38,7 +38,7 @@ public class MDECore {
         FMLCommonHandler.instance().bus().register(instance);
         Config.load(event);
         LoginMessage.init(event.getModConfigurationDirectory());
-        WaterproofRedstone.doIt();
+        //WaterproofRedstone.doIt();
     }
     @Mod.EventHandler
     public static void init (FMLInitializationEvent event) {}
