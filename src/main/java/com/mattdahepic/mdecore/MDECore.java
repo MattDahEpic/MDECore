@@ -3,17 +3,17 @@ package com.mattdahepic.mdecore;
 import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.Config;
 import com.mattdahepic.mdecore.config.LoginMessage;
+import com.mattdahepic.mdecore.network.PacketHandler;
 import com.mattdahepic.mdecore.redstone.MaterialWaterproofCircuits;
-import com.mattdahepic.mdecore.redstone.WaterproofRedstone;
 import com.mattdahepic.mdecore.update.UpdateChecker;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
@@ -41,7 +41,9 @@ public class MDECore {
         //WaterproofRedstone.doIt();
     }
     @Mod.EventHandler
-    public static void init (FMLInitializationEvent event) {}
+    public static void init (FMLInitializationEvent event) {
+        PacketHandler.initPackets();
+    }
     @Mod.EventHandler
     public static void postInit (FMLPostInitializationEvent event) {}
     @Mod.EventHandler
