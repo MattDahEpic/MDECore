@@ -4,10 +4,7 @@ import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.Config;
 import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.network.PacketHandler;
-import com.mattdahepic.mdecore.redstone.MaterialWaterproofCircuits;
 import com.mattdahepic.mdecore.update.UpdateChecker;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
@@ -29,8 +26,6 @@ public class MDECore {
 
     public static MinecraftServer server;
 
-    public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.airColor);
-
     public static Configuration configFile;
 
     @Mod.EventHandler
@@ -38,7 +33,6 @@ public class MDECore {
         FMLCommonHandler.instance().bus().register(instance);
         Config.load(event);
         LoginMessage.init(event.getModConfigurationDirectory());
-        //WaterproofRedstone.doIt();
     }
     @Mod.EventHandler
     public static void init (FMLInitializationEvent event) {
