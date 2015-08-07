@@ -1,4 +1,4 @@
 package com.mattdahepic.mdecore.helpers;
 
-public class ChatHelper {
+public class NumberHelper {
 }
