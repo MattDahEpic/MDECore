@@ -6,15 +6,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class UpdateChecker {
     public static boolean updateCheckEnabled = Config.updateCheckEnabled;
-    private static Map<String,String> remoteVersions = new HashMap<String, String>(); //modid,remote version
+    static Map<String,String> remoteVersions = new HashMap<String, String>(); //modid,remote version
     private UpdateChecker () {}
     public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
         if (updateCheckEnabled) {
@@ -32,24 +29,10 @@ public class UpdateChecker {
             }
         }
     }
-    private static String getRemoteVersion(String modid, String remoteUrl) {
-        try {
-            URL updateUrl = new URL(remoteUrl);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(updateUrl.openStream()));
-            String remoteVersion = reader.readLine();
-            reader.close();
-            return remoteVersion;
-        } catch (Exception e) {
-            LogHelper.error(modid,"Error during attempted update check!");
-            LogHelper.trace(modid,e);
-            return null;
-        }
-    }
     private static boolean isUpToDate (String modid, String remoteUrl, String currentVersion) {
         if (!remoteVersions.containsKey(modid)) { //has not checked before
-            String remoteVersion = getRemoteVersion(modid, remoteUrl);
-            if (remoteVersion == null) return true;
-            remoteVersions.put(modid,remoteVersion);
+            new CheckThread(modid, remoteUrl);
+            if (remoteVersions.get(modid) == null) return true;
         }
         return remoteVersions.get(modid).equalsIgnoreCase(currentVersion);
     }
