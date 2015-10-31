@@ -1,7 +1,5 @@
 package com.mattdahepic.mdecore.update;
 
-import com.mattdahepic.mdecore.helpers.LogHelper;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -24,8 +22,8 @@ public class CheckThread extends Thread {
             remoteVersion = reader.readLine();
             reader.close();
         } catch (Exception e) {
-            LogHelper.error(modid, "Error during attempted update check!");
-            LogHelper.trace(modid, e);
+            System.err.print("Error during attempted update check!");
+            e.printStackTrace();
             remoteVersion = null;
         }
         UpdateChecker.remoteVersions.put(modid, remoteVersion);

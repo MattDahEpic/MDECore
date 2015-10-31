@@ -1,32 +1,17 @@
 package com.mattdahepic.mdecore.command;
 
-import com.google.common.base.Throwables;
-import com.mattdahepic.mdecore.MDECore;
 import com.mattdahepic.mdecore.command.logic.PosLogic;
 import com.mattdahepic.mdecore.command.logic.TPSLogic;
 import com.mattdahepic.mdecore.command.logic.TPXLogic;
-import com.mattdahepic.mdecore.helpers.PlayerHelper;
-import net.minecraft.command.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S07PacketRespawn;
-import net.minecraft.network.play.server.S1DPacketEntityEffect;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class CommandMDE extends CommandBase {
@@ -35,24 +20,21 @@ public class CommandMDE extends CommandBase {
         return 2;
     }
     @Override
-    public List getCommandAliases() {
+    public List getAliases() {
         List aliases = new ArrayList();
         aliases.add("mde");
         return aliases;
     }
     @Override
-    public String getCommandName () {
-        return "mde";
-    }
     public String getName () {
-        return getCommandName();
+        return "mde";
     }
     @Override
     public String getCommandUsage(ICommandSender sender) {
         return "/mde help";
     }
     @Override
-    public void processCommand (ICommandSender sender, String[] args) throws CommandException {
+    public void execute (ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
             throw new WrongUsageException("Use /mde help to see command usage.");
         } else { //has a sub command

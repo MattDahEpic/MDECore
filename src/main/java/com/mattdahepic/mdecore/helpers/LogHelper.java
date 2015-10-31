@@ -4,18 +4,28 @@ import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 
 public class LogHelper {
+    //@depreciated Use FMLPreInitializationEvent.getModLog()
+    @Deprecated
     public static void debug (String modid,String message) {
         FMLLog.log(modid,Level.DEBUG,message);
     }
+    //@depreciated Use FMLPreInitializationEvent.getModLog()
+    @Deprecated
     public static void info (String modid,String message) {
         FMLLog.log(modid,Level.INFO,message);
     }
+    //@depreciated Use FMLPreInitializationEvent.getModLog()
+    @Deprecated
     public static void warn (String modid,String message) {
         FMLLog.log(modid,Level.WARN,message);
     }
+    //@depreciated Use FMLPreInitializationEvent.getModLog()
+    @Deprecated
     public static void error (String modid,String message) {
         FMLLog.log(modid,Level.ERROR,message);
     }
+    //@depreciated Use FMLPreInitializationEvent.getModLog()
+    @Deprecated
     public static void trace (String modid,Exception message) {
         FMLLog.log(modid,Level.ERROR,message.toString());
     }

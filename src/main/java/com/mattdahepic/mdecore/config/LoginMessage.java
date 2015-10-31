@@ -1,7 +1,6 @@
 package com.mattdahepic.mdecore.config;
 
 import com.mattdahepic.mdecore.MDECore;
-import com.mattdahepic.mdecore.helpers.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 
@@ -21,7 +20,7 @@ public class LoginMessage {
             message = in.readLine();
             in.close();
         } catch (IOException e) {
-            LogHelper.error(MDECore.MODID,"Can not access file "+loginMessageFile.getAbsolutePath());
+            MDECore.logger.error(MDECore.MODID, "Can not access file " + loginMessageFile.getAbsolutePath());
         }
     }
     public static void tell (EntityPlayer player) {

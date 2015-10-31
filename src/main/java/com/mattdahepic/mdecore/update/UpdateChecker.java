@@ -13,6 +13,7 @@ public class UpdateChecker {
     public static boolean updateCheckEnabled = Config.updateCheckEnabled;
     static Map<String,String> remoteVersions = new HashMap<String, String>(); //modid,remote version
     private UpdateChecker () {}
+    @Deprecated
     public static void updateCheck (String modid,String modName,String remoteUrl,String currentVersion,boolean inChat,EntityPlayer player) {
         if (updateCheckEnabled) {
             if (!isUpToDate(modid,remoteUrl,currentVersion)) {
@@ -25,6 +26,16 @@ public class UpdateChecker {
                     LogHelper.info(modid, "Update for " + modName + " available!");
                     LogHelper.info(modid, "Version " + remoteVersions.get(modid) + " available! You are currently running version " + currentVersion + ".");
                     LogHelper.info(modid, "---~===~---");
+                }
+            }
+        }
+    }
+    //NEW STUFF
+    public static void updateCheck (String modid,String modName,String updateUrl,String currentVersion,EntityPlayer player) {
+        if (updateCheckEnabled) {
+            if (!isUpToDate(modid,updateUrl,currentVersion)) {
+                if (player != null) {
+                    player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "Update for " + modName + " available!"));
                 }
             }
         }
