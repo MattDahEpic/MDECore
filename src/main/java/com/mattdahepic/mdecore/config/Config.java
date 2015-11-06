@@ -1,11 +1,10 @@
 package com.mattdahepic.mdecore.config;
 
 import com.mattdahepic.mdecore.MDECore;
-import com.mattdahepic.mdecore.helpers.LogHelper;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.common.config.Configuration;
 
 public class Config {
     public static boolean updateCheckEnabled = true;
@@ -19,7 +18,7 @@ public class Config {
         try {
             Config.processConfig(MDECore.configFile);
         } catch (Exception e) {
-            LogHelper.error(MDECore.MODID,"Error loading config!");
+            MDECore.logger.error("Error loading config!");
         } finally {
             if (MDECore.configFile.hasChanged()) {
                 MDECore.configFile.save();
@@ -29,7 +28,7 @@ public class Config {
     @SubscribeEvent
     public void onConfigChanged (ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.modID.equals(MDECore.MODID)) {
-            LogHelper.info(MDECore.MODID,"Updating config...");
+            MDECore.logger.info(MDECore.MODID, "Updating config...");
             syncConfig();
         }
     }

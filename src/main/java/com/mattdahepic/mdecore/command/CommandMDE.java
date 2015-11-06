@@ -55,7 +55,6 @@ public class CommandMDE extends CommandBase {
     }
     @Override
     public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
-        System.out.println("calling tab list with args length "+args.length);
         ServerConfigurationManager manager;
         try {
             manager = CommandBase.getCommandSenderAsPlayer(sender).mcServer.getConfigurationManager();
