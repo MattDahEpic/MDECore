@@ -3,6 +3,7 @@ package com.mattdahepic.mdecore;
 import com.mattdahepic.mdecore.config.Config;
 import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.network.PacketHandler;
+import com.mattdahepic.mdecore.tweaks.DaySleepToNight;
 import com.mattdahepic.mdecore.tweaks.WaterBottleCauldron;
 import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
 import com.mattdahepic.mdecore.tweaks.redstone.WaterproofRedstone;
@@ -48,7 +49,14 @@ public class MDECore {
     @Mod.EventHandler
     public static void init (FMLInitializationEvent event) {
         PacketHandler.initPackets();
-
+        if (Config.waterBottlesFillCauldrons) {
+            logger.info("Making water bottles fill cauldrons");
+            MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
+        }
+        if (Config.sleepDuringDayChangesToNight) {
+            logger.info("Why should you have to wait until dusk to sleep? Do it now!");
+            MinecraftForge.EVENT_BUS.register(new DaySleepToNight());
+        } else logger.info("I guess you'll have to wait until night to sleep.");
     }
     @Mod.EventHandler
     public static void postInit (FMLPostInitializationEvent event) {}
@@ -59,10 +67,6 @@ public class MDECore {
     @Mod.EventHandler
     public static void serverStarting (FMLServerStartingEvent event) {
         server = event.getServer();
-        if (Config.waterBottlesFillCauldrons) {
-            logger.info("Making water bottles fill cauldrons");
-            MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
-        }
     }
     @SubscribeEvent
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent event) {
