@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class Config {
     public static boolean updateCheckEnabled = true;
     public static boolean waterBreaksRedstone = true;
-    public static final String DEBUG_CATEGORY = "debug_tools";
+    public static boolean waterBottlesFillCauldrons = true;
     public static void load (FMLPreInitializationEvent event) {
         MDECore.configFile = new Configuration(event.getSuggestedConfigurationFile());
         syncConfig();
@@ -35,5 +35,6 @@ public class Config {
     public static void processConfig (Configuration c) {
         updateCheckEnabled = c.getBoolean("updateCheckEnabled", Configuration.CATEGORY_GENERAL, updateCheckEnabled, "Enable update checking for mods that implement MattDahEpic Core?");
         waterBreaksRedstone = c.getBoolean("waterBreaksRedstone",Configuration.CATEGORY_GENERAL,waterBreaksRedstone,"If true, water will wash away redstone. True is vanilla behaviour.");
+        waterBottlesFillCauldrons = c.getBoolean("waterBottlesFillCauldrons",Configuration.CATEGORY_GENERAL,waterBottlesFillCauldrons, "If true, water bottles will fill cauldrons by 1 level. False is vanilla behaviour.");
     }
 }

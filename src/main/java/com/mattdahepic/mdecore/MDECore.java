@@ -1,6 +1,5 @@
 package com.mattdahepic.mdecore;
 
-import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.Config;
 import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.network.PacketHandler;
@@ -49,7 +48,7 @@ public class MDECore {
     @Mod.EventHandler
     public static void init (FMLInitializationEvent event) {
         PacketHandler.initPackets();
-        FMLCommonHandler.instance().bus().register(new WaterBottleCauldron());
+
     }
     @Mod.EventHandler
     public static void postInit (FMLPostInitializationEvent event) {}
@@ -60,7 +59,10 @@ public class MDECore {
     @Mod.EventHandler
     public static void serverStarting (FMLServerStartingEvent event) {
         server = event.getServer();
-        event.registerServerCommand(new CommandMDE());
+        if (Config.waterBottlesFillCauldrons) {
+            logger.info("Making water bottles fill cauldrons");
+            MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
+        }
     }
     @SubscribeEvent
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent event) {
