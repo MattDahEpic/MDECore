@@ -13,7 +13,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.8-1.4"
+version = "1.8-1.4.1"
 group= "com.mattdahepic.mdecore" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mdecore"
 
@@ -30,7 +30,7 @@ minecraft {
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20141130"
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 dependencies {

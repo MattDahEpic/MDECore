@@ -1,4 +1,4 @@
-package com.mattdahepic.mdecore.redstone;
+package com.mattdahepic.mdecore.tweaks.redstone;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;

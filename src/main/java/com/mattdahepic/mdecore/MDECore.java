@@ -4,8 +4,9 @@ import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.Config;
 import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.network.PacketHandler;
-import com.mattdahepic.mdecore.redstone.MaterialWaterproofCircuits;
-import com.mattdahepic.mdecore.redstone.WaterproofRedstone;
+import com.mattdahepic.mdecore.tweaks.WaterBottleCauldron;
+import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
+import com.mattdahepic.mdecore.tweaks.redstone.WaterproofRedstone;
 import com.mattdahepic.mdecore.update.UpdateChecker;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -48,6 +49,7 @@ public class MDECore {
     @Mod.EventHandler
     public static void init (FMLInitializationEvent event) {
         PacketHandler.initPackets();
+        FMLCommonHandler.instance().bus().register(new WaterBottleCauldron());
     }
     @Mod.EventHandler
     public static void postInit (FMLPostInitializationEvent event) {}
