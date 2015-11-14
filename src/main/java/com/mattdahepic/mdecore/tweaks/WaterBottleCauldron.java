@@ -1,5 +1,6 @@
 package com.mattdahepic.mdecore.tweaks;
 
+import com.mattdahepic.mdecore.MDECore;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -9,7 +10,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class WaterBottleCauldron {
-    public WaterBottleCauldron () {}
+    public WaterBottleCauldron () {
+        MDECore.logger.info("Making water bottles fill cauldrons");
+    }
     @SubscribeEvent
     public void playerInteract (PlayerInteractEvent e) {
         if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && e.world.getBlockState(e.pos).getBlock() == Blocks.cauldron) { //if rigth click on cauldron

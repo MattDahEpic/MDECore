@@ -49,14 +49,8 @@ public class MDECore {
     @Mod.EventHandler
     public static void init (FMLInitializationEvent event) {
         PacketHandler.initPackets();
-        if (Config.waterBottlesFillCauldrons) {
-            logger.info("Making water bottles fill cauldrons");
-            MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
-        }
-        if (Config.sleepDuringDayChangesToNight) {
-            logger.info("Why should you have to wait until dusk to sleep? Do it now!");
-            MinecraftForge.EVENT_BUS.register(new DaySleepToNight());
-        } else logger.info("I guess you'll have to wait until night to sleep.");
+        if (Config.waterBottlesFillCauldrons) MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
+        if (Config.sleepDuringDayChangesToNight) MinecraftForge.EVENT_BUS.register(new DaySleepToNight());
     }
     @Mod.EventHandler
     public static void postInit (FMLPostInitializationEvent event) {}
