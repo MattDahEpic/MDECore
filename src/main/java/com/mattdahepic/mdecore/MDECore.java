@@ -7,7 +7,7 @@ import com.mattdahepic.mdecore.tweaks.DaySleepToNight;
 import com.mattdahepic.mdecore.tweaks.WaterBottleCauldron;
 import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
 import com.mattdahepic.mdecore.tweaks.redstone.WaterproofRedstone;
-import com.mattdahepic.mdecore.update.UpdateChecker;
+import com.mattdahepic.mdecore.update.UpdateCheckerNew;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.server.MinecraftServer;
@@ -15,7 +15,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import org.apache.logging.log4j.Logger;
@@ -51,20 +54,17 @@ public class MDECore {
         PacketHandler.initPackets();
         if (Config.waterBottlesFillCauldrons) MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
         if (Config.sleepDuringDayChangesToNight) MinecraftForge.EVENT_BUS.register(new DaySleepToNight());
+        UpdateCheckerNew.checkRemote(MODID,UPDATE_URL);
     }
     @Mod.EventHandler
     public static void postInit (FMLPostInitializationEvent event) {}
-    @Mod.EventHandler
-    public static void loadComplete (FMLLoadCompleteEvent event) {
-        UpdateChecker.updateCheck(MODID, NAME, UPDATE_URL, VERSION,null);
-    }
     @Mod.EventHandler
     public static void serverStarting (FMLServerStartingEvent event) {
         server = event.getServer();
     }
     @SubscribeEvent
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent event) {
-        UpdateChecker.updateCheck(MODID,NAME,UPDATE_URL,VERSION,event.player);
+        UpdateCheckerNew.printMessageToPlayer(MODID,event.player);
         LoginMessage.tell(event.player);
     }
 }
