@@ -1,7 +1,7 @@
 package com.mattdahepic.mdecore.tweaks.redstone;
 
 import com.mattdahepic.mdecore.MDECore;
-import com.mattdahepic.mdecore.config.Config;
+import com.mattdahepic.mdecore.config.MDEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -11,7 +11,7 @@ import java.lang.reflect.Modifier;
 
 public class WaterproofRedstone {
     public static void setup () {
-        if (!Config.waterBreaksRedstone) {
+        if (!MDEConfig.waterBreaksRedstone) {
             try {
                 Field modifiersField = Field.class.getDeclaredField("modifiers");
                 modifiersField.setAccessible(true);

@@ -13,7 +13,7 @@ public class LoginMessage {
     public static File loginMessageFile;
     public static String message = null;
     public static void init (File configDir) {
-        loginMessageFile = new File(configDir,"loginmessage.txt");
+        loginMessageFile = new File(configDir,"mattdahepic"+File.separator+"loginmessage.txt");
         if (!loginMessageFile.exists()) return;
         try {
             BufferedReader in = new BufferedReader(new FileReader(loginMessageFile));

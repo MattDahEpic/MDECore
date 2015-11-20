@@ -1,82 +1,102 @@
 package com.mattdahepic.mdecore.command;
 
-import com.mattdahepic.mdecore.command.logic.PosLogic;
-import com.mattdahepic.mdecore.command.logic.TPSLogic;
-import com.mattdahepic.mdecore.command.logic.TPXLogic;
+import com.mattdahepic.mdecore.command.logic.*;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CommandMDE extends CommandBase {
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 2;
+    //Thanks to CoFH: https://github.com/CoFH/CoFHCore
+    public static CommandMDE instance = new CommandMDE();
+    private static Map<String, ICommandLogic> commands = new HashMap<String,ICommandLogic>();
+
+    static {
+        registerCommandLogic(PosLogic.instance);
+        registerCommandLogic(TPSLogic.instance);
+        registerCommandLogic(TPXLogic.instance);
+        registerCommandLogic(HelpLogic.instance);
+        registerCommandLogic(VersionLogic.instance);
+        registerCommandLogic(KillAllLogic.instance);
+        //registerCommandLogic(TODOPregenLogic.instance);
+        //registerCommandLogic(TODORegenLogic.instance);
+    }
+
+    public static void init(FMLServerStartingEvent e) {
+        e.registerServerCommand(instance);
+    }
+    public static String getCommandSyntax (String name) {
+        if (getCommandExists(name)) {
+            return commands.get(name).getCommandSyntax();
+        }
+        return null;
+    }
+    public static boolean registerCommandLogic (ICommandLogic commandLogic) {
+        if (!commands.containsKey(commandLogic.getCommandName())) {
+            commands.put(commandLogic.getCommandName(), commandLogic);
+            return true;
+        }
+        return false;
+    }
+    public static Set<String> getCommandList() {
+        return commands.keySet();
+    }
+    public static int getCommandPermission (String command) {
+        return getCommandExists(command) ? commands.get(command).getPermissionLevel() : Integer.MAX_VALUE;
+    }
+    public static boolean getCommandExists (String command) {
+        return commands.containsKey(command);
+    }
+    public static boolean canUseCommand (ICommandSender sender, int requiredPermission, String name) {
+        if (getCommandExists(name)) {
+            return sender.canCommandSenderUseCommand(requiredPermission, "mde "+name) || (sender instanceof EntityPlayerMP && requiredPermission <= 0);
+        }
+        return false;
     }
     @Override
-    public List getAliases() {
-        List aliases = new ArrayList();
-        aliases.add("mde");
-        return aliases;
+    public int getRequiredPermissionLevel () {
+        return -1;
     }
     @Override
-    public String getName () {
+    public String getCommandName () {
         return "mde";
     }
     @Override
-    public String getCommandUsage(ICommandSender sender) {
-        return "/mde help";
+    public List getCommandAliases () {
+        return Collections.emptyList();
     }
     @Override
-    public void execute (ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 0) {
-            throw new WrongUsageException("Use /mde help to see command usage.");
-        } else { //has a sub command
-            if (args[0].equalsIgnoreCase("help")) {
-                sender.addChatMessage(new ChatComponentText("/mde tpx {<player>|<dimension>} {<player>|<dimension>|<x><y><z>}"));
-                sender.addChatMessage(new ChatComponentText("/mde tps {o|a|<dimension>}"));
-                sender.addChatMessage(new ChatComponentText("/mde pos <player>"));
-            } else if (args[0].equalsIgnoreCase("tpx")) {
-                TPXLogic.go(sender, args);
-            } else if (args[0].equalsIgnoreCase("tps")) { //credit to COFH again
-                TPSLogic.go(sender, args);
-            } else if (args[0].equalsIgnoreCase("pos")) {
-                PosLogic.go(sender, args);
-            } else { //invalid command
-                throw new WrongUsageException("Invalid Usage! Type /mde help for usage");
+    public String getCommandUsage (ICommandSender sender) {
+        return "/"+getCommandName()+" help";
+    }
+    @Override
+    public boolean canCommandSenderUseCommand (ICommandSender sender) {
+        return true;
+    }
+    @Override
+    public void processCommand (ICommandSender sender, String[] args) throws CommandException {
+        if (args.length < 1) args = new String[]{"help"};
+        ICommandLogic command = commands.get(args[0]);
+        if (command != null) {
+            if (canUseCommand(sender,command.getPermissionLevel(),command.getCommandName())) {
+                command.handleCommand(sender,args);
+                return;
             }
+            throw new CommandException("commands.generic.permission");
         }
+        throw new CommandNotFoundException();
     }
     @Override
     public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
-        ServerConfigurationManager manager;
-        try {
-            manager = CommandBase.getCommandSenderAsPlayer(sender).mcServer.getConfigurationManager();
-        } catch (Exception e) {
-            return null; //there will always be a player in this case, so this will never happen
-        }
-        switch (args.length) {
-            case 1:
-                List options = new ArrayList();
-                options.add("help");
-                options.add("tpx");
-                options.add("tps");
-                options.add("pos");
-                return options;
-            case 2:
-                if (args[1].equalsIgnoreCase("tpx") || args[1].equalsIgnoreCase("pos")) { // (tpx) <player> or {pos) <player>
-                    return getListOfStringsMatchingLastWord(args, manager.getAllUsernames());
-                }
-            case 3:
-                if (args[1].equalsIgnoreCase("tpx")) { // (tpx) arg <player>
-                    return getListOfStringsMatchingLastWord(args, manager.getAllUsernames());
-                }
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args,commands.keySet());
+        } else if (commands.containsKey(args[0])) {
+            return commands.get(args[0]).addTabCompletionOptions(sender,args,pos);
         }
         return null;
     }

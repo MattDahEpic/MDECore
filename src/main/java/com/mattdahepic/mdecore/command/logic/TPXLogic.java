@@ -1,22 +1,42 @@
 package com.mattdahepic.mdecore.command.logic;
 
+import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TeleportHelper;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.DimensionManager;
 
-public class TPXLogic {
-    public static void go (ICommandSender sender, String[] arguments) throws CommandException {
-        //disclaimer: ripped straight from COFHCore, as it's not updated to 1.8
-        switch (arguments.length) {
+import java.util.List;
+
+public class TPXLogic implements ICommandLogic {
+    public static final String USAGE = "/mde tpx [player] {(<player> | <dimension>) | <x> <y> <z> [dimension]}";
+    public static TPXLogic instance = new TPXLogic();
+
+    @Override
+    public String getCommandName () {
+        return "tpx";
+    }
+    @Override
+    public int getPermissionLevel () {
+        return 2;
+    }
+    @Override
+    public String getCommandSyntax () {
+        return USAGE;
+    }
+    @Override
+    public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
+        switch (args.length) {
             case 1: // (tpx) invalid command
-                throw new WrongUsageException("Invalid Usage! Type /mde help for usage");
+                throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
             case 2: // (tpx {<player>|<dimension>}) teleporting player to self, or self to dimension
                 EntityPlayerMP playerSender = CommandBase.getCommandSenderAsPlayer(sender);
                 try {
-                    EntityPlayerMP player = CommandBase.getPlayer(sender, arguments[1]);
+                    EntityPlayerMP player = CommandBase.getPlayer(sender, args[1]);
                     if (!player.equals(playerSender)) {
                         if (playerSender.dimension == player.dimension) {
                             player.setPositionAndUpdate(playerSender.posX, playerSender.posY, playerSender.posZ);
@@ -31,7 +51,7 @@ public class TPXLogic {
                 } catch (PlayerNotFoundException t) {
                     int dimension = 0;
                     try {
-                        dimension = Integer.parseInt(arguments[1]);
+                        dimension = Integer.parseInt(args[1]);
                     } catch (Exception e) {
                         throw t;
                     }
@@ -45,9 +65,9 @@ public class TPXLogic {
                 }
                 break;
             case 3: // (tpx <player> {<player>|<dimension>}) teleporting player to player or player to dimension
-                EntityPlayerMP player = CommandBase.getPlayer(sender, arguments[1]);
+                EntityPlayerMP player = CommandBase.getPlayer(sender, args[1]);
                 try {
-                    EntityPlayerMP otherPlayer = CommandBase.getPlayer(sender, arguments[2]);
+                    EntityPlayerMP otherPlayer = CommandBase.getPlayer(sender, args[2]);
                     if (!player.equals(otherPlayer)) {
                         if (otherPlayer.dimension == player.dimension) {
                             player.setPositionAndUpdate(otherPlayer.posX, otherPlayer.posY, otherPlayer.posZ);
@@ -62,7 +82,7 @@ public class TPXLogic {
                 } catch (PlayerNotFoundException t) {
                     int dimension = 0;
                     try {
-                        dimension = Integer.parseInt(arguments[2]);
+                        dimension = Integer.parseInt(args[2]);
                     } catch (Exception e) { // not a number, assume they wanted a player
                         throw t;
                     }
@@ -78,23 +98,23 @@ public class TPXLogic {
             case 4: // (tpx <x> <y> <z>) teleporting self within dimension
                 playerSender = CommandBase.getCommandSenderAsPlayer(sender);
                 try {
-                    playerSender.setPositionAndUpdate(Integer.parseInt(arguments[1]), Integer.parseInt(arguments[2]), Integer.parseInt(arguments[3]));
+                    playerSender.setPositionAndUpdate(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                 } catch (Exception e) {
-                    throw new WrongUsageException("Invalid Usage! Type /mde help for usage");
+                    throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
                 }
                 break;
             case 5: // (tpx {<player> <x> <y> <z> | <x> <y> <z> <dimension>}) teleporting player within player's dimension or self to dimension
                 try {
-                    player = CommandBase.getPlayer(sender, arguments[1]);
+                    player = CommandBase.getPlayer(sender, args[1]);
                     try {
-                        player.setPositionAndUpdate(Integer.parseInt(arguments[2]), Integer.parseInt(arguments[3]), Integer.parseInt(arguments[4]));
+                        player.setPositionAndUpdate(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
                     } catch (Exception e) {
-                        throw new WrongUsageException("Invalid Usage! Type /mde help for usage");
+                        throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
                     }
                 } catch (PlayerNotFoundException t) {
                     int dimension;
                     try {
-                        dimension = Integer.parseInt(arguments[4]);
+                        dimension = Integer.parseInt(args[4]);
                     } catch (Exception e) {
                         throw t;
                     }
@@ -110,8 +130,8 @@ public class TPXLogic {
                 break;
             case 6: // (tpx <player> <x> <y> <z> <dimension>) teleporting player to dimension and location
             default: // ignore excess tokens. warn?
-                player = CommandBase.getPlayer(sender, arguments[1]);
-                int dimension = Integer.parseInt(arguments[5]);
+                player = CommandBase.getPlayer(sender, args[1]);
+                int dimension = Integer.parseInt(args[5]);
 
                 if (!DimensionManager.isDimensionRegistered(dimension)) {
                     throw new CommandException("Specified world does not exist!");
@@ -120,11 +140,28 @@ public class TPXLogic {
                     TeleportHelper.transferPlayerToDimension(player, dimension, player.mcServer.getConfigurationManager());
                 }
                 try {
-                    player.setPositionAndUpdate(Integer.parseInt(arguments[2]), Integer.parseInt(arguments[3]), Integer.parseInt(arguments[4]));
+                    player.setPositionAndUpdate(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
                 } catch (Exception e) {
-                    throw new WrongUsageException("Invalid Usage! Type /mde help for usage");
+                    throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
                 }
                 break;
         }
+    }
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
+        if (args.length == 2 || args.length == 3) {
+            return CommandBase.getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames());
+        } else if (args.length >= 6) {
+            Integer[] ids = DimensionManager.getIDs();
+            String[] strings = new String[ids.length];
+
+            for (int i = 0; i < ids.length; i++) {
+                strings[i] = ids[i].toString();
+            }
+            return CommandBase.getListOfStringsMatchingLastWord(args, strings);
+        }
+
+        return null;
     }
 }
