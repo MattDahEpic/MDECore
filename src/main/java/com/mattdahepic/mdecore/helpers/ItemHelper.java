@@ -15,6 +15,6 @@ public class ItemHelper {
         return getItemFromName(name.substring(0,name.indexOf(":")),name.substring(name.indexOf(":")+1),meta);
     }
     public static String getNameFromItemStack (ItemStack item) {
-        return (String)Item.itemRegistry.getNameForObject(item.getItem());
+        return Item.itemRegistry.getNameForObject(item.getItem()).toString();
     }
 }

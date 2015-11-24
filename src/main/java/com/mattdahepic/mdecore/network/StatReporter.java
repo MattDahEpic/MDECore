@@ -12,23 +12,25 @@ import net.minecraftforge.fml.common.ModContainer;
 public class StatReporter {
     //By using the mod you agree to the EULA: http://mattdahepic.com/code/mods/eula
     public static void gatherAndReport () {
-        if (!(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) { //not in deobf
-            //setup google analytics tracker
-            JGoogleAnalyticsTracker.setProxy(System.getenv("http_proxy"));
-            AnalyticsConfigData config = new AnalyticsConfigData("UA-46943413-4");
-            AWTSystemPopulator.populateConfigData(config);
-            JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(config, JGoogleAnalyticsTracker.GoogleAnalyticsVersion.V_4_7_2);
-            tracker.setDispatchMode(JGoogleAnalyticsTracker.DispatchMode.MULTI_THREAD);
-            //do reporting
-            for (ModContainer mod : Loader.instance().getActiveModList()) {
-                if (mod.getMetadata().authorList.contains("MattDahEpic") || mod.getMetadata().authorList.contains("mattdahepic")) {
-                    if (MDEConfig.debugLogging)
-                        MDECore.logger.info("Logging load for mod \"" + mod.getModId() + "\" at version \"" + mod.getVersion() + "\".");
-                    tracker.trackPageView(mod.getModId() + "-" + mod.getVersion(), null, null); //modid-mcVer-modVer
-                }
+        //deobf?
+        boolean isDeobf = false;
+        if (!(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) isDeobf = true;
+
+        //setup google analytics tracker
+        JGoogleAnalyticsTracker.setProxy(System.getenv("http_proxy"));
+        AnalyticsConfigData config = new AnalyticsConfigData("UA-46943413-4");
+        AWTSystemPopulator.populateConfigData(config);
+        JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(config, JGoogleAnalyticsTracker.GoogleAnalyticsVersion.V_4_7_2);
+        tracker.setDispatchMode(JGoogleAnalyticsTracker.DispatchMode.MULTI_THREAD);
+        //do reporting
+        for (ModContainer mod : Loader.instance().getActiveModList()) {
+            if (mod.getMetadata().authorList.contains("MattDahEpic") || mod.getMetadata().authorList.contains("mattdahepic")) {
+                if (MDEConfig.debugLogging)
+                    MDECore.logger.info("Logging load for mod \"" + mod.getModId() + "\" at version \"" + mod.getVersion() + (isDeobf ? "-deobf" : "") + "\".");
+                tracker.trackPageView(mod.getModId() + "-" + mod.getVersion() + (isDeobf ? "-deobf" : ""), null, null); //modid-mcVer-modVer-(deobf)
             }
-            //cleanup
-            tracker.completeBackgroundTasks(1000);
         }
+        //cleanup
+        tracker.completeBackgroundTasks(1000);
     }
 }

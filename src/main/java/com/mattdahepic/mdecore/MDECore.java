@@ -22,14 +22,13 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,certificateFingerprint = MDECore.FINGERPRINT,dependencies = MDECore.DEPENDENCIES,acceptedMinecraftVersions = "1.8")
+@Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,dependencies = MDECore.DEPENDENCIES,acceptedMinecraftVersions = "1.8.8")
 public class MDECore {
     public static final String MODID = "mdecore";
     public static final String VERSION = "@VERSION@";
     public static final String NAME = "MattDahEpic Core";
     public static final String UPDATE_URL = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+ MinecraftForge.MC_VERSION+"/"+MODID+".txt";
-    public static final String DEPENDENCIES = "required-after:Forge@[1.8-1.8-11.14.4.1563,);";
-    public static final String FINGERPRINT = "@FINGERPRINT@";
+    public static final String DEPENDENCIES = "required-after:Forge@[1.8.8-11.14.4.1576,);";
 
     public static final Logger logger = LogManager.getLogger(MODID);
 
@@ -55,13 +54,6 @@ public class MDECore {
     @Mod.EventHandler
     public void postInit (FMLPostInitializationEvent event) {
         if (MDEConfig.reportUsageStats) StatReporter.gatherAndReport();
-    }
-    @Mod.EventHandler
-    public void invalidSignature (FMLFingerprintViolationEvent event) {
-        if (!(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) { //are we in deobf?
-            //MinecraftForge.EVENT_BUS.register(new FingerprintGUILoader(event.source.toString())); //TODO: fix the  jar signing
-            logger.error("INVALID JAR "+event.source+" DETECTED!\nPLEASE REDOWNLOAD");
-        }
     }
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent e) {
