@@ -9,10 +9,9 @@ import com.mattdahepic.mdecore.tweaks.DaySleepToNight;
 import com.mattdahepic.mdecore.tweaks.WaterBottleCauldron;
 import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
 import com.mattdahepic.mdecore.tweaks.redstone.WaterproofRedstone;
-import com.mattdahepic.mdecore.update.UpdateCheckerNew;
+import com.mattdahepic.mdecore.update.UpdateChecker;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -49,7 +48,7 @@ public class MDECore {
         PacketHandler.initPackets();
         if (MDEConfig.waterBottlesFillCauldrons) MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
         if (MDEConfig.sleepDuringDayChangesToNight) MinecraftForge.EVENT_BUS.register(new DaySleepToNight());
-        UpdateCheckerNew.checkRemote(MODID, UPDATE_URL);
+        UpdateChecker.checkRemote(MODID, UPDATE_URL);
     }
     @Mod.EventHandler
     public void postInit (FMLPostInitializationEvent event) {
@@ -61,7 +60,7 @@ public class MDECore {
     }
     @SubscribeEvent
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent event) {
-        UpdateCheckerNew.printMessageToPlayer(MODID,event.player);
+        UpdateChecker.printMessageToPlayer(MODID, event.player);
         LoginMessage.tell(event.player);
     }
 }
