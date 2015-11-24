@@ -1,75 +1,63 @@
 package com.mattdahepic.mdecore;
 
-import com.mattdahepic.mdecore.command.CommandMDE;
-import com.mattdahepic.mdecore.config.LoginMessage;
-import com.mattdahepic.mdecore.config.MDEConfig;
-import com.mattdahepic.mdecore.network.PacketHandler;
-import com.mattdahepic.mdecore.network.StatReporter;
-import com.mattdahepic.mdecore.tweaks.DaySleepToNight;
-import com.mattdahepic.mdecore.tweaks.WaterBottleCauldron;
-import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
-import com.mattdahepic.mdecore.tweaks.redstone.WaterproofRedstone;
-import com.mattdahepic.mdecore.update.UpdateCheckerNew;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mattdahepic.mdecore.config.Config;
+import com.mattdahepic.mdecore.helpers.LoadStateHelper;
+import com.mattdahepic.mdecore.update.UpdateChecker;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.*;
+import net.minecraftforge.common.config.Configuration;
 
-@Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,certificateFingerprint = MDECore.FINGERPRINT,dependencies = MDECore.DEPENDENCIES,acceptedMinecraftVersions = "1.8")
+@Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,acceptedMinecraftVersions = "1.7.10")
 public class MDECore {
     public static final String MODID = "mdecore";
-    public static final String VERSION = "@VERSION@";
+    public static final String VERSION = "v1.0-mc1.7.10";
     public static final String NAME = "MattDahEpic Core";
-    public static final String UPDATE_URL = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+ MinecraftForge.MC_VERSION+"/"+MODID+".txt";
-    public static final String DEPENDENCIES = "required-after:Forge@[1.8-1.8-11.14.4.1563,);";
-    public static final String FINGERPRINT = "@FINGERPRINT@";
-
-    public static final Logger logger = LogManager.getLogger(MODID);
 
     @Mod.Instance(MDECore.MODID)
     public static MDECore instance;
 
-    public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.airColor);
+    //sided proxy
+
+    public static Configuration configFile;
 
     @Mod.EventHandler
-    public void load (FMLPreInitializationEvent event) {
+    public static void load (FMLPreInitializationEvent event) {
+        LoadStateHelper.logLoadState(MODID,event);
         FMLCommonHandler.instance().bus().register(instance);
-        MDEConfig.load(MODID,event,new MDEConfig());
-        LoginMessage.init(event.getModConfigurationDirectory());
-        WaterproofRedstone.setup();
+        Config.load(event);
     }
     @Mod.EventHandler
-    public void init (FMLInitializationEvent event) {
-        PacketHandler.initPackets();
-        if (MDEConfig.waterBottlesFillCauldrons) MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
-        if (MDEConfig.sleepDuringDayChangesToNight) MinecraftForge.EVENT_BUS.register(new DaySleepToNight());
-        UpdateCheckerNew.checkRemote(MODID, UPDATE_URL);
+    public static void init (FMLInitializationEvent event) {
+        LoadStateHelper.logLoadState(MODID,event);
     }
     @Mod.EventHandler
-    public void postInit (FMLPostInitializationEvent event) {
-        if (MDEConfig.reportUsageStats) StatReporter.gatherAndReport();
+    public static void postInit (FMLPostInitializationEvent event) {
+        LoadStateHelper.logLoadState(MODID,event);
     }
     @Mod.EventHandler
-    public void invalidSignature (FMLFingerprintViolationEvent event) {
-        if (!(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) { //are we in deobf?
-            //MinecraftForge.EVENT_BUS.register(new FingerprintGUILoader(event.source.toString())); //TODO: fix the  jar signing
-            logger.error("INVALID JAR "+event.source+" DETECTED!\nPLEASE REDOWNLOAD");
-        }
+    public static void loadComplete (FMLLoadCompleteEvent event) {
+        LoadStateHelper.logLoadState(MODID,event);
+        UpdateChecker.updateCheck(MODID,NAME,"https://raw.githubusercontent.com/MattDahEpic/MDECore1.7.10/master/version.txt",VERSION);
     }
     @Mod.EventHandler
-    public void serverStarting (FMLServerStartingEvent e) {
-        CommandMDE.init(e);
+    public static void serverAboutToStart (FMLServerAboutToStartEvent event) {
+        LoadStateHelper.logLoadState(MODID,event);
     }
-    @SubscribeEvent
-    public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent event) {
-        UpdateCheckerNew.printMessageToPlayer(MODID,event.player);
-        LoginMessage.tell(event.player);
+    @Mod.EventHandler
+    public static void serverStarted (FMLServerStartedEvent event) {
+        LoadStateHelper.logLoadState(MODID,event);
+    }
+    @Mod.EventHandler
+    public static void serverStarting (FMLServerStartingEvent event) {
+        LoadStateHelper.logLoadState(MODID,event);
+    }
+    @Mod.EventHandler
+    public static void serverStopped (FMLServerStoppedEvent event) {
+        LoadStateHelper.logLoadState(MODID,event);
+    }
+    @Mod.EventHandler
+    public static void serverStopping (FMLServerStoppingEvent event) {
+        LoadStateHelper.logLoadState(MODID,event);
     }
 }
