@@ -14,9 +14,9 @@ import net.minecraft.world.chunk.IChunkProvider;
 
 import java.util.List;
 
-public class TODORegenLogic implements ICommandLogic {
+public class RegenLogic implements ICommandLogic {
     public static final String USAGE = "/mde regen";
-    public static TODORegenLogic instance = new TODORegenLogic();
+    public static RegenLogic instance = new RegenLogic();
 
     @Override
     public String getCommandName () {
@@ -46,7 +46,7 @@ public class TODORegenLogic implements ICommandLogic {
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
                             for (int y = 0; y < sender.getEntityWorld().getHeight(); y++) {
-                                IBlockState blockState = newChunk.getBlockState(pos);
+                                IBlockState blockState = newChunk.getBlockState(new BlockPos(x,y,z));
                                 
                                 worldServer.setBlockState(new BlockPos(x + oldChunk.xPosition * 16,y,z + oldChunk.zPosition * 16),blockState);
 

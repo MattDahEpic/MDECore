@@ -24,7 +24,7 @@ public class CommandMDE extends CommandBase {
         registerCommandLogic(VersionLogic.instance);
         registerCommandLogic(KillAllLogic.instance);
         registerCommandLogic(PregenLogic.instance);
-        //registerCommandLogic(TODORegenLogic.instance);
+        registerCommandLogic(RegenLogic.instance);
     }
 
     public static void init(FMLServerStartingEvent e) {

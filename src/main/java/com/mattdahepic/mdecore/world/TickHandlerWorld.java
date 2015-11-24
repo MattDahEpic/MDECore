@@ -46,6 +46,7 @@ public class TickHandlerWorld {
                 chunksToGen.put(dim, chunks);
             } else if (chunks != null) {
                 chunksToGen.remove(dim);
+                MDECore.logger.info("RetroGening complete!");
             }
         } else {
             ArrayDeque<ChunkCoordIntPair> chunks = chunksToPreGen.get(dim);
@@ -61,6 +62,7 @@ public class TickHandlerWorld {
                 world.getChunkFromChunkCoords(c.chunkXPos, c.chunkZPos);
             } else if (chunks != null) {
                 chunksToPreGen.remove(dim);
+                MDECore.logger.info("PreGening complete!");
             }
         }
     }
