@@ -13,8 +13,7 @@ public class StatReporter {
     //By using the mod you agree to the EULA: http://mattdahepic.com/code/mods/eula
     public static void gatherAndReport () {
         //deobf?
-        boolean isDeobf = false;
-        if (!(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) isDeobf = true;
+        boolean isDeobf = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
         //setup google analytics tracker
         JGoogleAnalyticsTracker.setProxy(System.getenv("http_proxy"));

@@ -10,6 +10,7 @@ import com.mattdahepic.mdecore.tweaks.WaterBottleCauldron;
 import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
 import com.mattdahepic.mdecore.tweaks.redstone.WaterproofRedstone;
 import com.mattdahepic.mdecore.update.UpdateChecker;
+import com.mattdahepic.mdecore.world.TickHandlerWorld;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.MinecraftForge;
@@ -48,6 +49,7 @@ public class MDECore {
         PacketHandler.initPackets();
         if (MDEConfig.waterBottlesFillCauldrons) MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
         if (MDEConfig.sleepDuringDayChangesToNight) MinecraftForge.EVENT_BUS.register(new DaySleepToNight());
+        FMLCommonHandler.instance().bus().register(TickHandlerWorld.instance);
         UpdateChecker.checkRemote(MODID, UPDATE_URL);
     }
     @Mod.EventHandler

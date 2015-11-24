@@ -23,7 +23,7 @@ public class CommandMDE extends CommandBase {
         registerCommandLogic(HelpLogic.instance);
         registerCommandLogic(VersionLogic.instance);
         registerCommandLogic(KillAllLogic.instance);
-        //registerCommandLogic(TODOPregenLogic.instance);
+        registerCommandLogic(PregenLogic.instance);
         //registerCommandLogic(TODORegenLogic.instance);
     }
 
