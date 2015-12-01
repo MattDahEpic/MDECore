@@ -8,8 +8,8 @@ import java.io.File;
 
 public abstract class Config {
     public static Configuration config;
-    public static void load (String modid, FMLPreInitializationEvent e, Config sub) {
-        config = new Configuration(new File(e.getModConfigurationDirectory().getAbsolutePath()+File.separator+"mattdahepic"+File.separator+modid+".cfg"));
+    public static void load (String configName, FMLPreInitializationEvent e, Config sub) {
+        config = new Configuration(new File(e.getModConfigurationDirectory().getAbsolutePath()+File.separator+"mattdahepic"+File.separator+configName+".cfg"));
         syncConfig(sub);
     }
     public static void syncConfig (Config sub) {
