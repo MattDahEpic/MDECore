@@ -3,6 +3,7 @@ package com.mattdahepic.mdecore;
 import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.config.MDEConfig;
+import com.mattdahepic.mdecore.config.sync.ConfigSyncable;
 import com.mattdahepic.mdecore.network.PacketHandler;
 import com.mattdahepic.mdecore.network.StatReporter;
 import com.mattdahepic.mdecore.tweaks.DaySleepToNight;
@@ -35,12 +36,15 @@ public class MDECore {
     @Mod.Instance(MDECore.MODID)
     public static MDECore instance;
 
+    public static ConfigSyncable config;
+
     public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.airColor);
 
     @Mod.EventHandler
     public void load (FMLPreInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(instance);
-        MDEConfig.load(MODID,event,new MDEConfig());
+        //MDEConfig.load(MODID, event, new MDEConfig());
+        config = new MDEConfig(MDEConfig.class,MODID,event);
         LoginMessage.init(event.getModConfigurationDirectory());
         WaterproofRedstone.setup();
     }
