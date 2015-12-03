@@ -4,6 +4,7 @@ import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.config.MDEConfig;
 import com.mattdahepic.mdecore.config.sync.ConfigSyncable;
+import com.mattdahepic.mdecore.helpers.EnvironmentHelper;
 import com.mattdahepic.mdecore.network.PacketHandler;
 import com.mattdahepic.mdecore.network.StatReporter;
 import com.mattdahepic.mdecore.tweaks.DaySleepToNight;
@@ -41,7 +42,12 @@ public class MDECore {
     public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.airColor);
 
     @Mod.EventHandler
-    public void load (FMLPreInitializationEvent event) {
+    public void prePreInit (FMLConstructionEvent e) {
+        EnvironmentHelper.isServer = e.getSide().isServer();
+    }
+
+    @Mod.EventHandler
+    public void preInit (FMLPreInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(instance);
         //MDEConfig.load(MODID, event, new MDEConfig());
         config = new MDEConfig(MDEConfig.class,MODID,event);
