@@ -1,7 +1,7 @@
 package com.mattdahepic.mdecore.config.annot;
 
 
-import com.mattdahepic.mdecore.config.sync.ConfigHelper;
+import com.mattdahepic.mdecore.config.sync.ConfigSyncable;
 
 import java.lang.annotation.*;
 
@@ -13,13 +13,14 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Documented
+
 public @interface RestartReq {
     /**
      * What requirements this config has for restarting the game.
      *
-     * @see ConfigHelper.RestartReqs#NONE
-     * @see ConfigHelper.RestartReqs#REQUIRES_WORLD_RESTART
-     * @see ConfigHelper.RestartReqs#REQUIRES_MC_RESTART
+     * @see ConfigSyncable.RestartReqs#NONE
+     * @see ConfigSyncable.RestartReqs#REQUIRES_WORLD_RESTART
+     * @see ConfigSyncable.RestartReqs#REQUIRES_MC_RESTART
      */
-    ConfigHelper.RestartReqs value() default ConfigHelper.RestartReqs.NONE;
+    ConfigSyncable.RestartReqs value() default ConfigSyncable.RestartReqs.NONE;
 }

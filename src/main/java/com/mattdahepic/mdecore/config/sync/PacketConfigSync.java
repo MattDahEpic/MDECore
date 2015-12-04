@@ -2,8 +2,6 @@ package com.mattdahepic.mdecore.config.sync;
 
 import com.google.common.base.Throwables;
 import com.mattdahepic.mdecore.MDECore;
-import com.mattdahepic.mdecore.config.Config;
-import com.mattdahepic.mdecore.config.sync.ConfigSyncable;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -19,7 +17,7 @@ public class PacketConfigSync implements IMessage {
     //thanks to EnderCore
     private Map<String,Object> configValues;
     private String configName;
-    public PacketConfigSync (ConfigSyncable toSync) {
+    public PacketConfigSync (ConfigProcessor toSync) {
         this.configValues = toSync.configValues;
         this.configName = toSync.configFileName;
     }
@@ -64,7 +62,7 @@ public class PacketConfigSync implements IMessage {
     public static class Handler implements IMessageHandler<PacketConfigSync, PacketConfigSync> {
         @Override
         public PacketConfigSync onMessage(PacketConfigSync message, MessageContext ctx) {
-            ConfigSyncable processor = ConfigSyncable.configMap.get(message.configName);
+            ConfigProcessor processor = ConfigProcessor.processorMap.get(message.configName);
             if (processor != null) {
                 MDECore.logger.info("Received config synchronization packet from server for config "+processor.configFileName+".cfg. Setting values accordingly...");
                 processor.syncTo(message.configValues);

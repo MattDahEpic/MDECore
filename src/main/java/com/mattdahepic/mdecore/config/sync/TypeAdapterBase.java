@@ -4,14 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import net.minecraftforge.common.config.Property;
 import org.apache.commons.lang3.ArrayUtils;
-import com.mattdahepic.mdecore.config.sync.ConfigSyncable.ITypeAdapter;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.List;
 
 @SuppressWarnings({ "serial", "unchecked" })
-public abstract class TypeAdapterBase<ACTUAL, BASE> implements ITypeAdapter<ACTUAL, BASE> {
+public abstract class TypeAdapterBase<ACTUAL, BASE> implements ConfigProcessor.ITypeAdapter<ACTUAL, BASE> {
     private final TypeToken<ACTUAL> actualType;
     private final Property.Type type;
     private final Class<?> primitiveType;

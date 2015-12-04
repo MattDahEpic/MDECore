@@ -1,237 +1,594 @@
 package com.mattdahepic.mdecore.config.sync;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.common.reflect.TypeToken;
-import com.mattdahepic.mdecore.MDECore;
-import com.mattdahepic.mdecore.config.annot.*;
-import com.mattdahepic.mdecore.config.sync.ConfigHelper;
-import com.mattdahepic.mdecore.network.PacketHandler;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nullable;
 import java.io.File;
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Locale;
 
-public class ConfigSyncable {
-    public interface ITypeAdapter<ACTUAL, BASE> {
-        TypeToken<ACTUAL> getActualType();
-        Property.Type getType();
+public abstract class ConfigSyncable implements IConfigHandler {
+    /**
+     * Represents a section in a config handler.
+     */
+    public class Section {
+        public final String name;
+        public final String lang;
+
+        public Section(String name, String lang) {
+            this.name = name;
+            this.lang = "section." + lang;
+        }
+
+        private Section register() {
+            sections.add(this);
+            return this;
+        }
+
+        public String lc() {
+            return name.toLowerCase(Locale.US);
+        }
+    }
+    public enum RestartReqs {
+        /**
+         * No restart needed for this config to be applied. Default value.
+         */
+        NONE,
 
         /**
-         * If this binds to a primitive type, return it here (eg: int.class).
-         * Otherwise, return null.
-         *
-         * @return The class for this ITypeAdapter's primitive type.
+         * This config requires the world to be restarted to take effect.
          */
-        @Nullable
-        Class<?> getPrimitiveType();
-        ACTUAL createActualType(BASE base);
-        BASE createBaseType(ACTUAL actual);
-    }
-    private final List<ITypeAdapter<?, ?>> adapters = Lists.newArrayList();
-    public <ACTUAL, BASE> ConfigSyncable addAdapter(ITypeAdapter<ACTUAL, BASE> adapter) {
-        adapters.add(adapter);
-        return this;
-    }
-    public <ACTUAL, BASE> ConfigSyncable addAdapters(ITypeAdapter<ACTUAL, BASE>... adapters) {
-        for (ITypeAdapter<ACTUAL, BASE> adapter : adapters) {
-            addAdapter(adapter);
+        REQUIRES_WORLD_RESTART,
+
+        /**
+         * This config requires the game to be restarted to take effect.
+         * {@code REQUIRES_WORLD_RESTART} is implied when using this.
+         */
+        REQUIRES_MC_RESTART;
+
+        public Property apply(Property prop) {
+            if (this == REQUIRES_MC_RESTART) {
+                prop.setRequiresMcRestart(true);
+            } else if (this == REQUIRES_WORLD_RESTART) {
+                prop.setRequiresWorldRestart(true);
+            }
+            return prop;
         }
-        return this;
     }
-    static final Map<String, ConfigSyncable> configMap = Maps.newHashMap();
+    String configFileName;
+    Configuration config;
 
-    private final Class<?> configs;
-    private final Configuration configFile;
-    final String configFileName;
+    private List<Section> sections = new ArrayList<Section>();
+    private Section activeSection = null;
 
-    Map<String,Object> configValues = Maps.newHashMap();
-    Map<String,Object> defaultValues = Maps.newHashMap();
-    Map<String,Object> originalValues = Maps.newHashMap();
-    private Set<String> sections = Sets.newHashSet();
-
-    public ConfigSyncable (Class<?> configs,String configName,FMLPreInitializationEvent e) {
-        this.configs = configs;
-        this.configFile = new Configuration(new File(e.getModConfigurationDirectory().getAbsolutePath()+File.separator+"mattdahepic"+File.separator+configName+".cfg"));
+    protected ConfigSyncable(String configName) {
         this.configFileName = configName;
-        configMap.put(configName,this);
-        MinecraftForge.EVENT_BUS.register(this);
-        adapters.addAll(TypeAdapterBase.all);
+        FMLCommonHandler.instance().bus().register(this);
+        EnderCore.instance.configs.add(this);
+    }
+    @Override
+    public final void initialize(FMLPreInitializationEvent e) {
+        config = new Configuration(new File(e.getModConfigurationDirectory().getAbsolutePath()+File.separator+"mattdahepic"+File.separator+configFileName+".cfg"));
+        init();
+        reloadAllConfigs();
+        saveConfigFile();
+    }
+    protected void loadConfigFile() {
+        config.load();
+    }
+    protected void saveConfigFile() {
+        config.save();
+    }
+    // convenience for reloading all configs
+    private void reloadAllConfigs() {
+        reloadNonIngameConfigs();
+        reloadIngameConfigs();
+    }
+    /**
+     * Called after config is loaded, but before properties are processed.
+     * Use this method to add your sections and do other setup.
+     */
+    protected abstract void init();
+    /**
+     * Refresh all config values that can only be loaded when NOT in-game.
+     * {@code reloadIngameConfigs()} will be called after this, do not duplicate
+     * calls in this method and that one.
+     */
+    protected abstract void reloadNonIngameConfigs();
+
+    /**
+     * Refresh all config values that can only be loaded when in-game.
+     * This is separated from {@code reloadNonIngameConfigs()} because some values
+     * may not be able to be modified at runtime.
+     */
+    protected abstract void reloadIngameConfigs();
+    /**
+     * Adds a section to your config to be used later
+     *
+     * @param sectionName
+     *          The name of the section. Will also be used as language key.
+     * @return A {@link Section} representing your section in the config
+     */
+    protected Section addSection(String sectionName) {
+        return addSection(sectionName, sectionName, null);
+    }
+    /**
+     * Adds a section to your config to be used later
+     *
+     * @param sectionName
+     *          The name of the section
+     * @param langKey
+     *          The language key to use to display your section name in the Config
+     *          GUI
+     * @return A {@link Section} representing your section in the config
+     */
+    protected Section addSection(String sectionName, String langKey) {
+        return addSection(sectionName, langKey, null);
+    }
+    /**
+     * Adds a section to your config to be used later
+     *
+     * @param sectionName
+     *          The name of the section
+     * @param langKey
+     *          The language key to use to display your section name in the Config
+     *          GUI
+     * @param comment
+     *          The section comment
+     * @return A {@link Section} representing your section in the config
+     */
+    protected Section addSection(String sectionName, String langKey, String comment) {
+        Section section = new Section(sectionName, langKey);
+
+        if (activeSection == null && sections.isEmpty()) {
+            activeSection = section;
+        }
+
+        if (comment != null) {
+            config.addCustomCategoryComment(sectionName, comment);
+        }
+
+        return section.register();
+    }
+    /**
+     * Activates a section
+     *
+     * @param sectionName
+     *          The name of the section
+     *
+     * @throws IllegalArgumentException
+     *           if {@code sectionName} is not valid
+     */
+    protected void activateSection(String sectionName) {
+        Section section = getSectionByName(sectionName);
+        if (section == null) {
+            throw new IllegalArgumentException("Section " + sectionName + " does not exist!");
+        }
+        activateSection(section);
     }
 
-    public void process (boolean loadFromDisk) {
-        if (loadFromDisk) {
-            configFile.load();
-        }
-        try {
-            for (Field f : configs.getDeclaredFields()) {
-                processField(f);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        configFile.save();
-    }
-    private boolean processField (Field f) throws Exception {
-        Config cfg = f.getAnnotation(Config.class);
-        if (cfg == null) {
-            return false;
-        }
-        String name = f.getName();
-        Object value = defaultValues.get(name);
-        if (value == null) {
-            value = f.get(null);
-            defaultValues.put(name, value);
-        }
-
-        Object newValue = getConfigValue(cfg.value(), getComment(f),f,value);
-        configValues.put(f.getName(), newValue);
-        originalValues.put(f.getName(), newValue);
-        f.set(null, newValue);
-
-        sections.add(cfg.value());
-
-        return !value.equals(newValue);
-    }
-    @SuppressWarnings({"rawtypes","unchecked"})
-    private Object getConfigValue (String section, String[] commentLines, Field f, Object defVal) {
-        Property prop = null;
-        Object res = null;
-        Bound<Double> bound = getBound(f);
-        ITypeAdapter adapter = getAdapterFor(f);
-        String comment = StringUtils.join(commentLines, "\n");
-        if (adapter != null) {
-            defVal = adapter.createBaseType(defVal);
-            switch (adapter.getType()) {
-                case BOOLEAN:
-                    if (defVal.getClass().isArray()) {
-                        prop = configFile.get(section,f.getName(),(boolean[])defVal, comment);
-                        res = prop.getBooleanList();
-                    } else {
-                        prop = configFile.get(section, f.getName(), (Boolean) defVal, comment);
-                        res = prop.getBoolean();
-                    }
-                    break;
-                case DOUBLE:
-                    if (defVal.getClass().isArray()) {
-                        prop = configFile.get(section, f.getName(), (double[])defVal,comment);
-                        res = ConfigHelper.bindDoubleArr(prop, Bound.of(bound.min.doubleValue(), bound.max.doubleValue()));
-                    } else {
-                        prop = configFile.get(section, f.getName(), (Double)defVal,comment);
-                        res = ConfigHelper.bindValue(prop, Bound.of(bound.min.doubleValue(), bound.max.doubleValue()), (Double) defVal);
-                    }
-                     break;
-                case INTEGER:
-                    if (defVal.getClass().isArray()) {
-                        prop = configFile.get(section, f.getName(), (int[]) defVal, comment);
-                        res = ConfigHelper.bindIntArr(prop, Bound.of(bound.min.intValue(), bound.max.intValue()));
-                    } else {
-                        prop = configFile.get(section, f.getName(), (Integer) defVal, comment);
-                        res = ConfigHelper.bindValue(prop, Bound.of(bound.min.intValue(), bound.max.intValue()), (Integer) defVal);
-                    }
-                    break;
-                case STRING:
-                    if (defVal.getClass().isArray()) {
-                        prop = configFile.get(section, f.getName(), (String[]) defVal, comment);
-                        res = prop.getStringList();
-                    } else {
-                        prop = configFile.get(section, f.getName(), (String) defVal, comment);
-                        res = prop.getString();
-                    }
-                    break;
-                default:
-                    break;
-            }
-            if (res != null) {
-                ConfigHelper.setBounds(prop, bound);
-                ConfigHelper.addCommentDetails(prop, bound);
-                getRestartReq(f).apply(prop);
-                return adapter.createActualType(res);
-            }
-        }
-        throw new IllegalArgumentException(String.format("No adapter for type %s in class %s, field %s",f.getGenericType(),configs,f));
-    }
-    public void syncTo(Map<String, Object> values) {
-        this.configValues = values;
-        for (String s : configValues.keySet()) {
-            try {
-                Field f = configs.getDeclaredField(s);
-                Config annot = f.getAnnotation(Config.class);
-                if (annot != null && !getNoSync(f)) {
-                    Object newVal = configValues.get(s);
-                    Object oldVal = f.get(null);
-                    if (!oldVal.equals(newVal)) {
-                        MDECore.logger.debug("Config {}.{} differs from new data. Changing from {} to {}", configs.getName(), f.getName(), oldVal, newVal);
-                        f.set(null, newVal);
-                    }
-                } else if (annot != null) {
-                    MDECore.logger.debug("Skipping syncing field {}.{} as it was marked NoSync", configs.getName(), f.getName());
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+    /**
+     * Activates a section
+     *
+     * @param section
+     *          The section to activate
+     */
+    protected void activateSection(Section section) {
+        activeSection = section;
     }
 
-
-    @SuppressWarnings({"unchecked","rawtypes"})
-    private ITypeAdapter getAdapterFor (Field f) {
-        TypeToken<?> t = TypeToken.of(f.getGenericType());
-        Class<?> c = f.getType();
-        for (ITypeAdapter adapter : adapters) {
-            if ((c.isPrimitive() && c == adapter.getPrimitiveType()) || adapter.getActualType().isAssignableFrom(t)) {
-                return adapter;
+    /**
+     * Gets a {@link Section} for a name
+     *
+     * @param sectionName
+     *          The name of the section
+     * @return A section object representing the section in your config with this
+     *         name
+     */
+    protected Section getSectionByName(String sectionName) {
+        for (Section s : sections) {
+            if (s.name.equalsIgnoreCase(sectionName)) {
+                return s;
             }
         }
         return null;
     }
-    private String[] getComment (Field f) {
-        Comment c = f.getAnnotation(Comment.class);
-        return c == null ? new String[0] : c.value();
-    }
-    private Bound<Double> getBound (Field f) {
-        Range r = f.getAnnotation(Range.class);
-        return r == null ? Bound.MAX_BOUND : Bound.of(r.min(), r.max());
-    }
-    private boolean getNoSync (Field f) {
-        return f.getAnnotation(NoSync.class) != null;
-    }
-    private ConfigHelper.RestartReqs getRestartReq (Field f) {
-        RestartReq r = f.getAnnotation(RestartReq.class);
-        return r == null ? ConfigHelper.RestartReqs.NONE : r.value();
-    }
-    public ConfigCategory getCategory(String category) {
-        return configFile.getCategory(category);
-    }
-    public ImmutableSet<String> sections() {
-        return ImmutableSet.copyOf(sections);
+
+    /**
+     * Gets a value from this config handler
+     *
+     * @param key
+     *          Name of the key for this property
+     * @param defaultVal
+     *          Default value so a new property can be created
+     * @return The value of the property
+     *
+     * @throws IllegalArgumentException
+     *           If defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           If there is no active section
+     */
+    protected <T> T getValue(String key, T defaultVal) {
+        return getValue(key, defaultVal, RestartReqs.NONE);
     }
 
-    //Event Handling
+    /**
+     * Gets a value from this config handler
+     *
+     * @param key
+     *          Name of the key for this property
+     * @param defaultVal
+     *          Default value so a new property can be created
+     * @param req
+     *          Restart requirement of the property to be created
+     * @return The value of the property
+     *
+     * @throws IllegalArgumentException
+     *           If defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           If there is no active section
+     */
+    protected <T> T getValue(String key, T defaultVal, RestartReqs req) {
+        return getValue(key, null, defaultVal, req);
+    }
 
-    @Mod.EventHandler
-    public void onLoginServer (PlayerEvent.PlayerLoggedInEvent e) {
-        MDECore.logger.info("Syncing config "+configFileName+".cfg to connecting client "+e.player.getDisplayName()+".");
-        PacketHandler.net.sendTo(new PacketConfigSync(this),(EntityPlayerMP)e.player);
+    /**
+     * Gets a value from this config handler
+     *
+     * @param key
+     *          Name of the key for this property
+     * @param defaultVal
+     *          Default value so a new property can be created
+     * @param bound
+     *          The bounds to set on this property
+     * @return The value of the property
+     *
+     * @throws IllegalArgumentException
+     *           If defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           If there is no active section
+     */
+    protected <T> T getValue(String key, T defaultVal, Bound<? extends Number> bound) {
+        return getValue(key, null, defaultVal, bound);
     }
-    @Mod.EventHandler
-    public void onLogoutClient (FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
-        MDECore.logger.info("Resetting config values for config "+configFileName+".cfg.");
-        syncTo(originalValues);
+
+    /**
+     * Gets a value from this config handler
+     *
+     * @param key
+     *          Name of the key for this property
+     * @param comment
+     *          The comment to put on this property
+     * @param defaultVal
+     *          Default value so a new property can be created
+     * @return The value of the property
+     *
+     * @throws IllegalArgumentException
+     *           if defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           if there is no active section
+     */
+    protected <T> T getValue(String key, String comment, T defaultVal) {
+        return getValue(key, comment, defaultVal, RestartReqs.NONE);
     }
+
+    /**
+     * Gets a value from this config handler
+     *
+     * @param key
+     *          Name of the key for this property
+     * @param comment
+     *          The comment to put on this property
+     * @param defaultVal
+     *          Default value so a new property can be created
+     * @param req
+     *          Restart requirement of the property to be created
+     * @return The value of the property
+     *
+     * @throws IllegalArgumentException
+     *           if defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           if there is no active section
+     */
+    protected <T> T getValue(String key, String comment, T defaultVal, RestartReqs req) {
+        return getValue(key, comment, defaultVal, req, null);
+    }
+
+    /**
+     * Gets a value from this config handler
+     *
+     * @param key
+     *          Name of the key for this property
+     * @param comment
+     *          The comment to put on this property
+     * @param defaultVal
+     *          Default value so a new property can be created
+     * @param bound
+     *          The bounds to set on this property
+     * @return The value of the property
+     *
+     * @throws IllegalArgumentException
+     *           if defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           if there is no active section
+     */
+    protected <T> T getValue(String key, String comment, T defaultVal, Bound<? extends Number> bound) {
+        return getValue(key, comment, defaultVal, RestartReqs.NONE, bound);
+    }
+
+    /**
+     * Gets a value from this config handler
+     *
+     * @param key
+     *          Name of the key for this property
+     * @param comment
+     *          The comment to put on this property
+     * @param defaultVal
+     *          Default value so a new property can be created
+     * @param req
+     *          Restart requirement of the property to be created
+     * @param bound
+     *          The bounds to set on this property
+     * @return The value of the property
+     *
+     * @throws IllegalArgumentException
+     *           if defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           if there is no active section
+     */
+    protected <T> T getValue(String key, String comment, T defaultVal, RestartReqs req, Bound<? extends Number> bound) {
+        Property prop = getProperty(key, defaultVal, req);
+        prop.comment = comment;
+
+        return getValue(prop, defaultVal, bound);
+    }
+
+    /**
+     * Gets a value from a property
+     *
+     * @param prop
+     *          Property to get value from
+     * @param defaultVal
+     *          Default value so a new property can be created
+     *
+     * @throws IllegalArgumentException
+     *           if defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           if there is no active section
+     */
+    protected <T> T getValue(Property prop, T defaultVal) {
+        return getValue(prop, defaultVal, null);
+    }
+
+    /**
+     * Gets a value from a property
+     *
+     * @param prop
+     *          Property to get value from
+     * @param defaultVal
+     *          Default value so a new property can be created
+     * @param bound
+     *          The bounds to set on this property
+     *
+     * @throws IllegalArgumentException
+     *           if defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           if there is no active section
+     */
+    @SuppressWarnings("unchecked")
+    // we check type of defaultVal but compiler still complains about a cast to T
+    protected <T> T getValue(Property prop, T defaultVal, Bound<? extends Number> bound) {
+        checkInitialized();
+
+        if (bound != null) {
+            setBounds(prop, bound);
+        } else {
+            bound = Bound.MAX_BOUND;
+        }
+
+        addCommentDetails(prop, bound);
+
+        if (defaultVal instanceof Integer) {
+            Bound<Integer> b = Bound.of(bound.min.intValue(), bound.max.intValue());
+            return (T) boundValue(prop, b, (Integer) defaultVal);
+        }
+        if (defaultVal instanceof Float) {
+            Bound<Float> b = Bound.of(bound.min.floatValue(), bound.max.floatValue());
+            return (T) boundValue(prop, b, (Float) defaultVal);
+        }
+        if (defaultVal instanceof Double) {
+            Bound<Double> b = Bound.of(bound.min.doubleValue(), bound.max.doubleValue());
+            return (T) boundValue(prop, b, (Double) defaultVal);
+        }
+        if (defaultVal instanceof Boolean) {
+            return (T) Boolean.valueOf(prop.getBoolean());
+        }
+        if (defaultVal instanceof int[]) {
+            return (T) prop.getIntList();
+        }
+        if (defaultVal instanceof String) {
+            return (T) prop.getString();
+        }
+        if (defaultVal instanceof String[]) {
+            return (T) prop.getStringList();
+        }
+
+        throw new IllegalArgumentException("default value is not a config value type.");
+    }
+
+    static void setBounds(Property prop, Bound<?> bound) throws IllegalArgumentException {
+        if (bound.equals(Bound.MAX_BOUND)) {
+            return;
+        }
+        if (prop.getType() == Type.INTEGER) {
+            Bound<Integer> b = Bound.of(bound.min.intValue(), bound.max.intValue());
+            prop.setMinValue(b.min);
+            prop.setMaxValue(b.max);
+        } else if (prop.getType() == Type.DOUBLE) {
+            Bound<Double> b = Bound.of(bound.min.doubleValue(), bound.max.doubleValue());
+            prop.setMinValue(b.min);
+            prop.setMaxValue(b.max);
+        } else {
+            throw new IllegalArgumentException(String.format("A mod tried to set bounds %s on a property that was not either of Integer of Double type.", bound));
+        }
+    }
+
+    static int[] boundIntArr(Property prop, Bound<Integer> bound) {
+        int[] prev = prop.getIntList();
+        int[] res = new int[prev.length];
+        for (int i = 0; i < prev.length; i++) {
+            res[i] = bound.clamp(prev[i]);
+        }
+        prop.set(res);
+        return res;
+    }
+
+    static double[] boundDoubleArr(Property prop, Bound<Double> bound) {
+        double[] prev = prop.getDoubleList();
+        double[] res = new double[prev.length];
+        for (int i = 0; i < prev.length; i++) {
+            res[i] = bound.clamp(prev[i]);
+        }
+        prop.set(res);
+        return res;
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T extends Number & Comparable<T>> T boundValue(Property prop, Bound<T> bound, T defVal) throws IllegalArgumentException {
+        Object b = (Object) bound;
+        if (defVal instanceof Integer) {
+            return (T) boundInt(prop, (Bound<Integer>) b);
+        }
+        if (defVal instanceof Double) {
+            return (T) boundDouble(prop, (Bound<Double>) b);
+        }
+        if (defVal instanceof Float) {
+            return (T) boundFloat(prop, (Bound<Float>) b);
+        }
+        throw new IllegalArgumentException(bound.min.getClass().getName() + " is not a valid config type.");
+    }
+
+    private static Integer boundInt(Property prop, Bound<Integer> bound) {
+        prop.set(bound.clamp(prop.getInt()));
+        return Integer.valueOf(prop.getInt());
+    }
+
+    private static Double boundDouble(Property prop, Bound<Double> bound) {
+        prop.set(bound.clamp(prop.getDouble()));
+        return Double.valueOf(prop.getDouble());
+    }
+
+    private static Float boundFloat(Property prop, Bound<Float> bound) {
+        return boundDouble(prop, Bound.of(bound.min.doubleValue(), bound.max.doubleValue())).floatValue();
+    }
+    static void addCommentDetails(Property prop, Bound<?> bound) {
+        prop.comment += (prop.comment.isEmpty() ? "" : "\n");
+        if (bound.equals(Bound.MAX_BOUND)) {
+            prop.comment += StatCollector.translateToLocalFormatted("default", prop.isList() ? Arrays.toString(prop.getDefaults()) : prop.getDefault());
+        } else {
+            boolean minIsInt = bound.min.doubleValue() == bound.min.intValue();
+            boolean maxIsInt = bound.max.doubleValue() == bound.max.intValue();
+            prop.comment += StatCollector.translateToLocalFormatted("defaultNumeric", minIsInt ? bound.min.intValue() : bound.min, maxIsInt ? bound.max.intValue() : bound.max,
+                    prop.isList() ? Arrays.toString(prop.getDefaults()) : prop.getDefault());
+        }
+    }
+    /**
+     * Gets a property from this config handler
+     *
+     * @param key
+     *          name of the key for this property
+     * @param defaultVal
+     *          default value so a new property can be created
+     * @return The property in the config
+     *
+     * @throws IllegalArgumentException
+     *           if defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           if there is no active section
+     */
+    protected <T> Property getProperty(String key, T defaultVal) {
+        return getProperty(key, defaultVal, RestartReqs.NONE);
+    }
+
+    /**
+     * Gets a property from this config handler
+     *
+     * @param key
+     *          name of the key for this property
+     * @param defaultVal
+     *          default value so a new property can be created
+     * @return The property in the config
+     *
+     * @throws IllegalArgumentException
+     *           if defaultVal is not a valid property type
+     * @throws IllegalStateException
+     *           if there is no active section
+     */
+    protected <T> Property getProperty(String key, T defaultVal, RestartReqs req) {
+        checkInitialized();
+        Section section = activeSection;
+        Property prop = null;
+
+        // @formatter:off
+        // same logic as above method, mostly
+        if (defaultVal instanceof Integer)
+        {
+            prop = config.get(section.name, key, (Integer) defaultVal);
+        }
+        if (defaultVal instanceof Boolean)
+        {
+            prop = config.get(section.name, key, (Boolean) defaultVal);
+        }
+        if (defaultVal instanceof int[])
+        {
+            prop = config.get(section.name, key, (int[]) defaultVal);
+        }
+        if (defaultVal instanceof String)
+        {
+            prop = config.get(section.name, key, (String) defaultVal);
+        }
+        if (defaultVal instanceof String[])
+        {
+            prop = config.get(section.name, key, (String[]) defaultVal);
+        }
+        // @formatter:on
+
+        if (defaultVal instanceof Float || defaultVal instanceof Double) {
+            double val = defaultVal instanceof Float ? ((Float) defaultVal).doubleValue() : ((Double) defaultVal).doubleValue();
+            prop = config.get(section.name, key, val);
+        }
+
+        if (prop != null) {
+            return req.apply(prop);
+        }
+
+        throw new IllegalArgumentException("default value is not a config value type.");
+    }
+
+    /**
+     * @return If this config handler should recieve {@link #initHook()} and
+     *         {@link #postInitHook()} during config reload events. If this
+     *         returns false, these methods will only be called on load.
+     *         <p>
+     *         Defaults to false.
+     */
+    protected boolean shouldHookOnReload() {
+        return true;
+    }
+
+  /* IConfigHandler impl */
+
+    @Override
+    public void initHook() {
+    }
+
+    @Override
+    public void postInitHook() {
+    }
+
 }

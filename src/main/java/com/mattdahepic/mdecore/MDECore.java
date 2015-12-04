@@ -3,7 +3,6 @@ package com.mattdahepic.mdecore;
 import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.config.MDEConfig;
-import com.mattdahepic.mdecore.config.sync.ConfigSyncable;
 import com.mattdahepic.mdecore.helpers.EnvironmentHelper;
 import com.mattdahepic.mdecore.network.PacketHandler;
 import com.mattdahepic.mdecore.network.StatReporter;
