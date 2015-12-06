@@ -1,6 +1,5 @@
 package com.mattdahepic.mdecore.config.sync;
 
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -8,7 +7,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,16 +58,16 @@ public abstract class ConfigSyncable implements IConfigHandler {
             return prop;
         }
     }
-    String configFileName;
-    Configuration config;
+
+    public String configFileName;
+    public Configuration config;
 
     private List<Section> sections = new ArrayList<Section>();
     private Section activeSection = null;
 
     protected ConfigSyncable(String configName) {
-        this.configFileName = configName;
+        configFileName = configName;
         FMLCommonHandler.instance().bus().register(this);
-        EnderCore.instance.configs.add(this);
     }
     @Override
     public final void initialize(FMLPreInitializationEvent e) {
@@ -425,11 +423,11 @@ public abstract class ConfigSyncable implements IConfigHandler {
         if (bound.equals(Bound.MAX_BOUND)) {
             return;
         }
-        if (prop.getType() == Type.INTEGER) {
+        if (prop.getType() == Property.Type.INTEGER) {
             Bound<Integer> b = Bound.of(bound.min.intValue(), bound.max.intValue());
             prop.setMinValue(b.min);
             prop.setMaxValue(b.max);
-        } else if (prop.getType() == Type.DOUBLE) {
+        } else if (prop.getType() == Property.Type.DOUBLE) {
             Bound<Double> b = Bound.of(bound.min.doubleValue(), bound.max.doubleValue());
             prop.setMinValue(b.min);
             prop.setMaxValue(b.max);
@@ -487,14 +485,13 @@ public abstract class ConfigSyncable implements IConfigHandler {
         return boundDouble(prop, Bound.of(bound.min.doubleValue(), bound.max.doubleValue())).floatValue();
     }
     static void addCommentDetails(Property prop, Bound<?> bound) {
-        prop.comment += (prop.comment.isEmpty() ? "" : "\n");
-        if (bound.equals(Bound.MAX_BOUND)) {
-            prop.comment += StatCollector.translateToLocalFormatted("default", prop.isList() ? Arrays.toString(prop.getDefaults()) : prop.getDefault());
-        } else {
-            boolean minIsInt = bound.min.doubleValue() == bound.min.intValue();
-            boolean maxIsInt = bound.max.doubleValue() == bound.max.intValue();
-            prop.comment += StatCollector.translateToLocalFormatted("defaultNumeric", minIsInt ? bound.min.intValue() : bound.min, maxIsInt ? bound.max.intValue() : bound.max,
-                    prop.isList() ? Arrays.toString(prop.getDefaults()) : prop.getDefault());
+        if (!bound.equals(Bound.MAX_BOUND)) { //has a bound
+            prop.comment += String.format("\nRange: [%s - %s]", bound.getMin(), bound.getMax());
+        }
+    }
+    private void checkInitialized() {
+        if (activeSection == null) {
+            throw new IllegalStateException("No section is active!");
         }
     }
     /**
@@ -569,26 +566,4 @@ public abstract class ConfigSyncable implements IConfigHandler {
 
         throw new IllegalArgumentException("default value is not a config value type.");
     }
-
-    /**
-     * @return If this config handler should recieve {@link #initHook()} and
-     *         {@link #postInitHook()} during config reload events. If this
-     *         returns false, these methods will only be called on load.
-     *         <p>
-     *         Defaults to false.
-     */
-    protected boolean shouldHookOnReload() {
-        return true;
-    }
-
-  /* IConfigHandler impl */
-
-    @Override
-    public void initHook() {
-    }
-
-    @Override
-    public void postInitHook() {
-    }
-
 }

@@ -36,8 +36,6 @@ public class MDECore {
     @Mod.Instance(MDECore.MODID)
     public static MDECore instance;
 
-    public static ConfigSyncable config;
-
     public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.airColor);
 
     @Mod.EventHandler
@@ -46,11 +44,10 @@ public class MDECore {
     }
 
     @Mod.EventHandler
-    public void preInit (FMLPreInitializationEvent event) {
+    public void preInit (FMLPreInitializationEvent e) {
         FMLCommonHandler.instance().bus().register(instance);
-        //MDEConfig.load(MODID, event, new MDEConfig());
-        config = new MDEConfig(MDEConfig.class,MODID,event);
-        LoginMessage.init(event.getModConfigurationDirectory());
+        MDEConfig.instance(MODID).initialize(e);
+        LoginMessage.init(e.getModConfigurationDirectory());
         WaterproofRedstone.setup();
     }
     @Mod.EventHandler

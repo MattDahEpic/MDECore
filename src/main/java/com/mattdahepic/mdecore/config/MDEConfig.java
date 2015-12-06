@@ -1,11 +1,13 @@
 package com.mattdahepic.mdecore.config;
 
-import com.mattdahepic.mdecore.MDECore;
 import com.mattdahepic.mdecore.config.annot.Comment;
 import com.mattdahepic.mdecore.config.annot.NoSync;
 import com.mattdahepic.mdecore.config.annot.RestartReq;
 import com.mattdahepic.mdecore.config.sync.ConfigProcessor;
 import com.mattdahepic.mdecore.config.sync.ConfigSyncable;
+import net.minecraftforge.common.config.ConfigCategory;
+
+import java.util.List;
 
 public class MDEConfig extends ConfigSyncable {
     private static final String CATEGORY_TWEAKS = "tweaks";
@@ -41,18 +43,42 @@ public class MDEConfig extends ConfigSyncable {
     @NoSync
     public static boolean debugLogging = false;
 
-    protected MDEConfig() {
-        super(MDECore.MODID);
+    private static ConfigSyncable INSTANCE;
+    public static ConfigSyncable instance(String configName) {
+        if (INSTANCE == null) {
+            INSTANCE = new MDEConfig(configName);
+        }
+        return INSTANCE;
+    }
+
+    public static ConfigProcessor processor;
+
+    protected MDEConfig(String configName) {
+        super(configName);
     }
     @Override
     public void init() {
         addSection(CATEGORY_TWEAKS);
         addSection(CATEGORY_DEBUG);
-        processor = new ConfigProcessor(getClass(), this, this);
+        processor = new ConfigProcessor(getClass(), this.config, this.configFileName);
         processor.process(true);
     }
     @Override
-    protected void reloadIngameConfigs() {}
+    protected void reloadIngameConfigs() {
+
+    }
     @Override
     protected void reloadNonIngameConfigs() {}
+    @Override
+    public String getConfigName() {
+        return this.configFileName;
+    }
+    @Override
+    public List<Section> getSections() {
+        return this.getSections();
+    }
+    @Override
+    public ConfigCategory getCategory(String name) {
+        return this.getCategory(name);
+    }
 }
