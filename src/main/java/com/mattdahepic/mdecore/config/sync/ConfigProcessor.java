@@ -236,13 +236,13 @@ public class ConfigProcessor {
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        MDECore.logger.info("Sending server configs to client for {}", configs.getName());
+        MDECore.logger.info(String.format("Sending server configs to client for %s", configFileName+".cfg"));
         PacketHandler.net.sendTo(new PacketConfigSync(this), (EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent
     public void onPlayerLogout(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         syncTo(originalValues);
-        MDECore.logger.info("Reset configs to client values for {}", configs.getName());
+        MDECore.logger.info(String.format("Reset configs to client values for %s", configFileName+".cfg"));
     }
 }

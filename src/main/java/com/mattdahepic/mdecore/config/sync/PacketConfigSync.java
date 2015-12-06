@@ -17,6 +17,7 @@ public class PacketConfigSync implements IMessage {
     //thanks to EnderCore
     private Map<String,Object> configValues;
     private String configName;
+    public PacketConfigSync () {}
     public PacketConfigSync (ConfigProcessor toSync) {
         this.configValues = toSync.configValues;
         this.configName = toSync.configFileName;
