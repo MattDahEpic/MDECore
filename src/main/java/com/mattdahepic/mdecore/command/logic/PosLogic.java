@@ -37,7 +37,7 @@ public class PosLogic implements ICommandLogic {
             } catch (PlayerNotFoundException e) {
                 throw new CommandException("Specified player does not exist!");
             }
-            String playerName = senderPlayer.equals(targetPlayer) ? "You are" : (targetPlayer.getCommandSenderName() + "is");
+            String playerName = senderPlayer.equals(targetPlayer) ? "You are" : (targetPlayer.getDisplayName() + "is");
             int[] pos = PlayerHelper.getPlayerPosAsIntegerArray(targetPlayer);
             sender.addChatMessage(new ChatComponentText(playerName + " at the coordinates ("+pos[0]+","+pos[1]+","+pos[2]+") in the dimension "+targetPlayer.dimension+"."));
         } else {
