@@ -6,7 +6,6 @@ import com.dmurph.tracking.system.AWTSystemPopulator;
 import com.mattdahepic.mdecore.MDECore;
 import com.mattdahepic.mdecore.config.MDEConfig;
 import com.mattdahepic.mdecore.helpers.EnvironmentHelper;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 

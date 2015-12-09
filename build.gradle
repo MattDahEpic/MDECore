@@ -11,7 +11,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.8.8-1.6"
+version = "1.8.8-1.6.1"
 group = "com.mattdahepic.mdecore" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mdecore"
 

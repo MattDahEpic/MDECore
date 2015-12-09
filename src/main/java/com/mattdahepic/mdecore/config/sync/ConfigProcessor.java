@@ -236,7 +236,7 @@ public class ConfigProcessor {
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        MDECore.logger.info(String.format("Sending server configs to client for %s", configFileName+".cfg"));
+        MDECore.logger.info(String.format("Sending server configs to client %s for %s", event.player.getDisplayNameString(), configFileName+".cfg"));
         PacketHandler.net.sendTo(new PacketConfigSync(this), (EntityPlayerMP) event.player);
     }
 

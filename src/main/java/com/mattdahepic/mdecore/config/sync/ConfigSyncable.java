@@ -486,7 +486,11 @@ public abstract class ConfigSyncable implements IConfigHandler {
     }
     static void addCommentDetails(Property prop, Bound<?> bound) {
         if (!bound.equals(Bound.MAX_BOUND)) { //has a bound
-            prop.comment += String.format("\nRange: [%s - %s]", bound.getMin(), bound.getMax());
+            if (bound.min.doubleValue() == bound.min.intValue() && bound.max.intValue() == bound.max.intValue()) { //if bound is integer
+                prop.comment += String.format("\nRange: [%s - %s]", bound.min.intValue(), bound.max.intValue());
+            } else {
+                prop.comment += String.format("\nRange: [%s - %s]", bound.min, bound.max);
+            }
         }
     }
     private void checkInitialized() {
