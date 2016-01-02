@@ -1,8 +1,11 @@
 package com.mattdahepic.mdecore.config.sync;
 
+import io.netty.buffer.ByteBuf;
+
 import com.google.common.base.Throwables;
 import com.mattdahepic.mdecore.MDECore;
-import io.netty.buffer.ByteBuf;
+import com.mattdahepic.mdecore.config.MDEConfig;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -66,7 +69,7 @@ public class PacketConfigSync implements IMessage {
         public PacketConfigSync onMessage(PacketConfigSync message, MessageContext ctx) {
             ConfigProcessor processor = ConfigProcessor.processorMap.get(message.configName);
             if (processor != null) {
-                MDECore.logger.info("Received config synchronization packet from server for config "+processor.configFileName+".cfg. Setting values accordingly...");
+                if (MDEConfig.debugLogging) MDECore.logger.info("Received config synchronization packet from server for config "+processor.configFileName+".cfg. Setting values accordingly...");
                 processor.syncTo(message.configValues);
                 MinecraftForge.EVENT_BUS.post(new ConfigSyncEvent(message.configName));
             }
