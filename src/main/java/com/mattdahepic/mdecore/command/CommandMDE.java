@@ -1,10 +1,8 @@
 package com.mattdahepic.mdecore.command;
 
 import com.mattdahepic.mdecore.command.logic.*;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandNotFoundException;
-import net.minecraft.command.ICommandSender;
+
+import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -25,6 +23,7 @@ public class CommandMDE extends CommandBase {
         registerCommandLogic(KillAllLogic.instance);
         registerCommandLogic(PregenLogic.instance);
         registerCommandLogic(RegenLogic.instance);
+        registerCommandLogic(TickrateLogic.instance);
     }
 
     public static void init(FMLServerStartingEvent e) {

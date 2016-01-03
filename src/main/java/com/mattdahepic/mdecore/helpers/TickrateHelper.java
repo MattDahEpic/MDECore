@@ -3,7 +3,7 @@ package com.mattdahepic.mdecore.helpers;
 import com.mattdahepic.mdecore.MDECore;
 import com.mattdahepic.mdecore.config.MDEConfig;
 import com.mattdahepic.mdecore.network.PacketHandler;
-import com.mattdahepic.mdecore.tickrate.TickratePacket;
+import com.mattdahepic.mdecore.network.TickratePacket;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,8 +55,14 @@ public class TickrateHelper {
             if (p != null && p != Minecraft.getMinecraft().thePlayer) return; //sanity
             instance().updateClientTickrate(tickrate);
         } else { //server
-            PacketHandler.net.sendTo(new TickratePacket.TickrateMessage(tickrate),(EntityPlayerMP)p);
+            PacketHandler.net.sendTo(new TickratePacket.TickrateMessage(tickrate), (EntityPlayerMP) p);
         }
+    }
+    public static void resetClientTickrate () {
+        setClientTickrate(null,DEFAULT_TICKRATE);
+    }
+    public static void setClientToCurrentServerTickrate (EntityPlayer p) {
+        setClientTickrate(p,getServerTickrate());
     }
     public static float getClientTickrate () {
         return TICKS_PER_SECOND;

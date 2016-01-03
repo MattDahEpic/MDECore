@@ -1,4 +1,4 @@
-package com.mattdahepic.mdecore.tickrate;
+package com.mattdahepic.mdecore.asm;
 
 import com.mattdahepic.mdecore.MDECore;
 
@@ -29,7 +29,7 @@ public class TickrateTransformer implements IClassTransformer {
                             if (node instanceof LdcInsnNode) {
                                 LdcInsnNode ldcNode = (LdcInsnNode)node;
                                 if (ldcNode.cst instanceof Long && (Long)ldcNode.cst == 50L) {
-                                    list.add(new FieldInsnNode(Opcodes.GETSTATIC,"com/mattdahepic/mdecore/helper/TickrateHelper","MILISECONDS_PER_TICK","J"));
+                                    list.add(new FieldInsnNode(Opcodes.GETSTATIC,"com/mattdahepic/mdecore/helpers/TickrateHelper","MILISECONDS_PER_TICK","J"));
                                     continue;
                                 }
                             }

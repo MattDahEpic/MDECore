@@ -4,6 +4,7 @@ import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.config.MDEConfig;
 import com.mattdahepic.mdecore.helpers.EnvironmentHelper;
+import com.mattdahepic.mdecore.helpers.TickrateHelper;
 import com.mattdahepic.mdecore.network.PacketHandler;
 import com.mattdahepic.mdecore.network.StatReporter;
 import com.mattdahepic.mdecore.tweaks.DaySleepToNight;
@@ -16,38 +17,24 @@ import com.mattdahepic.mdecore.world.TickHandlerWorld;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.DummyModContainer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-
-//@Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,dependencies = MDECore.DEPENDENCIES,acceptedMinecraftVersions = "1.8.8")
+@Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,dependencies = MDECore.DEPENDENCIES,acceptedMinecraftVersions = "1.8.8")
 public class MDECore extends DummyModContainer {
     public static final String MODID = "mdecore";
     public static final String VERSION = "@VERSION@";
     public static final String NAME = "MattDahEpic Core";
     public static final String UPDATE_URL = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+ MinecraftForge.MC_VERSION+"/"+MODID+".txt";
     public static final String DEPENDENCIES = "required-after:Forge@[1.8.8-11.14.4.1576,);";
-
-    private static ModMetadata createMetadata () {
-        ModMetadata meta = new ModMetadata();
-        meta.modId = MODID;
-        meta.name = NAME;
-        meta.version = VERSION;
-        meta.authorList = Arrays.asList("MattDahEpic");
-        meta.description = "Base Mod for all MattDahEpic mods.";
-        meta.credits = "MattDahEpic for being awesome, lots of other people for having open source mods that I use stuff from.";
-        return meta;
-    }
-
-    public MDECore () {
-        super(createMetadata());
-    }
 
     public static final Logger logger = LogManager.getLogger(MODID);
 
@@ -88,5 +75,10 @@ public class MDECore extends DummyModContainer {
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent event) {
         UpdateChecker.printMessageToPlayer(MODID, event.player);
         LoginMessage.tell(event.player);
+        TickrateHelper.setClientToCurrentServerTickrate(event.player);
+    }
+    @SubscribeEvent
+    public void clientLeftServer (FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
+        TickrateHelper.resetClientTickrate();
     }
 }

@@ -1,4 +1,4 @@
-package com.mattdahepic.mdecore.tickrate;
+package com.mattdahepic.mdecore.network;
 
 import io.netty.buffer.ByteBuf;
 
@@ -16,7 +16,7 @@ public class TickratePacket implements IMessageHandler<TickratePacket.TickrateMe
     }
     public static class TickrateMessage implements IMessage {
         private float tickrate;
-        private TickrateMessage () {}
+        public TickrateMessage () {}
         public TickrateMessage (float tickrate) {
             this.tickrate = tickrate;
         }

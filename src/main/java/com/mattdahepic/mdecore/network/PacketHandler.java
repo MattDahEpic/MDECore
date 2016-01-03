@@ -2,7 +2,6 @@ package com.mattdahepic.mdecore.network;
 
 import com.mattdahepic.mdecore.MDECore;
 import com.mattdahepic.mdecore.config.sync.PacketConfigSync;
-import com.mattdahepic.mdecore.tickrate.TickratePacket;
 
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;

@@ -33,32 +33,35 @@ public class TickrateLogic implements ICommandLogic {
     }
     @Override
     public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
-        if (args.length  == 1) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA+"Client: "+EnumChatFormatting.YELLOW+TickrateHelper.getClientTickrate()+"tps"+EnumChatFormatting.WHITE+","+EnumChatFormatting.AQUA+"Server: "+EnumChatFormatting.YELLOW+TickrateHelper.getServerTickrate()+"tps"));
+        if (args.length == 1) {
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA + "Client: " + EnumChatFormatting.YELLOW + TickrateHelper.getClientTickrate() + "tps" + EnumChatFormatting.WHITE + " | " + EnumChatFormatting.AQUA + "Server: " + EnumChatFormatting.YELLOW + TickrateHelper.getServerTickrate() + "tps"));
+            return;
         }
         try {
             float inputTicks = Float.parseFloat(args[1]);
             if (!TickrateHelper.isTickrateValid(inputTicks)) {
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+"Invalid tickrate! Must be greater than 0."));
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Invalid tickrate! Must be greater than 0."));
                 return;
             }
-            if (args.length < 2 || args[2].equals("all")) {
+            if (args.length == 2 || args[2].equals("all")) {
                 TickrateHelper.setTickrate(inputTicks);
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN+"Tickrate changed to "+inputTicks+"tps."));
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Tickrate changed to " + inputTicks + "tps."));
             } else if (args[2].equals("server")) {
                 TickrateHelper.setServerTickrate(inputTicks);
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN+"Server tickrate changed to "+inputTicks+"tps."));
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Server tickrate changed to " + inputTicks + "tps."));
             } else if (args[2].equals("client")) {
                 TickrateHelper.setAllClientTickrate(inputTicks);
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN+"All connected players tickrate set to "+inputTicks+"tps."));
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "All connected players tickrate set to " + inputTicks + "tps."));
             } else {
                 EntityPlayer p = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(args[2]);
                 if (p == null) {
                     throw new PlayerNotFoundException();
                 }
-                TickrateHelper.setClientTickrate(p,inputTicks);
-                sender.addChatMessage(new ChatComponentText(p.getDisplayName()+"'s client tickrate set to "+inputTicks+"tps."));
+                TickrateHelper.setClientTickrate(p, inputTicks);
+                sender.addChatMessage(new ChatComponentText(p.getDisplayName() + "'s client tickrate set to " + inputTicks + "tps."));
             }
+        } catch (NumberFormatException ne) {
+            throw new CommandException("That's not a number! Try again.");
         } catch (Exception ex) {
             throw new CommandException("Something went wrong! Try again.");
         }
