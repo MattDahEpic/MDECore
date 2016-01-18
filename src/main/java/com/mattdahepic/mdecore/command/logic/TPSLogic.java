@@ -1,10 +1,9 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import com.mattdahepic.mdecore.helpers.TranslationHelper;
+
+import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TPSLogic implements ICommandLogic {
-    public static final String USAGE = "/mde tps [{o | a | <dimension>}]";
     public static TPSLogic instance = new TPSLogic();
 
     @Override
@@ -28,7 +26,7 @@ public class TPSLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return USAGE;
+        return TranslationHelper.getTranslatedString("mdecore.ocmmand.tps.usage");
     }
     @Override
     public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
@@ -37,20 +35,18 @@ public class TPSLogic implements ICommandLogic {
             double tps = getTps(null);
             double tickms = getTickMs(null);
 
-            sender.addChatMessage(new ChatComponentText("Overall: " + floatfmt.format(tps) + " TPS/" + floatfmt.format(tickms) + "MS ("
-                    + (int) (tps / 20.0D * 100.0D) + "%)"));
+            sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedStringFormatted("mdecore.command.tps.success.noargs.overall",floatfmt.format(tps),floatfmt.format(tickms),(int)(tps/20D*100D))));
 
             for (World world : MinecraftServer.getServer().worldServers) {
                 tps = getTps(world);
                 tickms = getTickMs(world);
-                sender.addChatMessage(new ChatComponentText(world.provider.getDimensionName() + " [" + world.provider.getDimensionId() + "]: "
-                        + floatfmt.format(tps) + " TPS/" + floatfmt.format(tickms) + "MS (" + (int) (tps / 20.0D * 100.0D) + "%)"));
+                sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedStringFormatted("mdecore.command.tps.success.noargs.world",world.provider.getDimensionName(),world.provider.getDimensionId(),floatfmt.format(tps),floatfmt.format(tickms),(int)(tps/20D*100D))));
             }
         } else if (args[1].toLowerCase().charAt(0) == 'o') { //overall
             double tickms = getTickMs(null);
             double tps = getTps(null);
 
-            sender.addChatMessage(new ChatComponentText("Overall server tick"));
+            sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedString("mdecore.command.tps.success.overall.title")));
             sender.addChatMessage(new ChatComponentText("TPS: " + floatfmt.format(tps) + " TPS of " + floatfmt.format(20L) + " TPS ("
                     + (int) (tps / 20.0D * 100.0D) + "%)"));
             sender.addChatMessage(new ChatComponentText("Tick time: " + floatfmt.format(tickms) + " ms of " + floatfmt.format(50L) + " ms"));

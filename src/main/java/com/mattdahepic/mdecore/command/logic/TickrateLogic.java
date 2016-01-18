@@ -2,6 +2,7 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TickrateHelper;
+import com.mattdahepic.mdecore.helpers.TranslationHelper;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TickrateLogic implements ICommandLogic {
-    public static final String USAGE = "/mde tickrate <tickrate> <all|server|client|player name>";
     public static TickrateLogic instance = new TickrateLogic();
 
     @Override
@@ -29,41 +29,41 @@ public class TickrateLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return USAGE;
+        return TranslationHelper.getTranslatedString("mdecore.command.tickrate.usage");
     }
     @Override
     public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 1) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA + "Client: " + EnumChatFormatting.YELLOW + TickrateHelper.getClientTickrate() + "tps" + EnumChatFormatting.WHITE + " | " + EnumChatFormatting.AQUA + "Server: " + EnumChatFormatting.YELLOW + TickrateHelper.getServerTickrate() + "tps"));
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW+TranslationHelper.getTranslatedStringFormatted("mdecore.command.tickrate.noargs", TickrateHelper.getClientTickrate(), TickrateHelper.getServerTickrate())));
             return;
         }
         try {
             float inputTicks = Float.parseFloat(args[1]);
             if (!TickrateHelper.isTickrateValid(inputTicks)) {
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Invalid tickrate! Must be greater than 0."));
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + TranslationHelper.getTranslatedString("mdecore.command.tickrate.failure.invalidtickrate")));
                 return;
             }
             if (args.length == 2 || args[2].equals("all")) {
                 TickrateHelper.setTickrate(inputTicks);
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Tickrate changed to " + inputTicks + "tps."));
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + TranslationHelper.getTranslatedStringFormatted("mdecore.command.tickrate.success.all",inputTicks)));
             } else if (args[2].equals("server")) {
                 TickrateHelper.setServerTickrate(inputTicks);
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Server tickrate changed to " + inputTicks + "tps."));
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + TranslationHelper.getTranslatedStringFormatted("mdecore.command.tickrate.success.server",inputTicks)));
             } else if (args[2].equals("client")) {
                 TickrateHelper.setAllClientTickrate(inputTicks);
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "All connected players tickrate set to " + inputTicks + "tps."));
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + TranslationHelper.getTranslatedStringFormatted("mdecore.command.tickrate.success.client",inputTicks)));
             } else {
                 EntityPlayer p = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(args[2]);
                 if (p == null) {
                     throw new PlayerNotFoundException();
                 }
                 TickrateHelper.setClientTickrate(p, inputTicks);
-                sender.addChatMessage(new ChatComponentText(p.getDisplayName() + "'s client tickrate set to " + inputTicks + "tps."));
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN+TranslationHelper.getTranslatedStringFormatted("mdecore.command.tickrate.success.name",p.getName(),inputTicks)));
             }
         } catch (NumberFormatException ne) {
-            throw new CommandException("That's not a number! Try again.");
+            throw new CommandException(TranslationHelper.getTranslatedString("mdecore.numberformatex"));
         } catch (Exception ex) {
-            throw new CommandException("Something went wrong! Try again.");
+            throw new CommandException(TranslationHelper.getTranslatedString("mdecore.commanderror"));
         }
 
     }

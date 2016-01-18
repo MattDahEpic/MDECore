@@ -2,6 +2,8 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.command.ICommandLogic;
+import com.mattdahepic.mdecore.helpers.TranslationHelper;
+
 import net.minecraft.command.*;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -12,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class HelpLogic implements ICommandLogic {
-    public static final String USAGE = "/mde help [command]";
     public static HelpLogic instance = new HelpLogic();
 
     @Override
@@ -25,13 +26,13 @@ public class HelpLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return USAGE;
+        return TranslationHelper.getTranslatedString("mdecore.command.help.usage");
     }
     @Override
     public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
         switch (args.length) {
             case 1:
-                StringBuilder output = new StringBuilder("Available commands are: ");
+                StringBuilder output = new StringBuilder(TranslationHelper.getTranslatedString("mdecore.command.help.success.list.begin")+" ");
                 List<String> commandList = new ArrayList<String>(CommandMDE.getCommandList());
                 Collections.sort(commandList,String.CASE_INSENSITIVE_ORDER);
 
@@ -46,7 +47,7 @@ public class HelpLogic implements ICommandLogic {
                 if (commands > 0) output.delete(output.length() - 2, output.length()); //delete final comma
                 String name = commandList.get(commandList.size() - 1);
                 if (CommandMDE.canUseCommand(sender, CommandMDE.getCommandPermission(name), name)) { //final command and formatting
-                    if (commands > 0) output.append(" and ");
+                    if (commands > 0) output.append(" "+TranslationHelper.getTranslatedString("mdecore.command.help.success.list.end")+" ");
                     output.append("/mde "+EnumChatFormatting.YELLOW+name+EnumChatFormatting.WHITE+".");
                 }
                 sender.addChatMessage(new ChatComponentText(output.toString()));
@@ -54,10 +55,10 @@ public class HelpLogic implements ICommandLogic {
             case 2:
                 String commandName = args[1];
                 if (!CommandMDE.getCommandExists(commandName)) throw new CommandNotFoundException();
-                sender.addChatMessage(new ChatComponentText("Usage:\n"+CommandMDE.getCommandSyntax(commandName)));
+                sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedStringFormatted("mdecore.command.help.success.usage", CommandMDE.getCommandSyntax(commandName))));
                 break;
             default:
-                throw new WrongUsageException(USAGE);
+                throw new WrongUsageException(getCommandSyntax());
         }
     }
     @Override

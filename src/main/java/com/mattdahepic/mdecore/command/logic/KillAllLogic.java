@@ -1,6 +1,8 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
+import com.mattdahepic.mdecore.helpers.TranslationHelper;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -12,13 +14,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldServer;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class KillAllLogic implements ICommandLogic {
-    public static final String USAGE = "/mde killall [partial name]";
     public static KillAllLogic instance = new KillAllLogic();
 
     @Override
@@ -31,7 +29,7 @@ public class KillAllLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return USAGE;
+        return TranslationHelper.getTranslatedString("mdecore.command.killall.usage");
     }
     @Override
     public void handleCommand (ICommandSender sender, String[] args) {
@@ -45,7 +43,7 @@ public class KillAllLogic implements ICommandLogic {
         }
         for (WorldServer world : MinecraftServer.getServer().worldServers) {
             synchronized (world) {
-                for (Entity entity : (List<Entity>)world.loadedEntityList) {
+                for (Entity entity : world.loadedEntityList) {
                     if (entity != null && !(entity instanceof EntityPlayer)) { //does it exist and is it not a player?
                         String entityName = EntityList.getEntityString(entity);
                         if (target != null || all) {
@@ -70,9 +68,9 @@ public class KillAllLogic implements ICommandLogic {
                 finalNames = finalNames + EnumChatFormatting.RED + names.get(name) + EnumChatFormatting.WHITE + "x" + EnumChatFormatting.YELLOW + name + EnumChatFormatting.WHITE + ", ";
             }
             finalNames = finalNames.substring(0, finalNames.length() - 2);
-            sender.addChatMessage(new ChatComponentText(String.format((target != null ? "Removed %d entities. (%s)" : "Removed %d hostile mobs. (%s)"), killCount, finalNames)));
+            sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedStringFormatted((target != null ? "mdecore.command.killall.success.normal" : "mdecore.command.killall.success.hostile"), killCount, finalNames)));
         } else {
-            sender.addChatMessage(new ChatComponentText(target != null ? "No matching entities found!" : "No hostile mobs found!"));
+            sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedString(target != null ? "mdecore.command.killall.failure.normal" : "mdecore.command.killall.failure.hostile")));
         }
     }
     @Override

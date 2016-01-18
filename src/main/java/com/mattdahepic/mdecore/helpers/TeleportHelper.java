@@ -4,6 +4,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.potion.PotionEffect;
@@ -81,5 +82,8 @@ public class TeleportHelper {
         try {
             CommandBase.getCommandSenderAsPlayer(sender).setPositionAndUpdate(spawnX, spawnY, spawnZ);
         } catch (Exception e) {}
+    }
+    public static boolean isSafeLandingPosition (World world, BlockPos pos) {
+        return world.getBlockState(pos).getBlock() == Blocks.air && world.getBlockState(pos.up()).getBlock() == Blocks.air; //FIXME: check below and around
     }
 }

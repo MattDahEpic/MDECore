@@ -34,7 +34,7 @@ public class MDECore extends DummyModContainer {
     public static final String VERSION = "@VERSION@";
     public static final String NAME = "MattDahEpic Core";
     public static final String UPDATE_URL = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+ MinecraftForge.MC_VERSION+"/"+MODID+".txt";
-    public static final String DEPENDENCIES = "required-after:Forge@[1.8.8-11.14.4.1576,);";
+    public static final String DEPENDENCIES = "required-after:Forge@[11.14.4.1576,);";
 
     public static final Logger logger = LogManager.getLogger(MODID);
 

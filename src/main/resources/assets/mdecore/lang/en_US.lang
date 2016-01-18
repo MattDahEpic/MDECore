@@ -1,0 +1,40 @@
+#Tickrate
+mdecore.command.tickrate.usage=/mde tickrate <tickrate> <all|server|client|player name>
+mdecore.command.tickrate.noargs=Client: %dtps | Server: %dtps
+mdecore.command.tickrate.success.all=Tickrate changed to %dtps.
+mdecore.command.tickrate.success.server=Server tickrate changed to %dtps.
+mdecore.command.tickrate.success.client=All connected players tickrate set to %dtps.
+mdecore.command.tickrate.success.name=%s's client tickrate set to %dtps.
+mdecore.command.tickrate.failure.invalidtickrate=Invalid tickrate! Must be greater than 0.
+
+#Killall
+mdecore.command.killall.usage=/mde killall [partial name]
+mdecore.command.killall.success.normal=Removed %d entities. (%s)
+mdecore.command.killall.success.hostile=Removed %d hostile mobs. (%s)
+mdecore.command.killall.failure.normal=No matching entities found!
+mdecore.command.killall.failure.hostile=No hostile mobs found!
+
+#Help
+mdecore.command.help.usage=/mde help [command]
+mdecore.command.help.success.usage=Usage:\n %s
+mdecore.command.help.success.list.begin=Available commands are:
+mdecore.command.help.success.list.end=and
+
+#Pos
+mdecore.command.pos.usage=/mde pos <player>
+mdecore.command.pos.success.player.self=You are
+mdecore.command.pos.success.player.other=%s is
+mdecore.command.pos.success=at the coordinates (%d, %d, %d) in the dimension %d.
+
+#TPS
+mdecore.command.tps.usage=/mde tps [{o | a | <dimension>}]
+mdecore.command.tps.success.noargs.overall=Overall: %d TPS/%dMS (%d%)
+mdecore.command.tps.success.noargs.world=%s [%f]: %d TPS/%dMS (%d%)
+mdecore.command.tps.success.overall.title=Overall server tick
+mdecore.command.tps.success.overall.tps=
+mdecore.command.tps.success.overall.time=
+
+#Errors
+mdecore.numberformatex=That's not a number! Try again.
+mdecore.commanderror=Something went wrong! Try again.
+mdecore.playernotfound=Specified player does not exist!
