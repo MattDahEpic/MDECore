@@ -10,6 +10,7 @@ import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -84,6 +85,6 @@ public class TeleportHelper {
         } catch (Exception e) {}
     }
     public static boolean isSafeLandingPosition (World world, BlockPos pos) {
-        return world.getBlockState(pos).getBlock() == Blocks.air && world.getBlockState(pos.up()).getBlock() == Blocks.air; //FIXME: check below and around
+        return world.getBlockState(pos).getBlock() == Blocks.air && world.getBlockState(pos.up()).getBlock() == Blocks.air && world.isSideSolid(pos.down(), EnumFacing.UP);
     }
 }

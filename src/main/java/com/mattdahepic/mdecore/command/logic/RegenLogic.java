@@ -1,6 +1,8 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
+import com.mattdahepic.mdecore.helpers.TranslationHelper;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -15,7 +17,6 @@ import net.minecraft.world.chunk.IChunkProvider;
 import java.util.List;
 
 public class RegenLogic implements ICommandLogic {
-    public static final String USAGE = "/mde regen";
     public static RegenLogic instance = new RegenLogic();
 
     @Override
@@ -28,7 +29,7 @@ public class RegenLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return USAGE;
+        return TranslationHelper.getTranslatedString("mdecore.command.regen.usage");
     }
     @Override
     public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
@@ -58,10 +59,10 @@ public class RegenLogic implements ICommandLogic {
                     }
                     oldChunk.setTerrainPopulated(false);
                     chunkProviderGenerate.populate(chunkProviderGenerate, oldChunk.xPosition, oldChunk.zPosition);
-                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW+"Regeneration complete!"));
+                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW+TranslationHelper.getTranslatedString("mdecore.command.regen.success")));
                 }
             } catch (Exception e) {
-                throw new CommandException("Error occurred while regenerating chunk.");
+                throw new CommandException(TranslationHelper.getTranslatedString("mdecore.command.regen.failure"));
             }
         }
     }

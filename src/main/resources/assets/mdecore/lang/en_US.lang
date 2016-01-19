@@ -40,18 +40,25 @@ mdecore.command.tps.success.dimension.time=TPS: %d/%d TPS (%d%) - Tick: %d ms of
 mdecore.command.tps.success.dimension.entity=Entities: %d - Tile Entities: %d
 
 #Pregen
+mdecore.command.pregen.usage=/mde pregen {<user> <x chunk radius> <z chunk radius> | <x chunk start> <z chunk start> <x chunk end> <z chunk end>}
 
 #Regen
+mdecore.command.regen.usage=/mde regen
+mdecore.command.regen.success=Regeneration complete!
+mdecore.command.regen.failure=Error occurred while regenerating chunk.
 
 #TPX
+mdecore.command.tpx.usage=/mde tpx [player] {(<player> | <dimension>) | <x> <y> <z> [dimension]}
+mdecore.command.tpx.selftp=Don't teleport yourself!
+mdecore.command.tpx.tptoself=Don't teleport to yourself!
 
 #Version
 
 #Update Checker
-mdecore.updatecheck.updateavailable=
 
 #Errors
 mdecore.numberformatex=That's not a number! Try again.
 mdecore.commanderror=Something went wrong! Try again.
 mdecore.playernotfound=Specified player does not exist!
 mdecore.worldnotfound=Specified world not found!
+mdecore.notenougharguments=Not enough arguments! Try again.

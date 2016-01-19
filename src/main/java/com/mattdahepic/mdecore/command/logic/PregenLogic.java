@@ -2,11 +2,10 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.google.common.base.Throwables;
 import com.mattdahepic.mdecore.command.ICommandLogic;
+import com.mattdahepic.mdecore.helpers.TranslationHelper;
 import com.mattdahepic.mdecore.world.TickHandlerWorld;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+
+import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -16,7 +15,6 @@ import java.util.ArrayDeque;
 import java.util.List;
 
 public class PregenLogic implements ICommandLogic {
-    public static final String USAGE = "/mde pregen {<user> <x chunk radius> <z chunk radius> | <x chunk start> <z chunk start> <x chunk end> <z chunk end>}";
     public static PregenLogic instance = new PregenLogic();
 
     @Override
@@ -29,12 +27,12 @@ public class PregenLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return USAGE;
+        return TranslationHelper.getTranslatedString("mdecore.command.pregen.usage");
     }
     @Override
     public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
         if (args.length < 4) {
-            throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
+            throw new WrongUsageException(TranslationHelper.getTranslatedString("mdecore.notenougharguments"));
         }
         World world = sender.getEntityWorld();
         if (world.isRemote) return;

@@ -2,6 +2,8 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TeleportHelper;
+import com.mattdahepic.mdecore.helpers.TranslationHelper;
+
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -13,7 +15,6 @@ import net.minecraftforge.common.DimensionManager;
 import java.util.List;
 
 public class TPXLogic implements ICommandLogic {
-    public static final String USAGE = "/mde tpx [player] {(<player> | <dimension>) | <x> <y> <z> [dimension]}";
     public static TPXLogic instance = new TPXLogic();
 
     @Override
@@ -26,13 +27,13 @@ public class TPXLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return USAGE;
+        return TranslationHelper.getTranslatedString("mdecore.command.tpx.usage");
     }
     @Override
     public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
         switch (args.length) {
             case 1: // (tpx) invalid command
-                throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
+                throw new CommandException(TranslationHelper.getTranslatedString("mdecore.notenougharguments"));
             case 2: // (tpx {<player>|<dimension>}) teleporting player to self, or self to dimension
                 EntityPlayerMP playerSender = CommandBase.getCommandSenderAsPlayer(sender);
                 try {
@@ -45,7 +46,7 @@ public class TPXLogic implements ICommandLogic {
                             player.setPositionAndUpdate(playerSender.posX, playerSender.posY, playerSender.posZ);
                         }
                     } else {
-                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE+"Don't teleport yourself!"));
+                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE+TranslationHelper.getTranslatedString("mdecore.command.tpx.selftp")));
                     }
                     break;
                 } catch (PlayerNotFoundException t) {
@@ -56,7 +57,7 @@ public class TPXLogic implements ICommandLogic {
                         throw t;
                     }
                     if (!DimensionManager.isDimensionRegistered(dimension)) {
-                        throw new CommandException("Specified world does not exist!");
+                        throw new CommandException(TranslationHelper.getTranslatedString("mdecore.worldnotfound"));
                     }
                     if (playerSender.dimension != dimension) {
                         TeleportHelper.transferPlayerToDimension(playerSender, dimension, playerSender.mcServer.getConfigurationManager());
@@ -76,7 +77,7 @@ public class TPXLogic implements ICommandLogic {
                             player.setPositionAndUpdate(otherPlayer.posX, otherPlayer.posY, otherPlayer.posZ);
                         }
                     } else {
-                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA+"Don't teleport to yourself!"));
+                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA+TranslationHelper.getTranslatedString("mdecore.command.tpx.tptoself")));
                     }
                     break;
                 } catch (PlayerNotFoundException t) {
@@ -87,7 +88,7 @@ public class TPXLogic implements ICommandLogic {
                         throw t;
                     }
                     if (!DimensionManager.isDimensionRegistered(dimension)) {
-                        throw new CommandException("Specified world does not exist!");
+                        throw new CommandException(TranslationHelper.getTranslatedString("mdecore.worldnotfound"));
                     }
                     if (player.dimension != dimension) {
                         TeleportHelper.transferPlayerToDimension(player, dimension, player.mcServer.getConfigurationManager());
@@ -99,8 +100,8 @@ public class TPXLogic implements ICommandLogic {
                 playerSender = CommandBase.getCommandSenderAsPlayer(sender);
                 try {
                     playerSender.setPositionAndUpdate(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-                } catch (Exception e) {
-                    throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
+                } catch (NumberFormatException e) {
+                    throw new CommandException(TranslationHelper.getTranslatedString("mdecore.numberformatex"));
                 }
                 break;
             case 5: // (tpx {<player> <x> <y> <z> | <x> <y> <z> <dimension>}) teleporting player within player's dimension or self to dimension
@@ -108,8 +109,8 @@ public class TPXLogic implements ICommandLogic {
                     player = CommandBase.getPlayer(sender, args[1]);
                     try {
                         player.setPositionAndUpdate(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
-                    } catch (Exception e) {
-                        throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
+                    } catch (NumberFormatException e) {
+                        throw new CommandException(TranslationHelper.getTranslatedString("mdecore.numberformatex"));
                     }
                 } catch (PlayerNotFoundException t) {
                     int dimension;
@@ -120,7 +121,7 @@ public class TPXLogic implements ICommandLogic {
                     }
                     playerSender = CommandBase.getCommandSenderAsPlayer(sender);
                     if (!DimensionManager.isDimensionRegistered(dimension)) {
-                        throw new CommandException("Specified world does not exist!");
+                        throw new CommandException(TranslationHelper.getTranslatedString("mdecore.worldnotfound"));
                     }
                     if (playerSender.dimension != dimension) {
                         TeleportHelper.transferPlayerToDimension(playerSender, dimension, playerSender.mcServer.getConfigurationManager());
@@ -134,15 +135,15 @@ public class TPXLogic implements ICommandLogic {
                 int dimension = Integer.parseInt(args[5]);
 
                 if (!DimensionManager.isDimensionRegistered(dimension)) {
-                    throw new CommandException("Specified world does not exist!");
+                    throw new CommandException(TranslationHelper.getTranslatedString("mdecore.worldnotfound"));
                 }
                 if (player.dimension != dimension) {
                     TeleportHelper.transferPlayerToDimension(player, dimension, player.mcServer.getConfigurationManager());
                 }
                 try {
                     player.setPositionAndUpdate(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
-                } catch (Exception e) {
-                    throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
+                } catch (NumberFormatException e) {
+                    throw new CommandException(TranslationHelper.getTranslatedString("mdecore.numberformatex"));
                 }
                 break;
         }
