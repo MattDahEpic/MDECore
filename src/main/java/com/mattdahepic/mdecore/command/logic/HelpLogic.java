@@ -55,7 +55,7 @@ public class HelpLogic implements ICommandLogic {
             case 2:
                 String commandName = args[1];
                 if (!CommandMDE.getCommandExists(commandName)) throw new CommandNotFoundException();
-                sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedStringFormatted("mdecore.command.help.success.usage", CommandMDE.getCommandSyntax(commandName))));
+                sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.help.success.usage", CommandMDE.getCommandSyntax(commandName)));
                 break;
             default:
                 throw new WrongUsageException(getCommandSyntax());

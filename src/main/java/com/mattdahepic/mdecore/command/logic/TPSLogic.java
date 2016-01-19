@@ -3,10 +3,11 @@ package com.mattdahepic.mdecore.command.logic;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TranslationHelper;
 
-import net.minecraft.command.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
 import java.text.DecimalFormat;
@@ -35,29 +36,28 @@ public class TPSLogic implements ICommandLogic {
             double tps = getTps(null);
             double tickms = getTickMs(null);
 
-            sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedStringFormatted("mdecore.command.tps.success.noargs.overall",floatfmt.format(tps),floatfmt.format(tickms),(int)(tps/20D*100D))));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.noargs.overall", floatfmt.format(tps), floatfmt.format(tickms), (int) (tps / 20D * 100D)));
 
             for (World world : MinecraftServer.getServer().worldServers) {
                 tps = getTps(world);
                 tickms = getTickMs(world);
-                sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedStringFormatted("mdecore.command.tps.success.noargs.world",world.provider.getDimensionName(),world.provider.getDimensionId(),floatfmt.format(tps),floatfmt.format(tickms),(int)(tps/20D*100D))));
+                sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.noargs.world",world.provider.getDimensionName(),world.provider.getDimensionId(),floatfmt.format(tps),floatfmt.format(tickms),(int)(tps/20D*100D)));
             }
         } else if (args[1].toLowerCase().charAt(0) == 'o') { //overall
             double tickms = getTickMs(null);
             double tps = getTps(null);
 
-            sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedString("mdecore.command.tps.success.overall.title")));
-            sender.addChatMessage(new ChatComponentText("TPS: " + floatfmt.format(tps) + " TPS of " + floatfmt.format(20L) + " TPS ("
-                    + (int) (tps / 20.0D * 100.0D) + "%)"));
-            sender.addChatMessage(new ChatComponentText("Tick time: " + floatfmt.format(tickms) + " ms of " + floatfmt.format(50L) + " ms"));
+            sender.addChatMessage(TranslationHelper.getTranslatedChat("mdecore.command.tps.success.overall.title"));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.tps", floatfmt.format(tps), floatfmt.format(20L), (int) (tps / 20D * 100D)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.time",floatfmt.format(tickms),floatfmt.format(50L)));
         } else if (args[1].toLowerCase().charAt(0) == 'a') { //all
             double tickms = getTickMs(null);
             double tps = getTps(null);
 
-            sender.addChatMessage(new ChatComponentText("Overall server tick"));
-            sender.addChatMessage(new ChatComponentText("TPS: " + floatfmt.format(tps) + " TPS of " + floatfmt.format(20L) + " TPS ("
-                    + (int) (tps / 20.0D * 100.0D) + "%)"));
-            sender.addChatMessage(new ChatComponentText("Tick time: " + floatfmt.format(tickms) + " ms of " + floatfmt.format(50L) + " ms"));
+            sender.addChatMessage(TranslationHelper.getTranslatedChat("mdecore.command.tps.success.overall.title"));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.tps", floatfmt.format(tps), floatfmt.format(20L), (int) (tps / 20D * 100D)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.time", floatfmt.format(tickms), floatfmt.format(50L)));
+
             int loadedChunks = 0;
             int entities = 0;
             int te = 0;
@@ -69,29 +69,27 @@ public class TPSLogic implements ICommandLogic {
                 te += world.loadedTileEntityList.size();
                 worlds += 1;
             }
-            sender.addChatMessage(new ChatComponentText("Total Loaded Worlds/Chunks: " + worlds + "/" + loadedChunks));
-            sender.addChatMessage(new ChatComponentText("Total Entities/TileEntities: " + entities + "/" + te));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.all.world",worlds,loadedChunks));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.all.entity",entities,te));
         } else { //dimension
             int dim = 0;
             try {
                 dim = Integer.parseInt(args[1]);
-            } catch (Throwable e) {
-                throw new WrongUsageException("Invalid Usage! Type /mde help "+getCommandName()+" for usage");
+            } catch (NumberFormatException e) {
+                throw new CommandException(TranslationHelper.getTranslatedString("mdecore.numberformatex"));
             }
 
             World world = MinecraftServer.getServer().worldServerForDimension(dim);
             if (world == null) {
-                throw new CommandException("Specified world does not exist!");
+                throw new CommandException(TranslationHelper.getTranslatedString("mdecore.worldnotfound"));
             }
 
             double tickms = getTickMs(world);
             double tps = getTps(world);
 
-            sender.addChatMessage(new ChatComponentText("World " + world.provider.getDimensionId() + ": " + world.provider.getDimensionName() + " - Loaded chunks: "
-                    + world.getChunkProvider().getLoadedChunkCount()));
-            sender.addChatMessage(new ChatComponentText("TPS: " + floatfmt.format(tps) + "/" + floatfmt.format(20L) + " TPS (" + (int) (tps / 20.0D * 100.0D)
-                    + "%) - Tick: " + floatfmt.format(tickms) + " ms of " + floatfmt.format(50L) + " ms"));
-            sender.addChatMessage(new ChatComponentText("Entities: " + world.loadedEntityList.size() + " - Tile entities: " + world.loadedTileEntityList.size()));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.world",world.provider.getDimensionId(),world.provider.getDimensionName(),world.getChunkProvider().getLoadedChunkCount()));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.time",floatfmt.format(tps),floatfmt.format(20L),(int)(tps/20D*100D),floatfmt.format(tickms),floatfmt.format(50L)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.entity",world.loadedEntityList.size(),world.loadedTileEntityList.size()));
         }
     }
     @Override

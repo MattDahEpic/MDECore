@@ -10,7 +10,6 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldServer;
 
@@ -68,9 +67,9 @@ public class KillAllLogic implements ICommandLogic {
                 finalNames = finalNames + EnumChatFormatting.RED + names.get(name) + EnumChatFormatting.WHITE + "x" + EnumChatFormatting.YELLOW + name + EnumChatFormatting.WHITE + ", ";
             }
             finalNames = finalNames.substring(0, finalNames.length() - 2);
-            sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedStringFormatted((target != null ? "mdecore.command.killall.success.normal" : "mdecore.command.killall.success.hostile"), killCount, finalNames)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted((target != null ? "mdecore.command.killall.success.normal" : "mdecore.command.killall.success.hostile"), killCount, finalNames));
         } else {
-            sender.addChatMessage(new ChatComponentText(TranslationHelper.getTranslatedString(target != null ? "mdecore.command.killall.failure.normal" : "mdecore.command.killall.failure.hostile")));
+            sender.addChatMessage(TranslationHelper.getTranslatedChat(target != null ? "mdecore.command.killall.failure.normal" : "mdecore.command.killall.failure.hostile"));
         }
     }
     @Override

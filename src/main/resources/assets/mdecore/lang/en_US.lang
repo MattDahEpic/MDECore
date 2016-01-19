@@ -31,10 +31,27 @@ mdecore.command.tps.usage=/mde tps [{o | a | <dimension>}]
 mdecore.command.tps.success.noargs.overall=Overall: %d TPS/%dMS (%d%)
 mdecore.command.tps.success.noargs.world=%s [%f]: %d TPS/%dMS (%d%)
 mdecore.command.tps.success.overall.title=Overall server tick
-mdecore.command.tps.success.overall.tps=
-mdecore.command.tps.success.overall.time=
+mdecore.command.tps.success.overall.tps=TPS: %d TPS of %d TPS (%d%)
+mdecore.command.tps.success.overall.time=Tick time: %d ms of %d ms.
+mdecore.command.tps.success.all.world=Total Loaded Worlds/Chunks: %d/%d
+mdecore.command.tps.success.all.entity=Total Entities/TileEntities: %d/%d
+mdecore.command.tps.success.dimension.world=World %s: %s - Loaded chunks: %d
+mdecore.command.tps.success.dimension.time=TPS: %d/%d TPS (%d%) - Tick: %d ms of %d ms
+mdecore.command.tps.success.dimension.entity=Entities: %d - Tile Entities: %d
+
+#Pregen
+
+#Regen
+
+#TPX
+
+#Version
+
+#Update Checker
+mdecore.updatecheck.updateavailable=
 
 #Errors
 mdecore.numberformatex=That's not a number! Try again.
 mdecore.commanderror=Something went wrong! Try again.
 mdecore.playernotfound=Specified player does not exist!
+mdecore.worldnotfound=Specified world not found!
