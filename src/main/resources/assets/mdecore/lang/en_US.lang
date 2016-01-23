@@ -16,7 +16,7 @@ mdecore.command.killall.failure.hostile=No hostile mobs found!
 
 #Help
 mdecore.command.help.usage=/mde help [command]
-mdecore.command.help.success.usage=Usage:\n %s
+mdecore.command.help.success.usage=Usage:%n %s
 mdecore.command.help.success.list.begin=Available commands are:
 mdecore.command.help.success.list.end=and
 
@@ -28,15 +28,15 @@ mdecore.command.pos.success=at the coordinates (%d, %d, %d) in the dimension %d.
 
 #TPS
 mdecore.command.tps.usage=/mde tps [{o | a | <dimension>}]
-mdecore.command.tps.success.noargs.overall=Overall: %d TPS/%dMS (%d%)
-mdecore.command.tps.success.noargs.world=%s [%f]: %d TPS/%dMS (%d%)
+mdecore.command.tps.success.noargs.overall=Overall: %f TPS/%fMS (%d%)
+mdecore.command.tps.success.noargs.world=%s [%d]: %f TPS/%fMS (%d%)
 mdecore.command.tps.success.overall.title=Overall server tick
-mdecore.command.tps.success.overall.tps=TPS: %d TPS of %d TPS (%d%)
-mdecore.command.tps.success.overall.time=Tick time: %d ms of %d ms.
+mdecore.command.tps.success.overall.tps=TPS: %f TPS of %f TPS (%d%)
+mdecore.command.tps.success.overall.time=Tick time: %f ms of %f ms.
 mdecore.command.tps.success.all.world=Total Loaded Worlds/Chunks: %d/%d
 mdecore.command.tps.success.all.entity=Total Entities/TileEntities: %d/%d
 mdecore.command.tps.success.dimension.world=World %s: %s - Loaded chunks: %d
-mdecore.command.tps.success.dimension.time=TPS: %d/%d TPS (%d%) - Tick: %d ms of %d ms
+mdecore.command.tps.success.dimension.time=TPS: %f/%f TPS (%d%) - Tick: %f ms of %f ms
 mdecore.command.tps.success.dimension.entity=Entities: %d - Tile Entities: %d
 
 #Pregen
@@ -53,6 +53,8 @@ mdecore.command.tpx.selftp=Don't teleport yourself!
 mdecore.command.tpx.tptoself=Don't teleport to yourself!
 
 #Version
+mdecore.command.version.usage=/mde version
+mdecore.command.version.success.title=Loaded MattDahEpic mods are:
 
 #Update Checker
 

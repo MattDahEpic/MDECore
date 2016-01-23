@@ -22,7 +22,7 @@ public class CheckThread extends Thread {
             remoteVersion = reader.readLine();
             reader.close();
         } catch (Exception e) {
-            System.err.print("Error during attempted update check: "+e.toString()+"\n");
+            System.err.println("Error during attempted update check: "+e.toString());
             remoteVersion = null;
         }
         UpdateChecker.remoteVersions.put(modid, remoteVersion);

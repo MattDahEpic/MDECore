@@ -36,27 +36,27 @@ public class TPSLogic implements ICommandLogic {
             double tps = getTps(null);
             double tickms = getTickMs(null);
 
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.noargs.overall", floatfmt.format(tps), floatfmt.format(tickms), (int) (tps / 20D * 100D)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.noargs.overall", tps, tickms, (int) (tps / 20D * 100D)));
 
             for (World world : MinecraftServer.getServer().worldServers) {
                 tps = getTps(world);
                 tickms = getTickMs(world);
-                sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.noargs.world",world.provider.getDimensionName(),world.provider.getDimensionId(),floatfmt.format(tps),floatfmt.format(tickms),(int)(tps/20D*100D)));
+                sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.noargs.world",world.provider.getDimensionName(),world.provider.getDimensionId(),tps,tickms,(int)(tps/20D*100D)));
             }
         } else if (args[1].toLowerCase().charAt(0) == 'o') { //overall
             double tickms = getTickMs(null);
             double tps = getTps(null);
 
             sender.addChatMessage(TranslationHelper.getTranslatedChat("mdecore.command.tps.success.overall.title"));
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.tps", floatfmt.format(tps), floatfmt.format(20L), (int) (tps / 20D * 100D)));
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.time",floatfmt.format(tickms),floatfmt.format(50L)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.tps", tps, 20L, (int) (tps / 20D * 100D)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.time",tickms,50L));
         } else if (args[1].toLowerCase().charAt(0) == 'a') { //all
             double tickms = getTickMs(null);
             double tps = getTps(null);
 
             sender.addChatMessage(TranslationHelper.getTranslatedChat("mdecore.command.tps.success.overall.title"));
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.tps", floatfmt.format(tps), floatfmt.format(20L), (int) (tps / 20D * 100D)));
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.time", floatfmt.format(tickms), floatfmt.format(50L)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.tps", tps, 20L, (int) (tps / 20D * 100D)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.overall.time",tickms,50L));
 
             int loadedChunks = 0;
             int entities = 0;
@@ -88,7 +88,7 @@ public class TPSLogic implements ICommandLogic {
             double tps = getTps(world);
 
             sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.world",world.provider.getDimensionId(),world.provider.getDimensionName(),world.getChunkProvider().getLoadedChunkCount()));
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.time",floatfmt.format(tps),floatfmt.format(20L),(int)(tps/20D*100D),floatfmt.format(tickms),floatfmt.format(50L)));
+            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.time",tps,20L,(int)(tps/20D*100D),tickms,50L));
             sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.entity",world.loadedEntityList.size(),world.loadedTileEntityList.size()));
         }
     }
