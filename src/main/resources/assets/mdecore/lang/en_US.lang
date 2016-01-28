@@ -28,15 +28,15 @@ mdecore.command.pos.success=at the coordinates (%d, %d, %d) in the dimension %d.
 
 #TPS
 mdecore.command.tps.usage=/mde tps [{o | a | <dimension>}]
-mdecore.command.tps.success.noargs.overall=Overall: %f TPS/%fMS (%d%)
-mdecore.command.tps.success.noargs.world=%s [%d]: %f TPS/%fMS (%d%)
+mdecore.command.tps.success.noargs.overall=Overall: %.2f TPS/%.2fMS (%s%%)
+mdecore.command.tps.success.noargs.world=%s [%d]: %.2f TPS/%.2fMS (%d%%)
 mdecore.command.tps.success.overall.title=Overall server tick
-mdecore.command.tps.success.overall.tps=TPS: %f TPS of %f TPS (%d%)
-mdecore.command.tps.success.overall.time=Tick time: %f ms of %f ms.
+mdecore.command.tps.success.overall.tps=TPS: %.2f TPS of %.2f TPS (%d%%)
+mdecore.command.tps.success.overall.time=Tick time: %.2f ms of %.2f ms.
 mdecore.command.tps.success.all.world=Total Loaded Worlds/Chunks: %d/%d
 mdecore.command.tps.success.all.entity=Total Entities/TileEntities: %d/%d
 mdecore.command.tps.success.dimension.world=World %s: %s - Loaded chunks: %d
-mdecore.command.tps.success.dimension.time=TPS: %f/%f TPS (%d%) - Tick: %f ms of %f ms
+mdecore.command.tps.success.dimension.time=TPS: %.2f/%.2f TPS (%d%%) - Tick: %.2f ms of %.2f ms
 mdecore.command.tps.success.dimension.entity=Entities: %d - Tile Entities: %d
 
 #Pregen
@@ -64,3 +64,6 @@ mdecore.commanderror=Something went wrong! Try again.
 mdecore.playernotfound=Specified player does not exist!
 mdecore.worldnotfound=Specified world not found!
 mdecore.notenougharguments=Not enough arguments! Try again.
+
+#Items
+item.debugItem.name=MattDahEpic Debug Item

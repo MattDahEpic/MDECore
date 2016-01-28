@@ -10,7 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,6 @@ public class TPSLogic implements ICommandLogic {
     }
     @Override
     public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
-        DecimalFormat floatfmt = new DecimalFormat("##0.00");
         if (args.length == 1) { //empty arguments
             double tps = getTps(null);
             double tickms = getTickMs(null);

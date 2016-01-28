@@ -3,10 +3,12 @@ package com.mattdahepic.mdecore;
 import com.mattdahepic.mdecore.command.CommandMDE;
 import com.mattdahepic.mdecore.config.LoginMessage;
 import com.mattdahepic.mdecore.config.MDEConfig;
+import com.mattdahepic.mdecore.debug.DebugItem;
 import com.mattdahepic.mdecore.helpers.EnvironmentHelper;
 import com.mattdahepic.mdecore.helpers.TickrateHelper;
 import com.mattdahepic.mdecore.network.PacketHandler;
 import com.mattdahepic.mdecore.network.StatReporter;
+import com.mattdahepic.mdecore.proxy.CommonProxy;
 import com.mattdahepic.mdecore.tweaks.DaySleepToNight;
 import com.mattdahepic.mdecore.tweaks.WaterBottleCauldron;
 import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
@@ -16,10 +18,9 @@ import com.mattdahepic.mdecore.world.TickHandlerWorld;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.DummyModContainer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -38,10 +39,14 @@ public class MDECore extends DummyModContainer {
 
     public static final Logger logger = LogManager.getLogger(MODID);
 
+    public static Item debugItem = new DebugItem();
+    public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.airColor);
+
     @Mod.Instance(MDECore.MODID)
     public static MDECore instance;
 
-    public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.airColor);
+    @SidedProxy(clientSide = "com.mattdahepic.mdecore.proxy.ClientProxy",serverSide = "com.mattdahepic.mdecore.proxy.CommonProxy")
+    public static CommonProxy proxy;
 
     @Mod.EventHandler
     public void prePreInit (FMLConstructionEvent e) {
@@ -54,6 +59,8 @@ public class MDECore extends DummyModContainer {
         MDEConfig.instance(MODID).initialize(e);
         LoginMessage.init(e.getModConfigurationDirectory());
         WaterproofRedstone.setup();
+        proxy.setupItems();
+        proxy.setupTextures();
     }
     @Mod.EventHandler
     public void init (FMLInitializationEvent event) {
