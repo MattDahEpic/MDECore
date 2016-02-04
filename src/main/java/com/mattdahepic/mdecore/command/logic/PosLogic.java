@@ -40,7 +40,7 @@ public class PosLogic implements ICommandLogic {
             }
             String playerName = TranslationHelper.getTranslatedStringFormatted((senderPlayer.equals(targetPlayer) ? "mdecore.command.pos.success.player.self" : "mdecore.command.pos.success.player.other"), targetPlayer.getDisplayName());
             int[] pos = PlayerHelper.getPlayerPosAsIntegerArray(targetPlayer);
-            sender.addChatMessage(new ChatComponentText(playerName + " " + TranslationHelper.getTranslatedStringFormatted("mdecore.command.pos.success",(int)targetPlayer.posX,(int)targetPlayer.posY,(int)targetPlayer.posZ,targetPlayer.dimension)));
+            sender.addChatMessage(new ChatComponentText(playerName.toString() + " " + TranslationHelper.getTranslatedStringFormatted("mdecore.command.pos.success",(int)targetPlayer.posX,(int)targetPlayer.posY,(int)targetPlayer.posZ,targetPlayer.dimension)));
         } else {
             throw new WrongUsageException(getCommandSyntax());
         }

@@ -51,6 +51,7 @@ public class MDECore extends DummyModContainer {
     @Mod.EventHandler
     public void prePreInit (FMLConstructionEvent e) {
         EnvironmentHelper.isServer = e.getSide().isServer();
+        EnvironmentHelper.printEnvironmentToLog();
     }
 
     @Mod.EventHandler
@@ -73,6 +74,7 @@ public class MDECore extends DummyModContainer {
     @Mod.EventHandler
     public void postInit (FMLPostInitializationEvent event) {
         if (MDEConfig.reportUsageStats) StatReporter.gatherAndReport();
+        if (EnvironmentHelper.isDeobf) MDEConfig.debugLogging = true;
     }
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent e) {

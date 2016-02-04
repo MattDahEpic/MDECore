@@ -16,7 +16,7 @@ group = "com.mattdahepic.mdecore" // http://maven.apache.org/guides/mini/guide-n
 archivesBaseName = "mdecore"
 
 minecraft {
-    version = "1.8.9-11.15.0.1709"
+    version = "1.8.9-11.15.1.1722"
     runDir = "run"
 
     replace "@VERSION@", project.version

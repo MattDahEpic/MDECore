@@ -1,5 +1,6 @@
 package com.mattdahepic.mdecore.helpers;
 
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -8,9 +9,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-@Deprecated
-public class DropHelper {
-    @Deprecated
+public class WorldHelper {
     public static void dropItemsFromInventory (Random rand, IInventory inv, World world, BlockPos pos) {
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             ItemStack item = inv.getStackInSlot(i);
@@ -24,5 +23,9 @@ public class DropHelper {
                 inv.setInventorySlotContents(i,null);
             }
         }
+    }
+    public static void turnBlockToFallingSand (World world, BlockPos pos) {
+        EntityFallingBlock snd = new EntityFallingBlock(world,pos.getX()+0.5,pos.getY(),pos.getZ()+0.5,world.getBlockState(pos));
+        world.spawnEntityInWorld(snd);
     }
 }
