@@ -7,9 +7,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class ItemHelper {
     @Deprecated
     public static ItemStack getItemFromName (String modid, String item_name, int meta) {
-        ItemStack ret = new ItemStack(GameRegistry.findItem(modid,item_name));
-        ret.setItemDamage(meta);
-        ret.stackSize = 1;
+        ItemStack ret = new ItemStack(GameRegistry.findItem(modid,item_name),1,meta);
+        if (ret == null) throw new RuntimeException(String.format("The item %s:%s@%d does not exist.",modid,item_name,meta));
         return ret;
     }
     @Deprecated
@@ -20,18 +19,8 @@ public class ItemHelper {
     public static String getNameFromItemStack (ItemStack item) {
         return Item.itemRegistry.getNameForObject(item.getItem()).toString();
     }
-
     public static boolean isSameIgnoreStackSize (ItemStack template, ItemStack compare) {
         return template.getItem() == compare.getItem() && template.getItemDamage() == compare.getItemDamage();
     }
-    /* TODO
-    public static ItemStack getItemFromName (String modid, String itemName, String variant) {
-
-    }
-    public static String getNameFromItemStack (ItemStack item) { //modid:item_name[variant=var]
-        if (item.getHasSubtypes()) {
-            return GameData.getItemRegistry().getNameForObject(item.getItem())+"[variant="+???+"]";
-        }
-        return GameData.getItemRegistry().getNameForObject();
-    }*/
+    //TODO: change to blockstates
 }
