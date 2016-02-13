@@ -1,10 +1,9 @@
-/*package com.mattdahepic.mdecore.command;
+package com.mattdahepic.mdecore.command;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandNotFoundException;
-import net.minecraft.command.ICommandSender;
+import com.mattdahepic.mdecore.helpers.TranslationHelper;
+import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
@@ -13,8 +12,10 @@ import java.util.*;
 public abstract class AbstractCommand extends CommandBase {
     private static Map<String, ICommandLogic> commands = new HashMap<String,ICommandLogic>();
 
-    public static void init(FMLServerStartingEvent e) {
-        e.registerServerCommand(instance);
+    public abstract String getCommandName ();
+
+    public void init(FMLServerStartingEvent e) {
+        e.registerServerCommand(this);
     }
     public static String getCommandSyntax (String name) {
         if (getCommandExists(name)) {
@@ -38,9 +39,9 @@ public abstract class AbstractCommand extends CommandBase {
     public static boolean getCommandExists (String command) {
         return commands.containsKey(command);
     }
-    public static boolean canUseCommand (ICommandSender sender, int requiredPermission, String name) {
+    public static boolean canUseCommand (ICommandSender sender, int requiredPermission, AbstractCommand baseCommand, String name) {
         if (getCommandExists(name)) {
-            return sender.canCommandSenderUseCommand(requiredPermission, getCommandName()+" "+name) || (sender instanceof EntityPlayerMP && requiredPermission <= 0);
+            return sender.canCommandSenderUseCommand(requiredPermission, baseCommand.getCommandName()+" "+name) || (sender instanceof EntityPlayerMP && requiredPermission <= 0);
         }
         return false;
     }
@@ -48,8 +49,6 @@ public abstract class AbstractCommand extends CommandBase {
     public int getRequiredPermissionLevel () {
         return -1;
     }
-    @Override
-    public abstract String getCommandName ();
     @Override
     public List getCommandAliases () {
         return Collections.emptyList();
@@ -67,21 +66,42 @@ public abstract class AbstractCommand extends CommandBase {
         if (args.length < 1) args = new String[]{"help"};
         ICommandLogic command = commands.get(args[0]);
         if (command != null) {
-            if (canUseCommand(sender,command.getPermissionLevel(),command.getCommandName())) {
+            if (canUseCommand(sender,command.getPermissionLevel(),this,command.getCommandName())) {
                 command.handleCommand(sender,args);
                 return;
             }
             throw new CommandException("commands.generic.permission");
         }
-        throw new CommandNotFoundException();
+        throwNoCommand();
     }
     @Override
     public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(args,commands.keySet());
+            return getListOfStringsMatchingLastWord(args, commands.keySet());
         } else if (commands.containsKey(args[0])) {
-            return commands.get(args[0]).addTabCompletionOptions(sender,args,pos);
+            return commands.get(args[0]).addTabCompletionOptions(sender, args, pos);
         }
         return null;
     }
-}*/
+
+    /* UTILITIES */
+
+    public static List<String> getPlayerNamesStartingWithLastArg (String[] args) {
+        return CommandBase.getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames());
+    }
+    public static void throwUsages (ICommandLogic command) throws WrongUsageException {
+        throw new WrongUsageException(command.getCommandSyntax());
+    }
+    public static void throwNoPlayer () throws PlayerNotFoundException {
+        throw new PlayerNotFoundException();
+    }
+    public static void throwInvalidNumber (String notNumber) throws NumberInvalidException {
+        throw new NumberInvalidException("commands.generic.num.invalid",notNumber);
+    }
+    public static void throwNoWorld () throws CommandException {
+        throw new CommandException(TranslationHelper.getTranslatedString("mdecore.worldnotfound"));
+    }
+    public static void throwNoCommand () throws CommandNotFoundException {
+        throw new CommandNotFoundException();
+    }
+}

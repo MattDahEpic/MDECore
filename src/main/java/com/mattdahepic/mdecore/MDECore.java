@@ -15,17 +15,18 @@ import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
 import com.mattdahepic.mdecore.tweaks.redstone.WaterproofRedstone;
 import com.mattdahepic.mdecore.update.UpdateChecker;
 import com.mattdahepic.mdecore.world.TickHandlerWorld;
-
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.DummyModContainer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -78,7 +79,7 @@ public class MDECore extends DummyModContainer {
     }
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent e) {
-        CommandMDE.init(e);
+        CommandMDE.instance.init(e);
     }
     @SubscribeEvent
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent event) {

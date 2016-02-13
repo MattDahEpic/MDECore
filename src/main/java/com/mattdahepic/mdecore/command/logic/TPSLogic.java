@@ -1,8 +1,8 @@
 package com.mattdahepic.mdecore.command.logic;
 
+import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TranslationHelper;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -70,24 +70,20 @@ public class TPSLogic implements ICommandLogic {
             sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.all.world",worlds,loadedChunks));
             sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.all.entity",entities,te));
         } else { //dimension
-            int dim = 0;
             try {
-                dim = Integer.parseInt(args[1]);
+                int dim = Integer.parseInt(args[1]);
+                World world = MinecraftServer.getServer().worldServerForDimension(dim);
+                if (world == null) AbstractCommand.throwNoWorld();
+
+                double tickms = getTickMs(world);
+                double tps = getTps(world);
+
+                sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.world",world.provider.getDimensionId(),world.provider.getDimensionName(),world.getChunkProvider().getLoadedChunkCount()));
+                sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.time",tps,20L,(int)(tps/20D*100D),tickms,50L));
+                sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.entity",world.loadedEntityList.size(),world.loadedTileEntityList.size()));
             } catch (NumberFormatException e) {
-                throw new CommandException(TranslationHelper.getTranslatedString("mdecore.numberformatex"));
+                AbstractCommand.throwInvalidNumber(args[1]);
             }
-
-            World world = MinecraftServer.getServer().worldServerForDimension(dim);
-            if (world == null) {
-                throw new CommandException(TranslationHelper.getTranslatedString("mdecore.worldnotfound"));
-            }
-
-            double tickms = getTickMs(world);
-            double tps = getTps(world);
-
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.world",world.provider.getDimensionId(),world.provider.getDimensionName(),world.getChunkProvider().getLoadedChunkCount()));
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.time",tps,20L,(int)(tps/20D*100D),tickms,50L));
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted("mdecore.command.tps.success.dimension.entity",world.loadedEntityList.size(),world.loadedTileEntityList.size()));
         }
     }
     @Override

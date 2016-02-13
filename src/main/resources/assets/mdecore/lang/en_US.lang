@@ -56,14 +56,18 @@ mdecore.command.tpx.tptoself=Don't teleport to yourself!
 mdecore.command.version.usage=/mde version
 mdecore.command.version.success.title=Loaded MattDahEpic mods are:
 
+#Invsee
+mdecore.command.invsee.usage=/mde invsee <player>
+mdecore.command.invsee.selflook=That's you, silly!
+
+#Enderchest
+mdecore.command.enderchest.usage=/mde enderchest <player>
+
 #Update Checker
 
 #Errors
-mdecore.numberformatex=That's not a number! Try again.
 mdecore.commanderror=Something went wrong! Try again.
-mdecore.playernotfound=Specified player does not exist!
 mdecore.worldnotfound=Specified world not found!
-mdecore.notenougharguments=Not enough arguments! Try again.
 
 #Items
 item.debugItem.name=MattDahEpic Debug Item

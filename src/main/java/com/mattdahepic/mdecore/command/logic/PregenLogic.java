@@ -1,12 +1,13 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.google.common.base.Throwables;
+import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TranslationHelper;
 import com.mattdahepic.mdecore.world.TickHandlerWorld;
-
-import net.minecraft.command.*;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
@@ -32,7 +33,7 @@ public class PregenLogic implements ICommandLogic {
     @Override
     public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
         if (args.length < 4) {
-            throw new WrongUsageException(TranslationHelper.getTranslatedString("mdecore.notenougharguments"));
+            AbstractCommand.throwUsages(instance);
         }
         World world = sender.getEntityWorld();
         if (world.isRemote) return;
@@ -104,7 +105,7 @@ public class PregenLogic implements ICommandLogic {
     @Override
     public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2) {
-            return CommandBase.getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames());
+            return AbstractCommand.getPlayerNamesStartingWithLastArg(args);
         }
         return null;
     }

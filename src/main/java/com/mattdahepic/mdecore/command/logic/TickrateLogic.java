@@ -1,9 +1,10 @@
 package com.mattdahepic.mdecore.command.logic;
 
+import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TickrateHelper;
 import com.mattdahepic.mdecore.helpers.TranslationHelper;
-
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
@@ -53,19 +54,17 @@ public class TickrateLogic implements ICommandLogic {
                 TickrateHelper.setAllClientTickrate(inputTicks);
                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + TranslationHelper.getTranslatedStringFormatted("mdecore.command.tickrate.success.client",inputTicks)));
             } else {
-                EntityPlayer p = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(args[2]);
-                if (p == null) {
-                    throw new PlayerNotFoundException();
-                }
+                EntityPlayer p = CommandBase.getPlayer(sender,args[1]);
                 TickrateHelper.setClientTickrate(p, inputTicks);
                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN+TranslationHelper.getTranslatedStringFormatted("mdecore.command.tickrate.success.name",p.getName(),inputTicks)));
             }
         } catch (NumberFormatException ne) {
-            throw new CommandException(TranslationHelper.getTranslatedString("mdecore.numberformatex"));
+            AbstractCommand.throwInvalidNumber(args[1]);
+        } catch (PlayerNotFoundException e) {
+            AbstractCommand.throwNoPlayer();
         } catch (Exception ex) {
             throw new CommandException(TranslationHelper.getTranslatedString("mdecore.commanderror"));
         }
-
     }
     @Override
     public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
