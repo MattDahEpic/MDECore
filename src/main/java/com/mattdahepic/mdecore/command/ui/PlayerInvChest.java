@@ -12,7 +12,7 @@ public class PlayerInvChest extends InventoryBasic { //thanks ForgeEssentials
     public boolean allowUpdate;
 
     public PlayerInvChest(EntityPlayer owner, EntityPlayer viewer) {
-        super(owner.getName() + "'s inventory", false, owner.inventory.mainInventory.length);
+        super(owner.getName() + "'s Inventory", false, owner.inventory.mainInventory.length);
         this.owner = owner;
         this.viewer = viewer;
     }

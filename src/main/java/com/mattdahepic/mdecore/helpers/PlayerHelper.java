@@ -28,6 +28,9 @@ public class PlayerHelper {
         int zLength = pointZ-playerZ;
         return Math.abs(MathHelper.floor_double(findHyp(xLength,zLength)));
     }
+    public static EntityPlayerMP getPlayerFromUsername (String username) {
+        return MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(username);
+    }
     public static boolean isPlayerFake (EntityPlayer player) {
         return player.worldObj == null?true:(player.worldObj.isRemote?false:(player.getClass() == EntityPlayerMP.class?false:!MinecraftServer.getServer().getConfigurationManager().playerEntityList.contains(player)));
     }
@@ -52,6 +55,7 @@ public class PlayerHelper {
     public static boolean isPlayerReal (EntityPlayerMP player) {
         return !isPlayerFake(player);
     }
+    @Deprecated
     public static int getDistanceFrom (EntityPlayer player, int pointX, int pointY, int pointZ) {
         int horizontalLength = getDistanceFromXZ(player,pointX,pointZ);
         int verticalLength = pointY-getPlayerPosAsIntegerArray(player)[1];
