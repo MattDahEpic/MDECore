@@ -18,6 +18,7 @@ import com.mattdahepic.mdecore.world.TickHandlerWorld;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -52,6 +53,7 @@ public class MDECore extends DummyModContainer {
     @Mod.EventHandler
     public void prePreInit (FMLConstructionEvent e) {
         EnvironmentHelper.isServer = e.getSide().isServer();
+        EnvironmentHelper.isServerDedicated = MinecraftServer.getServer().isDedicatedServer();
         EnvironmentHelper.printEnvironmentToLog();
     }
 
