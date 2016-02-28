@@ -10,6 +10,7 @@ import com.mattdahepic.mdecore.network.PacketHandler;
 import com.mattdahepic.mdecore.network.StatReporter;
 import com.mattdahepic.mdecore.proxy.CommonProxy;
 import com.mattdahepic.mdecore.tweaks.DaySleepToNight;
+import com.mattdahepic.mdecore.tweaks.OreDictionaryExtras;
 import com.mattdahepic.mdecore.tweaks.WaterBottleCauldron;
 import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
 import com.mattdahepic.mdecore.tweaks.redstone.WaterproofRedstone;
@@ -60,6 +61,7 @@ public class MDECore extends DummyModContainer {
     @Mod.EventHandler
     public void preInit (FMLPreInitializationEvent e) {
         FMLCommonHandler.instance().bus().register(instance);
+        OreDictionaryExtras.preInit();
         MDEConfig.instance(MODID).initialize(e);
         LoginMessage.init(e.getModConfigurationDirectory());
         WaterproofRedstone.setup();
