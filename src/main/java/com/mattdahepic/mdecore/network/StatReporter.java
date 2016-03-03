@@ -4,7 +4,6 @@ import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.system.AWTSystemPopulator;
 import com.mattdahepic.mdecore.MDECore;
-import com.mattdahepic.mdecore.config.MDEConfig;
 import com.mattdahepic.mdecore.helpers.EnvironmentHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
@@ -22,7 +21,7 @@ public class StatReporter {
         for (ModContainer mod : Loader.instance().getActiveModList()) {
             if (mod.getMetadata().authorList.contains("MattDahEpic") || mod.getMetadata().authorList.contains("mattdahepic")) {
                 String modPage = mod.getModId()+"-"+mod.getVersion()+(EnvironmentHelper.isServer?"-server":"-client")+(EnvironmentHelper.isDeobf?"-deobf":"");
-                if (MDEConfig.debugLogging) MDECore.logger.info("Logging load for mod \""+modPage+"\".");
+                MDECore.logger.debug("Logging load for mod \""+modPage+"\".");
                 tracker.trackPageView(modPage, null, null); //modid-version-(server|client)-deobf
             }
         }

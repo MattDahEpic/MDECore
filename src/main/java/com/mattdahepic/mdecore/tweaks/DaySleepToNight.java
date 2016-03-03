@@ -1,5 +1,6 @@
 package com.mattdahepic.mdecore.tweaks;
 
+import com.mattdahepic.mdecore.config.MDEConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
@@ -9,10 +10,9 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import java.lang.reflect.Field;
 
 public class DaySleepToNight {
-    public DaySleepToNight () {}
     @SubscribeEvent
     public void playerSleep (PlayerSleepInBedEvent e) {
-        if (!e.entityPlayer.worldObj.isRemote) { //server only
+        if (MDEConfig.sleepDuringDayChangesToNight && !e.entityPlayer.worldObj.isRemote) { //server only
             e.result = EntityPlayer.EnumStatus.OK; //i will sleep whenever i want thank you very much
             if (e.entityPlayer.isRiding()) {e.entityPlayer.mountEntity(null);} //get off your high horse/pig/boat
             e.entityPlayer.setPosition((double) ((float) e.pos.getX() + 0.5F), (double) ((float) e.pos.getY() + 0.6875F), (double) ((float) e.pos.getZ() + 0.5F));
@@ -28,12 +28,12 @@ public class DaySleepToNight {
             }
             e.entityPlayer.playerLocation = e.pos;
             e.entityPlayer.motionX = e.entityPlayer.motionZ = e.entityPlayer.motionY = 0.0D;
-            if (!e.entityPlayer.worldObj.isRemote) e.entityPlayer.worldObj.updateAllPlayersSleepingFlag();
+            e.entityPlayer.worldObj.updateAllPlayersSleepingFlag();
         }
     }
     @SubscribeEvent
     public void playerWake (PlayerWakeUpEvent e) {
-        if (!e.entityPlayer.worldObj.isRemote) { //server only
+        if (MDEConfig.sleepDuringDayChangesToNight && !e.entityPlayer.worldObj.isRemote) { //server only
             if (e.entityPlayer.worldObj.isDaytime()) {
                 e.entityPlayer.worldObj.setWorldTime(13000L); //day -> night
             } else {

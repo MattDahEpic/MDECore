@@ -23,7 +23,7 @@ public class WaterproofRedstone {
                     while (c != Block.class) {
                         c = c.getSuperclass(); //go up the class tree till we get to a point where we can access blockMaterial
                     }
-                    Field f = ReflectionHelper.findField(c,"blockMaterial","field_149764_J"); //TODO: update this at each mc version
+                    Field f = ReflectionHelper.findField(c,"blockMaterial","field_149764_J");
                     f.setAccessible(true);
                     modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
                     f.set(block,MDECore.waterproof_circuits);
@@ -33,8 +33,6 @@ public class WaterproofRedstone {
                 MDECore.logger.error("well, you're screwed.");
                 throw new RuntimeException(e);
             }
-        } else {
-            MDECore.logger.info("Redstone waterproofing is out of stock. To order some check your local config for availability.");
         }
     }
 }

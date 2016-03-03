@@ -1,10 +1,8 @@
 package com.mattdahepic.mdecore.helpers;
 
 import com.mattdahepic.mdecore.MDECore;
-import com.mattdahepic.mdecore.config.MDEConfig;
 import com.mattdahepic.mdecore.network.PacketHandler;
 import com.mattdahepic.mdecore.network.TickratePacket;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -80,13 +78,13 @@ public class TickrateHelper {
             MDECore.logger.info("Ignoring invalid tickrate: "+tickrate);
             return;
         }
-        if (MDEConfig.debugLogging) MDECore.logger.info("Updating client tickrate to "+tickrate);
+        MDECore.logger.debug("Updating client tickrate to "+tickrate);
         TICKS_PER_SECOND = tickrate;
         Minecraft mc = Minecraft.getMinecraft();
         if (mc == null) return; //why?
         try {
             if (clientTimer == null) {
-                if (MDEConfig.debugLogging) MDECore.logger.info("Creating reflection instances...");
+                MDECore.logger.debug("Creating reflection instances...");
                 for (Field f : mc.getClass().getDeclaredFields()) {
                     if (f.getType() == Timer.class) {
                         clientTimer = f;
@@ -105,7 +103,7 @@ public class TickrateHelper {
             MDECore.logger.info("Ignoring invalid tickrate: "+tickrate);
             return;
         }
-        if (MDEConfig.debugLogging) MDECore.logger.info("Updating server tickrate to "+tickrate);
+        MDECore.logger.debug("Updating server tickrate to "+tickrate);
         MILISECONDS_PER_TICK = (long)(1000L/tickrate);
     }
 
