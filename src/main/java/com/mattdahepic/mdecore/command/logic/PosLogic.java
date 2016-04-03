@@ -2,14 +2,15 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import com.mattdahepic.mdecore.helpers.TranslationHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.translation.I18n;
 
 import java.util.List;
 
@@ -26,16 +27,16 @@ public class PosLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return TranslationHelper.getTranslatedString("mdecore.command.pos.usage");
+        return I18n.translateToLocal("mdecore.command.pos.usage");
     }
     @Override
-    public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
+    public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 2) {
             try {
                 EntityPlayerMP senderPlayer = CommandBase.getCommandSenderAsPlayer(sender);
-                EntityPlayerMP targetPlayer = CommandBase.getPlayer(sender, args[1]);
-                String playerName = TranslationHelper.getTranslatedStringFormatted((senderPlayer.equals(targetPlayer) ? "mdecore.command.pos.success.player.self" : "mdecore.command.pos.success.player.other"), targetPlayer.getDisplayNameString());
-                sender.addChatMessage(new ChatComponentText(playerName + " " + TranslationHelper.getTranslatedStringFormatted("mdecore.command.pos.success", (int) targetPlayer.posX, (int) targetPlayer.posY, (int) targetPlayer.posZ, targetPlayer.dimension)));
+                EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, args[1]);
+                String playerName = I18n.translateToLocalFormatted((senderPlayer.equals(targetPlayer) ? "mdecore.command.pos.success.player.self" : "mdecore.command.pos.success.player.other"), targetPlayer.getDisplayNameString());
+                sender.addChatMessage(new TextComponentString(playerName + " " + I18n.translateToLocalFormatted("mdecore.command.pos.success", (int) targetPlayer.posX, (int) targetPlayer.posY, (int) targetPlayer.posZ, targetPlayer.dimension)));
             } catch (PlayerNotFoundException e) {
                 AbstractCommand.throwNoPlayer();
             }
@@ -44,9 +45,9 @@ public class PosLogic implements ICommandLogic {
         }
     }
     @Override
-    public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2) {
-            return AbstractCommand.getPlayerNamesStartingWithLastArg(args);
+            return AbstractCommand.getPlayerNamesStartingWithLastArg(server,args);
         }
         return null;
     }

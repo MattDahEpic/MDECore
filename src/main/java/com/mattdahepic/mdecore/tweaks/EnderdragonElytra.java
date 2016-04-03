@@ -11,9 +11,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class EnderdragonElytra {
     @SubscribeEvent
     public void entityDeath (LivingDeathEvent e) {
-        if (e.entity instanceof EntityDragon) {
+        if (e.getEntity() instanceof EntityDragon) {
             if (MDEConfig.dragonDropsElytra) {
-                e.entity.worldObj.spawnEntityInWorld(new EntityItem(e.entity.worldObj,e.entity.posX,e.entity.posY,e.entity.posZ,new ItemStack(Items.elytra,1,0)));
+                e.getEntity().worldObj.spawnEntityInWorld(new EntityItem(e.getEntity().worldObj,e.getEntity().posX,e.getEntity().posY,e.getEntity().posZ,new ItemStack(Items.elytra,1,0)));
             }
         }
     }

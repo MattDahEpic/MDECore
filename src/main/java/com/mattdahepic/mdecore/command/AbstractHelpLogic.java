@@ -3,9 +3,10 @@ package com.mattdahepic.mdecore.command;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +28,7 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
         return String.format("/"+getBaseCommand().getCommandName()+" help <command>");
     }
     @Override
-    public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
+    public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         switch (args.length) {
             case 1: //list all commands
                 StringBuilder output = new StringBuilder("Available commands are: ");
@@ -40,7 +41,7 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
                 for (int i = 0; i < commandList.size() - 1; i++) { //all commands except last one
                     String name = commandList.get(i);
                     if (getBaseCommand().canUseCommand(sender,getBaseCommand().getCommandPermission(name),getBaseCommand(),name)) {
-                        output.append(baseCommand+EnumChatFormatting.YELLOW+commandList.get(i)+EnumChatFormatting.WHITE+", ");
+                        output.append(baseCommand+TextFormatting.YELLOW+commandList.get(i)+TextFormatting.WHITE+", ");
                         commands++;
                     }
                 }
@@ -48,14 +49,14 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
                 String name = commandList.get(commandList.size() - 1);
                 if (getBaseCommand().canUseCommand(sender,getBaseCommand().getCommandPermission(name),getBaseCommand(),name)) { //final command and formatting
                     if (commands > 0) output.append(" and ");
-                    output.append(baseCommand+EnumChatFormatting.YELLOW+name+EnumChatFormatting.WHITE+".");
+                    output.append(baseCommand+TextFormatting.YELLOW+name+TextFormatting.WHITE+".");
                 }
-                sender.addChatMessage(new ChatComponentText(output.toString()));
+                sender.addChatMessage(new TextComponentString(output.toString()));
                 break;
         }
     }
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2) {
             return CommandBase.getListOfStringsMatchingLastWord(args, getBaseCommand().getCommandList()); //get all possible commands to "/mde help" on
         }

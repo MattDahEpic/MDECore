@@ -1,9 +1,6 @@
 package com.mattdahepic.mdecore.asm;
 
-import com.mattdahepic.mdecore.MDECore;
-
 import net.minecraft.launchwrapper.IClassTransformer;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -16,14 +13,14 @@ public class TickrateTransformer implements IClassTransformer {
 
         try {
             if (name.equals("net.minecraft.server.MinecraftServer")) {
-                MDECore.logger.info("Patching MinecraftServer class for tickrate changing...");
+                System.out.println("Patching net.minecraft.server.MinecraftServer class for tickrate changing...");
 
                 ClassNode classNode = new ClassNode();
                 ClassReader classReader = new ClassReader(bytes);
                 classReader.accept(classNode,0);
 
                 for (MethodNode method : classNode.methods) {
-                    if (method.name.equals("run") && method.desc.equals("()V")) {
+                    if (method.name.equals("run") && method.desc.equals("()V")) { //TODO: update this if name changes
                         InsnList list = new InsnList();
                         for (AbstractInsnNode node : method.instructions.toArray()) {
                             if (node instanceof LdcInsnNode) {

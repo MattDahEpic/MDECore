@@ -3,12 +3,13 @@ package com.mattdahepic.mdecore.command.logic;
 import com.google.common.base.Throwables;
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import com.mattdahepic.mdecore.helpers.TranslationHelper;
 import com.mattdahepic.mdecore.world.TickHandlerWorld;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 
@@ -28,10 +29,10 @@ public class PregenLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return TranslationHelper.getTranslatedString("mdecore.command.pregen.usage");
+        return I18n.translateToLocal("mdecore.command.pregen.usage");
     }
     @Override
-    public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
+    public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length < 4) {
             AbstractCommand.throwUsages(instance);
         }
@@ -49,7 +50,7 @@ public class PregenLogic implements ICommandLogic {
             try {
                 xS = CommandBase.parseInt(args[i++]);
             } catch (Throwable t) {
-                ICommandSender senderTemp = CommandBase.getPlayer(sender, args[i - 1]);
+                ICommandSender senderTemp = CommandBase.getPlayer(server, sender, args[i - 1]);
                 center = new ChunkCoordIntPair(senderTemp.getPosition().getX(),senderTemp.getPosition().getZ());
                 xS = CommandBase.parseInt(args[i++]);
             }
@@ -89,7 +90,7 @@ public class PregenLogic implements ICommandLogic {
         }
 
         synchronized (TickHandlerWorld.chunksToPreGen) {
-            ArrayDeque<ChunkCoordIntPair> chunks = TickHandlerWorld.chunksToPreGen.get(world.provider.getDimensionId());
+            ArrayDeque<ChunkCoordIntPair> chunks = TickHandlerWorld.chunksToPreGen.get(world.provider.getDimension());
             if (chunks == null) {
                 chunks = new ArrayDeque<ChunkCoordIntPair>();
             }
@@ -99,13 +100,13 @@ public class PregenLogic implements ICommandLogic {
                     chunks.addLast(new ChunkCoordIntPair(x, z));
                 }
             }
-            TickHandlerWorld.chunksToPreGen.put(world.provider.getDimensionId(), chunks);
+            TickHandlerWorld.chunksToPreGen.put(world.provider.getDimension(), chunks);
         }
     }
     @Override
-    public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2) {
-            return AbstractCommand.getPlayerNamesStartingWithLastArg(args);
+            return AbstractCommand.getPlayerNamesStartingWithLastArg(server,args);
         }
         return null;
     }

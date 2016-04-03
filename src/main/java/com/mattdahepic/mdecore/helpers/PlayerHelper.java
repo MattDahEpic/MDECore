@@ -2,14 +2,14 @@ package com.mattdahepic.mdecore.helpers;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class PlayerHelper {
     public static EntityPlayerMP getPlayerFromUsername (String username) {
-        return MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(username);
+        return FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(username);
     }
     public static boolean isPlayerFake (EntityPlayer player) {
-        return player.worldObj == null?true:(player.worldObj.isRemote?false:(player.getClass() == EntityPlayerMP.class?false:!MinecraftServer.getServer().getConfigurationManager().playerEntityList.contains(player)));
+        return player.worldObj == null || !player.worldObj.isRemote || player.getClass() != EntityPlayerMP.class || !FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().contains(player);
     }
     public static boolean isPlayerFake (EntityPlayerMP player) {
         if(player.getClass() != EntityPlayerMP.class) {
@@ -23,7 +23,7 @@ public class PlayerHelper {
             } catch (Exception e) {
                 return true;
             }
-            return !MinecraftServer.getServer().getConfigurationManager().playerEntityList.contains(player);
+            return !FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().contains(player);
         }
     }
     public static boolean isPlayerReal (EntityPlayer player) {

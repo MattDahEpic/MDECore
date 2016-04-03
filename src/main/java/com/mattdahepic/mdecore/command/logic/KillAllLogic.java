@@ -1,19 +1,22 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import com.mattdahepic.mdecore.helpers.TranslationHelper;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.WorldServer;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class KillAllLogic implements ICommandLogic {
     public static KillAllLogic instance = new KillAllLogic();
@@ -28,10 +31,10 @@ public class KillAllLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return TranslationHelper.getTranslatedString("mdecore.command.killall.usage");
+        return I18n.translateToLocal("mdecore.command.killall.usage");
     }
     @Override
-    public void handleCommand (ICommandSender sender, String[] args) {
+    public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {
         int killCount = 0;
         Map<String,Integer> names = new HashMap<String,Integer>();
         String target = null;
@@ -40,7 +43,7 @@ public class KillAllLogic implements ICommandLogic {
             target = args[1].toLowerCase();
             all = "*".equals(target);
         }
-        for (WorldServer world : MinecraftServer.getServer().worldServers) {
+        for (WorldServer world : server.worldServers) {
             synchronized (world) {
                 for (Entity entity : world.loadedEntityList) {
                     if (entity != null && !(entity instanceof EntityPlayer)) { //does it exist and is it not a player?
@@ -64,16 +67,16 @@ public class KillAllLogic implements ICommandLogic {
         if (killCount > 0) {
             String finalNames = "";
             for (String name : names.keySet()) {
-                finalNames = finalNames + EnumChatFormatting.RED + names.get(name) + EnumChatFormatting.WHITE + "x" + EnumChatFormatting.YELLOW + name + EnumChatFormatting.WHITE + ", ";
+                finalNames = finalNames + TextFormatting.RED + names.get(name) + TextFormatting.WHITE + "x" + TextFormatting.YELLOW + name + TextFormatting.WHITE + ", ";
             }
             finalNames = finalNames.substring(0, finalNames.length() - 2);
-            sender.addChatMessage(TranslationHelper.getTranslatedChatFormatted((target != null ? "mdecore.command.killall.success.normal" : "mdecore.command.killall.success.hostile"), killCount, finalNames));
+            sender.addChatMessage(new TextComponentTranslation((target != null ? "mdecore.command.killall.success.normal" : "mdecore.command.killall.success.hostile"), killCount, finalNames));
         } else {
-            sender.addChatMessage(TranslationHelper.getTranslatedChat(target != null ? "mdecore.command.killall.failure.normal" : "mdecore.command.killall.failure.hostile"));
+            sender.addChatMessage(new TextComponentTranslation(target != null ? "mdecore.command.killall.failure.normal" : "mdecore.command.killall.failure.hostile"));
         }
     }
     @Override
-    public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
     }
 }

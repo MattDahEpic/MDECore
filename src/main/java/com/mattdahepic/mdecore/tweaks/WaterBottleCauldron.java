@@ -13,15 +13,15 @@ public class WaterBottleCauldron {
     @SubscribeEvent
     public void playerInteract (PlayerInteractEvent e) {
         if (MDEConfig.waterBottlesFillCauldrons) {
-            if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && e.world.getBlockState(e.pos).getBlock() == Blocks.cauldron) { //if rigth click on cauldron
-                if (e.entityPlayer.inventory.getCurrentItem().getItem() == Items.potionitem && e.entityPlayer.inventory.getCurrentItem().getMetadata() == 0) { //if water bottle
-                    int currentLevel = ((Integer) e.world.getBlockState(e.pos).getValue(BlockCauldron.LEVEL));
+            if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && e.getWorld().getBlockState(e.getPos()).getBlock() == Blocks.cauldron) { //if right click on cauldron
+                if (e.getEntityPlayer().inventory.getCurrentItem().getItem() == Items.potionitem && e.getEntityPlayer().inventory.getCurrentItem().getMetadata() == 0) { //if water bottle
+                    int currentLevel = e.getWorld().getBlockState(e.getPos()).getValue(BlockCauldron.LEVEL);
                     if (currentLevel < 3) { //if not full
-                        e.world.setBlockState(e.pos, e.world.getBlockState(e.pos).withProperty(BlockCauldron.LEVEL, currentLevel + 1)); //fill cauldron
-                        if (!e.entityPlayer.capabilities.isCreativeMode) {
-                            e.entityPlayer.inventory.getCurrentItem().stackSize--; //remove one water bottle
-                            if (!e.entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle))) { //give the bottle back, but if they cant fit it...
-                                e.world.spawnEntityInWorld(new EntityItem(e.world, e.pos.getX() + 0.5D, e.pos.getY() + 0.5D, e.pos.getZ() + 0.5D, new ItemStack(Items.glass_bottle))); //...drop it!
+                        e.getWorld().setBlockState(e.getPos(), e.getWorld().getBlockState(e.getPos()).withProperty(BlockCauldron.LEVEL, currentLevel + 1)); //fill cauldron
+                        if (!e.getEntityPlayer().capabilities.isCreativeMode) {
+                            e.getEntityPlayer().inventory.getCurrentItem().stackSize--; //remove one water bottle
+                            if (!e.getEntityPlayer().inventory.addItemStackToInventory(new ItemStack(Items.glass_bottle))) { //give the bottle back, but if they cant fit it...
+                                e.getWorld().spawnEntityInWorld(new EntityItem(e.getWorld(), e.getPos().getX() + 0.5D, e.getPos().getY() + 0.5D, e.getPos().getZ() + 0.5D, new ItemStack(Items.glass_bottle))); //...drop it!
                             }
                         }
                     }

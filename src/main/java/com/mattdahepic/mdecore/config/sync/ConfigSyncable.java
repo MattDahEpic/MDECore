@@ -1,8 +1,8 @@
 package com.mattdahepic.mdecore.config.sync;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.io.File;
@@ -67,7 +67,7 @@ public abstract class ConfigSyncable implements IConfigHandler {
 
     protected ConfigSyncable(String configName) {
         configFileName = configName;
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
     @Override
     public final void initialize(FMLPreInitializationEvent e) {
@@ -341,7 +341,7 @@ public abstract class ConfigSyncable implements IConfigHandler {
      */
     protected <T> T getValue(String key, String comment, T defaultVal, RestartReqs req, Bound<? extends Number> bound) {
         Property prop = getProperty(key, defaultVal, req);
-        prop.comment = comment;
+        prop.setComment(comment);
 
         return getValue(prop, defaultVal, bound);
     }
@@ -487,9 +487,9 @@ public abstract class ConfigSyncable implements IConfigHandler {
     static void addCommentDetails(Property prop, Bound<?> bound) {
         if (!bound.equals(Bound.MAX_BOUND)) { //has a bound
             if (bound.min.doubleValue() == bound.min.intValue() && bound.max.intValue() == bound.max.intValue()) { //if bound is integer
-                prop.comment += String.format("\nRange: [%s - %s]", bound.min.intValue(), bound.max.intValue());
+                prop.setComment(prop.getComment()+String.format("\nRange: [%s - %s]", bound.min.intValue(), bound.max.intValue()));
             } else {
-                prop.comment += String.format("\nRange: [%s - %s]", bound.min, bound.max);
+                prop.setComment(prop.getComment()+String.format("\nRange: [%s - %s]", bound.min, bound.max));
             }
         }
     }

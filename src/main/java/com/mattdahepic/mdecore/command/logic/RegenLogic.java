@@ -1,15 +1,15 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import com.mattdahepic.mdecore.helpers.TranslationHelper;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -29,10 +29,10 @@ public class RegenLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return TranslationHelper.getTranslatedString("mdecore.command.regen.usage");
+        return I18n.translateToLocal("mdecore.command.regen.usage");
     }
     @Override
-    public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
+    public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         BlockPos pos = sender.getPosition();
         if (!sender.getEntityWorld().isRemote) {
             try {
@@ -40,7 +40,7 @@ public class RegenLogic implements ICommandLogic {
 
                 if (sender.getEntityWorld() instanceof WorldServer) {
                     WorldServer worldServer = (WorldServer) sender.getEntityWorld();
-                    IChunkProvider chunkProviderGenerate = worldServer.theChunkProviderServer.serverChunkGenerator;
+                    IChunkProvider chunkProviderGenerate = worldServer.getChunkProvider();
 
                     Chunk newChunk = chunkProviderGenerate.provideChunk(oldChunk.xPosition, oldChunk.zPosition);
 
@@ -58,16 +58,16 @@ public class RegenLogic implements ICommandLogic {
                         }
                     }
                     oldChunk.setTerrainPopulated(false);
-                    chunkProviderGenerate.populate(chunkProviderGenerate, oldChunk.xPosition, oldChunk.zPosition);
-                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW+TranslationHelper.getTranslatedString("mdecore.command.regen.success")));
+                    chunkProviderGenerate.provideChunk(oldChunk.xPosition,oldChunk.zPosition);
+                    sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+I18n.translateToLocal("mdecore.command.regen.success")));
                 }
             } catch (Exception e) {
-                throw new CommandException(TranslationHelper.getTranslatedString("mdecore.command.regen.failure"));
+                throw new CommandException(I18n.translateToLocal("mdecore.command.regen.failure"));
             }
         }
     }
     @Override
-    public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
     }
 }

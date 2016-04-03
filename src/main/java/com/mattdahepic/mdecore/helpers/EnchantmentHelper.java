@@ -16,10 +16,10 @@ public class EnchantmentHelper extends net.minecraft.enchantment.EnchantmentHelp
     public static List<EnchantmentData> getEnchantmentsFromItem (ItemStack item) {
         if (!item.isItemEnchanted()) return null;
         final List<EnchantmentData> ret = new ArrayList<EnchantmentData>();
-        net.minecraft.enchantment.EnchantmentHelper.getEnchantments(item).forEach(new BiConsumer<Integer, Integer>() {
+        net.minecraft.enchantment.EnchantmentHelper.getEnchantments(item).forEach(new BiConsumer<Enchantment, Integer>() {
             @Override
-            public void accept(Integer enchID, Integer lvl) {
-                ret.add(new EnchantmentData(Enchantment.getEnchantmentById(enchID),lvl));
+            public void accept(Enchantment ench, Integer lvl) {
+                ret.add(new EnchantmentData(ench,lvl));
             }
         });
         return ret;
@@ -30,7 +30,7 @@ public class EnchantmentHelper extends net.minecraft.enchantment.EnchantmentHelp
         NBTTagList enchantmentsRaw = Items.enchanted_book.getEnchantments(enchantedBook);
         for (int i = 0; i < enchantmentsRaw.tagCount(); i++) {
             NBTTagCompound enchantRaw = enchantmentsRaw.getCompoundTagAt(i);
-            ret.add(new EnchantmentData(Enchantment.getEnchantmentById(enchantRaw.getShort("id")),enchantRaw.getShort("lvl")));
+            ret.add(new EnchantmentData(Enchantment.getEnchantmentByID(enchantRaw.getShort("id")),enchantRaw.getShort("lvl")));
         }
         return ret;
     }
@@ -44,7 +44,7 @@ public class EnchantmentHelper extends net.minecraft.enchantment.EnchantmentHelp
     public static boolean removeEnchantment (EnchantmentData ench, ItemStack item) {
         boolean flag = false;
         for (int i = 0; i < item.getEnchantmentTagList().tagCount(); i++) {
-            EnchantmentData enchantmentData = new EnchantmentData(Enchantment.getEnchantmentById(item.getEnchantmentTagList().getCompoundTagAt(i).getShort("id")),item.getEnchantmentTagList().getCompoundTagAt(i).getShort("lvl"));
+            EnchantmentData enchantmentData = new EnchantmentData(Enchantment.getEnchantmentByID(item.getEnchantmentTagList().getCompoundTagAt(i).getShort("id")),item.getEnchantmentTagList().getCompoundTagAt(i).getShort("lvl"));
             if (enchantmentData.enchantmentobj == ench.enchantmentobj) {
                 if (ench.enchantmentLevel < enchantmentData.enchantmentLevel) {
                     NBTTagCompound tag = item.getEnchantmentTagList().getCompoundTagAt(i);

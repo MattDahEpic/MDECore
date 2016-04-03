@@ -1,10 +1,10 @@
 package com.mattdahepic.mdecore.command;
 
-import com.mattdahepic.mdecore.helpers.TranslationHelper;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import java.util.*;
@@ -58,16 +58,16 @@ public abstract class AbstractCommand extends CommandBase {
         return "/"+getCommandName()+" help";
     }
     @Override
-    public boolean canCommandSenderUseCommand (ICommandSender sender) {
+    public boolean checkPermission (MinecraftServer server, ICommandSender sender) {
         return true;
     }
     @Override
-    public void processCommand (ICommandSender sender, String[] args) throws CommandException {
+    public void execute (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length < 1) args = new String[]{"help"};
         ICommandLogic command = commands.get(args[0]);
         if (command != null) {
             if (canUseCommand(sender,command.getPermissionLevel(),this,command.getCommandName())) {
-                command.handleCommand(sender,args);
+                command.handleCommand(server,sender,args);
                 return;
             }
             throw new CommandException("commands.generic.permission");
@@ -75,19 +75,19 @@ public abstract class AbstractCommand extends CommandBase {
         throwNoCommand();
     }
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1) {
             return getListOfStringsMatchingLastWord(args, commands.keySet());
         } else if (commands.containsKey(args[0])) {
-            return commands.get(args[0]).addTabCompletionOptions(sender, args, pos);
+            return commands.get(args[0]).getTabCompletionOptions(server, sender, args, pos);
         }
         return null;
     }
 
     /* UTILITIES */
 
-    public static List<String> getPlayerNamesStartingWithLastArg (String[] args) {
-        return CommandBase.getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames());
+    public static List<String> getPlayerNamesStartingWithLastArg (MinecraftServer server, String[] args) {
+        return CommandBase.getListOfStringsMatchingLastWord(args, server.getAllUsernames());
     }
     public static void throwUsages (ICommandLogic command) throws WrongUsageException {
         throw new WrongUsageException(command.getCommandSyntax());
@@ -99,7 +99,7 @@ public abstract class AbstractCommand extends CommandBase {
         throw new NumberInvalidException("commands.generic.num.invalid",notNumber);
     }
     public static void throwNoWorld () throws CommandException {
-        throw new CommandException(TranslationHelper.getTranslatedString("mdecore.worldnotfound"));
+        throw new CommandException(I18n.translateToLocal("mdecore.worldnotfound"));
     }
     public static void throwNoCommand () throws CommandNotFoundException {
         throw new CommandNotFoundException();

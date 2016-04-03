@@ -2,7 +2,7 @@ package com.mattdahepic.mdecore.helpers;
 
 import com.mattdahepic.mdecore.MDECore;
 import com.mattdahepic.mdecore.network.PacketHandler;
-import com.mattdahepic.mdecore.network.TickratePacket;
+import com.mattdahepic.mdecore.network.packet.TickratePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -31,16 +31,16 @@ public class TickrateHelper {
 
     /** HELPER METHODS */
 
-    public static void setTickrate (float tickrate) {
-        setAllClientTickrate(tickrate);
+    public static void setTickrate (MinecraftServer server, float tickrate) {
+        setAllClientTickrate(server, tickrate);
         setServerTickrate(tickrate);
     }
     public static void setServerTickrate (float tickrate) {
         instance().updateServerTickrate(tickrate);
     }
-    public static void setAllClientTickrate (float tickrate) {
+    public static void setAllClientTickrate (MinecraftServer server, float tickrate) {
         if (EnvironmentHelper.isServer) {
-            for (EntityPlayer p : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+            for (EntityPlayer p : server.getPlayerList().getPlayerList()) {
                 setClientTickrate(p, tickrate);
             }
         } else {

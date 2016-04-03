@@ -1,22 +1,21 @@
 package com.mattdahepic.mdecore.config.sync;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
 import com.mattdahepic.mdecore.MDECore;
-import com.mattdahepic.mdecore.config.MDEConfig;
 import com.mattdahepic.mdecore.config.annot.*;
-import com.mattdahepic.mdecore.config.annot.Range;
 import com.mattdahepic.mdecore.network.PacketHandler;
-
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
@@ -59,7 +58,7 @@ public class ConfigProcessor {
         this.configFile = configFile;
         this.configFileName = configName;
         processorMap.put(configName, this);
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
         adapters.addAll(TypeAdapterBase.all);
     }
     public <ACTUAL, BASE> ConfigProcessor addAdapter(ITypeAdapter<ACTUAL, BASE> adapter) {
@@ -237,13 +236,13 @@ public class ConfigProcessor {
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (MDEConfig.debugLogging) MDECore.logger.info(String.format("Sending server configs to client %s for %s", event.player.getDisplayNameString(), configFileName+".cfg"));
+        MDECore.logger.debug(String.format("Sending server configs to client %s for %s", event.player.getDisplayNameString(), configFileName+".cfg"));
         PacketHandler.net.sendTo(new PacketConfigSync(this), (EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent
     public void onPlayerLogout(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         syncTo(originalValues);
-        if (MDEConfig.debugLogging) MDECore.logger.info(String.format("Reset configs to client values for %s", configFileName+".cfg"));
+        MDECore.logger.debug(String.format("Reset configs to client values for %s", configFileName+".cfg"));
     }
 }

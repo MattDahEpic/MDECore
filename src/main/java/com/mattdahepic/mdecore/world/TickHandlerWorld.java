@@ -24,7 +24,7 @@ public class TickHandlerWorld {
         if (event.side != Side.SERVER) return;
 
         World world = event.world;
-        int dim = world.provider.getDimensionId();
+        int dim = world.provider.getDimension();
 
         if (event.phase == TickEvent.Phase.END) {
             ArrayDeque<ChunkCoordIntPair> chunks = chunksToGen.get(dim);

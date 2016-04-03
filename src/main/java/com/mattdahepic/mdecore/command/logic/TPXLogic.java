@@ -3,15 +3,16 @@ package com.mattdahepic.mdecore.command.logic;
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TeleportHelper;
-import com.mattdahepic.mdecore.helpers.TranslationHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.DimensionManager;
 
 import java.util.List;
@@ -29,26 +30,26 @@ public class TPXLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return TranslationHelper.getTranslatedString("mdecore.command.tpx.usage");
+        return I18n.translateToLocal("mdecore.command.tpx.usage");
     }
     @Override
-    public void handleCommand (ICommandSender sender, String[] args) throws CommandException {
+    public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         switch (args.length) {
             case 1: // (tpx) invalid command
                 AbstractCommand.throwUsages(instance);
             case 2: // (tpx {<player>|<dimension>}) teleporting player to self, or self to dimension
                 EntityPlayerMP playerSender = CommandBase.getCommandSenderAsPlayer(sender);
                 try {
-                    EntityPlayerMP player = CommandBase.getPlayer(sender, args[1]);
+                    EntityPlayerMP player = CommandBase.getPlayer(server, sender, args[1]);
                     if (!player.equals(playerSender)) {
                         if (playerSender.dimension == player.dimension) {
                             player.setPositionAndUpdate(playerSender.posX, playerSender.posY, playerSender.posZ);
                         } else {
-                            TeleportHelper.transferPlayerToDimension(player, playerSender.dimension, playerSender.mcServer.getConfigurationManager());
+                            TeleportHelper.transferPlayerToDimension(player, playerSender.dimension, playerSender.mcServer.getPlayerList());
                             player.setPositionAndUpdate(playerSender.posX, playerSender.posY, playerSender.posZ);
                         }
                     } else {
-                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE+TranslationHelper.getTranslatedString("mdecore.command.tpx.selftp")));
+                        sender.addChatMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+I18n.translateToLocal("mdecore.command.tpx.selftp")));
                     }
                     break;
                 } catch (PlayerNotFoundException t) {
@@ -62,24 +63,24 @@ public class TPXLogic implements ICommandLogic {
                         AbstractCommand.throwNoWorld();
                     }
                     if (playerSender.dimension != dimension) {
-                        TeleportHelper.transferPlayerToDimension(playerSender, dimension, playerSender.mcServer.getConfigurationManager());
+                        TeleportHelper.transferPlayerToDimension(playerSender, dimension, playerSender.mcServer.getPlayerList());
                     }
                     TeleportHelper.sendPlayerToSpawnInCurrentWorld(playerSender);
                 }
                 break;
             case 3: // (tpx <player> {<player>|<dimension>}) teleporting player to player or player to dimension
-                EntityPlayerMP player = CommandBase.getPlayer(sender, args[1]);
+                EntityPlayerMP player = CommandBase.getPlayer(server, sender, args[1]);
                 try {
-                    EntityPlayerMP otherPlayer = CommandBase.getPlayer(sender, args[2]);
+                    EntityPlayerMP otherPlayer = CommandBase.getPlayer(server, sender, args[2]);
                     if (!player.equals(otherPlayer)) {
                         if (otherPlayer.dimension == player.dimension) {
                             player.setPositionAndUpdate(otherPlayer.posX, otherPlayer.posY, otherPlayer.posZ);
                         } else {
-                            TeleportHelper.transferPlayerToDimension(player, otherPlayer.dimension, otherPlayer.mcServer.getConfigurationManager());
+                            TeleportHelper.transferPlayerToDimension(player, otherPlayer.dimension, otherPlayer.mcServer.getPlayerList());
                             player.setPositionAndUpdate(otherPlayer.posX, otherPlayer.posY, otherPlayer.posZ);
                         }
                     } else {
-                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA+TranslationHelper.getTranslatedString("mdecore.command.tpx.tptoself")));
+                        sender.addChatMessage(new TextComponentString(TextFormatting.AQUA+I18n.translateToLocal("mdecore.command.tpx.tptoself")));
                     }
                     break;
                 } catch (PlayerNotFoundException t) {
@@ -93,7 +94,7 @@ public class TPXLogic implements ICommandLogic {
                         AbstractCommand.throwNoWorld();
                     }
                     if (player.dimension != dimension) {
-                        TeleportHelper.transferPlayerToDimension(player, dimension, player.mcServer.getConfigurationManager());
+                        TeleportHelper.transferPlayerToDimension(player, dimension, player.mcServer.getPlayerList());
                     }
                     TeleportHelper.sendPlayerToSpawnInCurrentWorld(player);
                 }
@@ -108,7 +109,7 @@ public class TPXLogic implements ICommandLogic {
                 break;
             case 5: // (tpx {<player> <x> <y> <z> | <x> <y> <z> <dimension>}) teleporting player within player's dimension or self to dimension
                 try {
-                    player = CommandBase.getPlayer(sender, args[1]);
+                    player = CommandBase.getPlayer(server, sender, args[1]);
                     try {
                         player.setPositionAndUpdate(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
                     } catch (NumberFormatException e) {
@@ -126,21 +127,21 @@ public class TPXLogic implements ICommandLogic {
                         AbstractCommand.throwNoWorld();
                     }
                     if (playerSender.dimension != dimension) {
-                        TeleportHelper.transferPlayerToDimension(playerSender, dimension, playerSender.mcServer.getConfigurationManager());
+                        TeleportHelper.transferPlayerToDimension(playerSender, dimension, playerSender.mcServer.getPlayerList());
                     }
                     playerSender.setPositionAndUpdate(playerSender.posX, playerSender.posY, playerSender.posZ);
                 }
                 break;
             case 6: // (tpx <player> <x> <y> <z> <dimension>) teleporting player to dimension and location
             default: // ignore excess tokens. warn?
-                player = CommandBase.getPlayer(sender, args[1]);
+                player = CommandBase.getPlayer(server, sender, args[1]);
                 int dimension = Integer.parseInt(args[5]);
 
                 if (!DimensionManager.isDimensionRegistered(dimension)) {
                     AbstractCommand.throwNoWorld();
                 }
                 if (player.dimension != dimension) {
-                    TeleportHelper.transferPlayerToDimension(player, dimension, player.mcServer.getConfigurationManager());
+                    TeleportHelper.transferPlayerToDimension(player, dimension, player.mcServer.getPlayerList());
                 }
                 try {
                     player.setPositionAndUpdate(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
@@ -152,9 +153,9 @@ public class TPXLogic implements ICommandLogic {
     }
     @SuppressWarnings("unchecked")
     @Override
-    public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2 || args.length == 3) {
-            return AbstractCommand.getPlayerNamesStartingWithLastArg(args);
+            return AbstractCommand.getPlayerNamesStartingWithLastArg(server,args);
         } else if (args.length >= 6) {
             Integer[] ids = DimensionManager.getIDs();
             String[] strings = new String[ids.length];
