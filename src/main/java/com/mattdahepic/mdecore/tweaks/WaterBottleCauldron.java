@@ -11,9 +11,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class WaterBottleCauldron {
     @SubscribeEvent
-    public void playerInteract (PlayerInteractEvent e) {
+    public void playerInteract (PlayerInteractEvent.RightClickBlock e) {
         if (MDEConfig.waterBottlesFillCauldrons) {
-            if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && e.getWorld().getBlockState(e.getPos()).getBlock() == Blocks.cauldron) { //if right click on cauldron
+            if (e.getWorld().getBlockState(e.getPos()).getBlock() == Blocks.cauldron) { //if right click on cauldron
                 if (e.getEntityPlayer().inventory.getCurrentItem().getItem() == Items.potionitem && e.getEntityPlayer().inventory.getCurrentItem().getMetadata() == 0) { //if water bottle
                     int currentLevel = e.getWorld().getBlockState(e.getPos()).getValue(BlockCauldron.LEVEL);
                     if (currentLevel < 3) { //if not full

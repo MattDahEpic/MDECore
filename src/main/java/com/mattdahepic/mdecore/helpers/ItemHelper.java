@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ItemHelper {
     public static ItemStack getItemFromName (String modid, String item_name, int meta) {
-        ItemStack ret = new ItemStack(GameRegistry.findItem(modid,item_name),1,meta);
+        ItemStack ret = GameRegistry.makeItemStack(modid+":"+item_name,meta,1,null);
         if (ret == null) throw new RuntimeException(String.format("The item %s:%s@%d does not exist.",modid,item_name,meta));
         return ret;
     }
@@ -17,7 +17,7 @@ public class ItemHelper {
         return getItemFromName(nameAndMeta.substring(0,nameAndMeta.indexOf('@')),Integer.parseInt(nameAndMeta.substring(nameAndMeta.indexOf('@'))));
     }
     public static String getNameFromItemStack (ItemStack item) {
-        return Item.itemRegistry.getNameForObject(item.getItem()).toString();
+        return Item.itemRegistry.getNameForObject(item.getItem()).toString()+"@"+item.getMetadata();
     }
     public static boolean isSameIgnoreStackSize (ItemStack template, ItemStack compare) {
         if ((template == null || compare == null) && !(template == null && compare == null)) return false; //if either are null but not both

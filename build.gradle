@@ -11,12 +11,12 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.9-0.4"
+version = "1.9-0.6"
 group = "com.mattdahepic.mdecore" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mdecore"
 
 minecraft {
-    version = "1.9-12.16.0.1811-1.9"
+    version = "1.9-12.16.0.1859-1.9"
     runDir = "run"
 
     replace "@VERSION@", project.version
@@ -27,7 +27,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20160326"
+    mappings = "snapshot_20160405"
     //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 

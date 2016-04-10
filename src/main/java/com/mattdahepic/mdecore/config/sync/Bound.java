@@ -25,14 +25,6 @@ public final class Bound<T extends Number & Comparable<T>> {
         this.max = max;
     }
 
-    public T getMin() {
-        return this.min;
-    }
-
-    public T getMax() {
-        return this.max;
-    }
-
     public T clamp(T val) {
         return val.compareTo(min) < 0 ? min : val.compareTo(max) > 0 ? max : val;
     }
@@ -44,12 +36,12 @@ public final class Bound<T extends Number & Comparable<T>> {
         if (!(o instanceof Bound))
             return false;
         final Bound<?> other = (Bound<?>) o;
-        final java.lang.Object this$min = this.getMin();
-        final java.lang.Object other$min = other.getMin();
+        final java.lang.Object this$min = this.min;
+        final java.lang.Object other$min = other.min;
         if (this$min == null ? other$min != null : !this$min.equals(other$min))
             return false;
-        final java.lang.Object this$max = this.getMax();
-        final java.lang.Object other$max = other.getMax();
+        final java.lang.Object this$max = this.max;
+        final java.lang.Object other$max = other.max;
         if (this$max == null ? other$max != null : !this$max.equals(other$max))
             return false;
         return true;
