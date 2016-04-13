@@ -1,6 +1,5 @@
 package com.mattdahepic.mdecore.config.v2.annot;
 
-import com.mattdahepic.mdecore.config.v2.Range;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -22,9 +21,14 @@ public @interface Config {
     /** Does this config value take effect immediately, after world restart, or after game restart? */
     RestartReqs restartReq() default RestartReqs.NONE;
     /** What is the range for this config value? Can only be applied to number values and is applied forcefully. */
-    Range range() default Range.MAX_RANGE;
+    Range range() default @Config.Range();
     /** Should the value by synced to the client when joining a server? */
     boolean sync() default true;
+
+    @interface Range {
+        double min() default Double.MIN_VALUE;
+        double max() default Double.MAX_VALUE;
+    }
 
     enum RestartReqs {
         /** No restart needed for this config to be applied. Default value. */
@@ -43,4 +47,5 @@ public @interface Config {
             return prop;
         }
     }
+    interface ConfigSubValue {}
 }

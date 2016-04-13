@@ -1,11 +1,13 @@
 package com.mattdahepic.mdecore.config.v2;
 
 import com.google.common.collect.Maps;
+import com.google.common.reflect.TypeToken;
 import com.mattdahepic.mdecore.config.v2.annot.Config;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+import org.apache.commons.lang3.StringUtils;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -32,7 +34,11 @@ class ConfigProcessor {
 
         try {
             for (Field f : configClass.getDeclaredFields()) {
-                processField(f);
+                if (f.getType().isAssignableFrom(Config.ConfigSubValue.class)) {
+                    //TODO: process all fields in sub class
+                } else {
+                    processField(f);
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -53,15 +59,57 @@ class ConfigProcessor {
 
         /* BEGIN CONFIG VALUE PROCESSING */
         Class<?> c = f.getType();
-        if (c.isAssignableFrom(Number.class) && c.isAssignableFrom(Comparable.class)) { //is number
-
-        } else if (c.isAssignableFrom(String.class)) { //string
-
-        } else if (c.isAssignableFrom(Serializable.class)) {
-
-        } else {
-            throw new RuntimeException("Attempted to apply config value to a non number, non string, non serializable field!");
+        String comment = StringUtils.join(cfg.comment(),"\n");
+        Property prop = null;
+        for (ConfigType type : ConfigType.values()) {
+            //if config type matches
+            //prop = config.get();
         }
+
+
+        //apply range
+        Range range = Range.of(cfg.range());
+        range.apply(prop);
+        //apply comment
+        if (!range.equals(Range.MAX_RANGE)) { //has a range
+            if (range.min.doubleValue() == range.min.intValue() && range.max.intValue() == range.max.intValue()) { //if bound is integer
+                prop.setComment(prop.getComment()+String.format("\nRange: [%s - %s]", range.min.intValue(), range.max.intValue()));
+            } else {
+                prop.setComment(prop.getComment()+String.format("\nRange: [%s - %s]", range.min, range.max));
+            }
+        }
+        cfg.restartReq().apply(prop); //apply restart requirement
         /* END CONFIG VALUE PROCESSING */
+    }
+
+    private enum ConfigType {
+        INTEGER(TypeToken.of(Integer.class),Property.Type.INTEGER,int.class),
+        INTEGER_ARR,
+        DOUBLE,
+        DOUBLE_ARR,
+        BOOLEAN,
+        BOOLEAN_ARR,
+        STRING,
+        STRING_ARR,
+        FLOAT,
+        FLOAT_ARR,
+        INTEGER_LIST,
+        DOUBLE_LIST,
+        FLOAT_LIST,
+        BOOLEAN_LIST,
+        STRING_LIST
+
+        private final TypeToken actualType;
+        private final Property.Type type;
+        private final Class<?> primitiveType;
+
+        ConfigType(TypeToken actualType, Property.Type type, Class<?> primitiveType) {
+            this.actualType = actualType;
+            this.type = type;
+            this.primitiveType = primitiveType;
+        }
+        ConfigType(TypeToken actualType, Property.Type type) {
+            this(actualType,type,null);
+        }
     }
 }

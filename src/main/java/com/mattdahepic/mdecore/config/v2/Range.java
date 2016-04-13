@@ -1,13 +1,17 @@
 package com.mattdahepic.mdecore.config.v2;
 
 import com.mattdahepic.mdecore.config.sync.Bound;
+import com.mattdahepic.mdecore.config.v2.annot.Config;
 import net.minecraftforge.common.config.Property;
 
-public final class Range<T extends Number & Comparable<T>> {
+final class Range<T extends Number & Comparable<T>> {
     public static final Range<Double> MAX_RANGE = Range.of(Double.MIN_VALUE,Double.MAX_VALUE);
 
     public static <T extends Number & Comparable<T>> Range<T> of(T min, T max) {
         return new Range<T>(min,max);
+    }
+    public static Range<Double> of (Config.Range rangeAnnot) {
+        return new Range<Double>(rangeAnnot.min(),rangeAnnot.max());
     }
 
     public final T min;
