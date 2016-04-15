@@ -1,4 +1,4 @@
-package com.mattdahepic.mdecore.config.v2.annot;
+package com.mattdahepic.mdecore.config.sync;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;

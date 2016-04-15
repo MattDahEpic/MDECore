@@ -1,16 +1,11 @@
 package com.mattdahepic.mdecore.config.sync;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
 import com.mattdahepic.mdecore.MDECore;
-import com.mattdahepic.mdecore.config.annot.*;
 import com.mattdahepic.mdecore.network.PacketHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -18,218 +13,166 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-public class ConfigProcessor {
-    public interface ITypeAdapter<ACTUAL, BASE> {
-        TypeToken<ACTUAL> getActualType();
-        Property.Type getType();
-        /**
-         * If this binds to a primitive type, return it here (e.g. int.class).
-         * Otherwise, return null.
-         *
-         * @return The class for this ITypeAdapter's primitive type.
-         */
-        @Nullable
-        Class<?> getPrimitiveType();
-        ACTUAL createActualType(BASE base);
-        BASE createBaseType(ACTUAL actual);
-    }
-    static final Map<String, ConfigProcessor> processorMap = Maps.newHashMap();
-
-    private final List<ITypeAdapter<?, ?>> adapters = Lists.newArrayList();
-
-    private final Class<?> configs;
-    private final Configuration configFile;
+class ConfigProcessor {
+    private final Class<? extends ConfigSyncable> configClass;
+    private final Configuration config;
     final String configFileName;
 
-    Map<String, Object> configValues = Maps.newHashMap();
-    Map<String, Object> defaultValues = Maps.newHashMap();
-    Map<String, Object> originalValues = Maps.newHashMap();
+    public static Map<String,ConfigProcessor> processorMap = Maps.newHashMap();
 
-    private Set<String> sections = Sets.newHashSet();
+    private Map<String, Object> defaultValues = Maps.newHashMap();
+    public Map<String, Object> currentValues = Maps.newHashMap();
+    private Map<String, Object> originalValues = Maps.newHashMap();
 
-    public ConfigProcessor(Class<?> configs, Configuration configFile, String configName) {
-        this.configs = configs;
-        this.configFile = configFile;
+    public ConfigProcessor (Class<? extends ConfigSyncable> configClass, Configuration config, String configName) {
+        this.configClass = configClass;
+        this.config = config;
         this.configFileName = configName;
-        processorMap.put(configName, this);
         MinecraftForge.EVENT_BUS.register(this);
-        adapters.addAll(TypeAdapterBase.all);
+        processorMap.put(configName,this);
     }
-    public <ACTUAL, BASE> ConfigProcessor addAdapter(ITypeAdapter<ACTUAL, BASE> adapter) {
-        adapters.add(adapter);
-        return this;
-    }
-    public <ACTUAL, BASE> ConfigProcessor addAdapters(ITypeAdapter<ACTUAL, BASE>... adapters) {
-        for (ITypeAdapter<ACTUAL, BASE> adapter : adapters) {
-            addAdapter(adapter);
-        }
-        return this;
-    }
+
     /**
-     * Processes all the configs in this processors class, optionally loading them
-     * from file first.
-     *
-     * @param load
-     *          If true, the values from the file will be loaded. Otherwise, the
-     *          values existing in memory will be used.
+     * Process the config file for this processor.
+     * @param load Should the file be loaded from disk or should the values in memory be used?
      */
-    public void process(boolean load) {
-        if (load) {
-            configFile.load();
-        }
+    public void process (boolean load) {
+        if (load) config.load();
 
         try {
-            for (Field f : configs.getDeclaredFields()) {
-                processField(f);
+            for (Field f : configClass.getDeclaredFields()) {
+                if (f.getType().isAssignableFrom(Config.ConfigSubValue.class)) {
+                    //TODO: process all fields in sub class
+                } else {
+                    processField(f);
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        configFile.save();
+        config.save();
     }
-    // returns true if the config value changed
-    private boolean processField(Field f) throws Exception {
-        Config cfg = f.getAnnotation(Config.class);
-        if (cfg == null) {
-            return false;
-        }
+    /** Parses value and returns true if the value changed */
+    private boolean processField (Field f) throws Exception {
+        Config cfg = configClass.getAnnotation(Config.class);
+        if (cfg == null) return false;
+
         String name = f.getName();
         Object value = defaultValues.get(name);
         if (value == null) {
             value = f.get(null);
-            defaultValues.put(name, value);
+            defaultValues.put(name,value);
         }
 
-        Object newValue = getConfigValue(cfg.value(), getComment(f), f, value);
+        /* BEGIN CONFIG VALUE PROCESSING */
+        Class<?> c = f.getType();
+        String comment = StringUtils.join(cfg.comment(),"\n");
+        Range range = Range.of(cfg.range());
+        Property prop = null;
+        Object newValue = null;
+        for (ConfigType type : ConfigType.values()) {
+            if (c == type.primitiveType || c == type.actualType.getRawType()) {
+                switch (type) {
+                    case BOOLEAN:
+                    case BOOLEAN_ARR:
+                    case BOOLEAN_LIST:
+                        if (c.isArray()) {
+                            prop = config.get(cfg.cat(),name,(boolean[]) defaultValues.get(name),comment);
+                            newValue = prop.getBooleanList();
+                        } else {
+                            prop = config.get(cfg.cat(),name,(Boolean)defaultValues.get(name),comment);
+                            newValue = prop.getBoolean();
+                        }
+                        break;
+                    case DOUBLE:
+                    case DOUBLE_ARR:
+                    case DOUBLE_LIST:
+                        if (c.isArray()) {
+                            prop = config.get(cfg.cat(),name,(double[])defaultValues.get(name),comment);
+                            newValue = range.clampArr(Arrays.asList(prop.getDoubleList())).toArray();
+                        } else {
+                            prop = config.get(cfg.cat(),name,(Double)defaultValues.get(name),comment);
+                            newValue = range.clamp(prop.getDouble());
+                        }
+                        break;
+                    case INTEGER:
+                    case INTEGER_ARR:
+                    case INTEGER_LIST:
+                        if (c.isArray()) {
+                            prop = config.get(cfg.cat(),name,(int[])defaultValues.get(name),comment);
+                            newValue = range.clampArr(Arrays.asList(prop.getIntList())).toArray();
+                        } else {
+                            prop = config.get(cfg.cat(),name,(Integer)defaultValues.get(name),comment);
+                            newValue = range.clamp(prop.getInt());
+                        }
+                        break;
+                    case STRING:
+                    case STRING_ARR:
+                    case STRING_LIST:
+                        if (c.isArray()) {
+                            prop = config.get(cfg.cat(),name,(String[])defaultValues.get(name),comment);
+                            newValue = prop.getStringList();
+                        } else {
+                            prop = config.get(cfg.cat(),name,(String)defaultValues.get(name),comment);
+                            newValue = prop.getString();
+                        }
+                        break;
+                    default:
+                        throw new RuntimeException(String.format("Attempted to assign config value to non-number, non-string field %s",f.getName()));
+                }
+            }
+        }
+        //apply range
+        range.apply(prop);
+        //apply comment
+        if (!range.equals(Range.MAX_RANGE)) { //has a range
+            if (range.min.doubleValue() == range.min.intValue() && range.max.intValue() == range.max.intValue()) { //if bound is integer
+                prop.setComment(prop.getComment()+String.format("\nRange: [%s - %s]", range.min.intValue(), range.max.intValue()));
+            } else {
+                prop.setComment(prop.getComment()+String.format("\nRange: [%s - %s]", range.min, range.max));
+            }
+        }
+        cfg.restartReq().apply(prop); //apply restart requirement
+        /* END CONFIG VALUE PROCESSING */
 
-        configValues.put(f.getName(), newValue);
+        currentValues.put(f.getName(), newValue);
         originalValues.put(f.getName(), newValue);
         f.set(null, newValue);
 
-        sections.add(cfg.value());
-
         return !value.equals(newValue);
     }
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Object getConfigValue(String section, String[] commentLines, Field f, Object defVal) {
-        Property prop = null;
-        Object res = null;
-        Bound<Double> bound = getBound(f);
-        ITypeAdapter adapter = getAdapterFor(f);
-        String comment = StringUtils.join(commentLines, "\n");
-        if (adapter != null) {
-            defVal = adapter.createBaseType(defVal);
-            switch (adapter.getType()) {
-                case BOOLEAN:
-                    if (defVal.getClass().isArray()) {
-                        prop = configFile.get(section, f.getName(), (boolean[]) defVal, comment);
-                        res = prop.getBooleanList();
-                    } else {
-                        prop = configFile.get(section, f.getName(), (Boolean) defVal, comment);
-                        res = prop.getBoolean();
+
+    void syncTo(Map<String, Object> values) {
+        this.currentValues = values;
+        try {
+            for (Field f : configClass.getDeclaredFields()) {
+                if (currentValues.containsKey(f.getName())) {
+                    Config annot = f.getAnnotation(Config.class);
+                    if (annot != null) {
+                        if (annot.sync()) {
+                            Object newVal = currentValues.get(f.getName());
+                            Object oldVal = f.get(null);
+                            if (!oldVal.equals(newVal)) {
+                                MDECore.logger.debug("Config {}.{} differs from new data. Changing from {} to {}", configClass.getName(), f.getName(), oldVal, newVal);
+                                f.set(null,newVal);
+                            }
+                        } else {
+                            MDECore.logger.debug("Skipping syncing field {}.{} as it was marked sync=false", configClass.getName(), f.getName());
+                        }
                     }
-                    break;
-                case DOUBLE:
-                    if (defVal.getClass().isArray()) {
-                        prop = configFile.get(section, f.getName(), (double[]) defVal, comment);
-                        res = ConfigSyncable.boundDoubleArr(prop, Bound.of(bound.min.doubleValue(), bound.max.doubleValue()));
-                    } else {
-                        prop = configFile.get(section, f.getName(), (Double) defVal, comment);
-                        res = ConfigSyncable.boundValue(prop, Bound.of(bound.min.doubleValue(), bound.max.doubleValue()), (Double) defVal);
-                    }
-                    break;
-                case INTEGER:
-                    if (defVal.getClass().isArray()) {
-                        prop = configFile.get(section, f.getName(), (int[]) defVal, comment);
-                        res = ConfigSyncable.boundIntArr(prop, Bound.of(bound.min.intValue(), bound.max.intValue()));
-                    } else {
-                        prop = configFile.get(section, f.getName(), (Integer) defVal, comment);
-                        res = ConfigSyncable.boundValue(prop, Bound.of(bound.min.intValue(), bound.max.intValue()), (Integer) defVal);
-                    }
-                    break;
-                case STRING:
-                    if (defVal.getClass().isArray()) {
-                        prop = configFile.get(section, f.getName(), (String[]) defVal, comment);
-                        res = prop.getStringList();
-                    } else {
-                        prop = configFile.get(section, f.getName(), (String) defVal, comment);
-                        res = prop.getString();
-                    }
-                    break;
-                default:
-                    break;
-            }
-            if (res != null) {
-                ConfigSyncable.setBounds(prop, bound);
-                ConfigSyncable.addCommentDetails(prop, bound);
-                getRestartReq(f).apply(prop);
-                return adapter.createActualType(res);
-            }
-        }
-        throw new IllegalArgumentException(String.format("No adapter for type %s in class %s, field %s", f.getGenericType(), configs, f));
-    }
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private ITypeAdapter getAdapterFor(Field f) {
-        TypeToken<?> t = TypeToken.of(f.getGenericType());
-        Class<?> c = f.getType();
-        for (ITypeAdapter adapter : adapters) {
-            if ((c.isPrimitive() && c == adapter.getPrimitiveType()) || adapter.getActualType().isAssignableFrom(t)) {
-                return adapter;
-            }
-        }
-        return null;
-    }
-    public ImmutableSet<String> sections() {
-        return ImmutableSet.copyOf(sections);
-    }
-    public ConfigCategory getCategory(String category) {
-        return configFile.getCategory(category);
-    }
-    public void syncTo(Map<String, Object> values) {
-        this.configValues = values;
-        for (String s : configValues.keySet()) {
-            try {
-                Field f = configs.getDeclaredField(s);
-                Config annot = f.getAnnotation(Config.class);
-                if (annot != null && !getNoSync(f)) {
-                    Object newVal = configValues.get(s);
-                    Object oldVal = f.get(null);
-                    if (!oldVal.equals(newVal)) {
-                        MDECore.logger.debug("Config {}.{} differs from new data. Changing from {} to {}", configs.getName(), f.getName(), oldVal, newVal);
-                        f.set(null, newVal);
-                    }
-                } else if (annot != null) {
-                    MDECore.logger.debug("Skipping syncing field {}.{} as it was marked NoSync", configs.getName(), f.getName());
+                } else if (f.getType().isAssignableFrom(Config.ConfigSubValue.class)) {
+                    //TODO: assign all fields in sub config value
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-    }
-    private String[] getComment(Field f) {
-        Comment c = f.getAnnotation(Comment.class);
-        return c == null ? new String[0] : c.value();
-    }
-
-    private Bound<Double> getBound(Field f) {
-        Range r = f.getAnnotation(Range.class);
-        return r == null ? Bound.MAX_BOUND : Bound.of(r.min(), r.max());
-    }
-
-    private boolean getNoSync(Field f) {
-        return f.getAnnotation(NoSync.class) != null;
-    }
-
-    private ConfigSyncable.RestartReqs getRestartReq(Field f) {
-        RestartReq r = f.getAnnotation(RestartReq.class);
-        return r == null ? ConfigSyncable.RestartReqs.NONE : r.value();
     }
 
     /* Event Handling */
@@ -244,5 +187,36 @@ public class ConfigProcessor {
     public void onPlayerLogout(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         syncTo(originalValues);
         MDECore.logger.debug(String.format("Reset configs to client values for %s", configFileName+".cfg"));
+    }
+
+    private enum ConfigType {
+        INTEGER(TypeToken.of(Integer.class),Property.Type.INTEGER,int.class),
+        INTEGER_ARR(TypeToken.of(int[].class), Property.Type.INTEGER),
+        DOUBLE(TypeToken.of(Double.class), Property.Type.DOUBLE,double.class),
+        DOUBLE_ARR(TypeToken.of(double[].class), Property.Type.DOUBLE),
+        BOOLEAN(TypeToken.of(Boolean.class), Property.Type.BOOLEAN,boolean.class),
+        BOOLEAN_ARR(TypeToken.of(boolean[].class), Property.Type.BOOLEAN),
+        STRING(TypeToken.of(String.class), Property.Type.STRING,String.class),
+        STRING_ARR(TypeToken.of(String[].class),Property.Type.STRING),
+        FLOAT(TypeToken.of(Float.class),Property.Type.DOUBLE,float.class),
+        FLOAT_ARR(TypeToken.of(float[].class), Property.Type.DOUBLE),
+        INTEGER_LIST(new TypeToken<List<Integer>>(){}, Property.Type.INTEGER),
+        DOUBLE_LIST(new TypeToken<List<Double>>(){}, Property.Type.DOUBLE),
+        FLOAT_LIST(new TypeToken<List<Float>>(){}, Property.Type.DOUBLE),
+        BOOLEAN_LIST(new TypeToken<List<Boolean>>(){}, Property.Type.BOOLEAN),
+        STRING_LIST(new TypeToken<List<String>>(){},Property.Type.STRING);
+
+        private final TypeToken actualType;
+        private final Property.Type type;
+        private final Class<?> primitiveType;
+
+        ConfigType(TypeToken actualType, Property.Type type, Class<?> primitiveType) {
+            this.actualType = actualType;
+            this.type = type;
+            this.primitiveType = primitiveType;
+        }
+        ConfigType(TypeToken actualType, Property.Type type) {
+            this(actualType,type,null);
+        }
     }
 }

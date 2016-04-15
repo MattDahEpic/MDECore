@@ -15,12 +15,11 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class PacketConfigSync implements IMessage {
-    //thanks to EnderCore
     private Map<String,Object> configValues;
     private String configName;
     public PacketConfigSync () {}
     public PacketConfigSync (ConfigProcessor toSync) {
-        this.configValues = toSync.configValues;
+        this.configValues = toSync.currentValues;
         this.configName = toSync.configFileName;
     }
     @Override
@@ -60,15 +59,14 @@ public class PacketConfigSync implements IMessage {
 
         configName = ByteBufUtils.readUTF8String(buf);
     }
-
-    public static class Handler implements IMessageHandler<PacketConfigSync, PacketConfigSync> {
+    public static class Handler implements IMessageHandler<PacketConfigSync,IMessage> {
         @Override
-        public PacketConfigSync onMessage(PacketConfigSync message, MessageContext ctx) {
-            ConfigProcessor processor = ConfigProcessor.processorMap.get(message.configName);
+        public IMessage onMessage (PacketConfigSync msg, MessageContext ctx) {
+            ConfigProcessor processor = ConfigProcessor.processorMap.get(msg.configName);
             if (processor != null) {
                 MDECore.logger.debug("Received config synchronization packet from server for config "+processor.configFileName+".cfg. Setting values accordingly...");
-                processor.syncTo(message.configValues);
-                MinecraftForge.EVENT_BUS.post(new ConfigSyncEvent(message.configName));
+                processor.syncTo(msg.configValues);
+                MinecraftForge.EVENT_BUS.post(new ConfigSyncable.ConfigSyncEvent(msg.configName));
             }
             return null;
         }

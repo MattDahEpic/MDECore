@@ -1,8 +1,9 @@
-package com.mattdahepic.mdecore.config.v2;
+package com.mattdahepic.mdecore.config.sync;
 
-import com.mattdahepic.mdecore.config.sync.Bound;
-import com.mattdahepic.mdecore.config.v2.annot.Config;
 import net.minecraftforge.common.config.Property;
+
+import java.util.ArrayList;
+import java.util.List;
 
 final class Range<T extends Number & Comparable<T>> {
     public static final Range<Double> MAX_RANGE = Range.of(Double.MIN_VALUE,Double.MAX_VALUE);
@@ -25,17 +26,24 @@ final class Range<T extends Number & Comparable<T>> {
     public T clamp (T value) {
         return value.compareTo(min) < 0 ? min : value.compareTo(max) > 0 ? max : value;
     }
+    public List<T> clampArr (List<T> value) {
+        List<T> ret = new ArrayList<T>(value.size());
+        for (int i = 0; i < value.size(); i++) {
+            ret.add(i,clamp(value.get(i)));
+        }
+        return ret;
+    }
 
     public void apply (Property p) {
-        if (this == MAX_RANGE) return;
+        if (this.equals(MAX_RANGE)) return;
         if (p.getType() == Property.Type.INTEGER) {
-            Bound<Integer> b = Bound.of(min.intValue(), max.intValue());
-            p.setMinValue(b.min);
-            p.setMaxValue(b.max);
+            Range<Integer> r = of(min.intValue(), max.intValue());
+            p.setMinValue(r.min);
+            p.setMaxValue(r.max);
         } else if (p.getType() == Property.Type.DOUBLE) {
-            Bound<Double> b = Bound.of(min.doubleValue(), max.doubleValue());
-            p.setMinValue(b.min);
-            p.setMaxValue(b.max);
+            Range<Double> r = of(min.doubleValue(), max.doubleValue());
+            p.setMinValue(r.min);
+            p.setMaxValue(r.max);
         } else {
             throw new IllegalArgumentException(String.format("A mod tried to set range %s on a property that was not either of Integer of Double type.", this));
         }

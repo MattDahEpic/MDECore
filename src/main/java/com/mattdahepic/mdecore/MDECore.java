@@ -55,7 +55,7 @@ public class MDECore extends DummyModContainer {
     public void preInit (FMLPreInitializationEvent e) {
         MinecraftForge.EVENT_BUS.register(this);
         OreDictionaryExtras.preInit();
-        MDEConfig.instance(MODID).initialize(e);
+        new MDEConfig(MODID).initalize(e);
         WaterproofRedstone.setup();
         proxy.setupItems();
         proxy.setupTextures();
