@@ -43,7 +43,7 @@ mdecore.command.tps.success.dimension.entity=Entities: %d - Tile Entities: %d
 mdecore.command.pregen.usage=/mde pregen {<user> <x chunk radius> <z chunk radius> | <x chunk start> <z chunk start> <x chunk end> <z chunk end>}
 
 #Regen
-mdecore.command.regen.usage=/mde regen
+mdecore.command.regen.usage=/mde regen [x,z coords of chunk to regenerate]
 mdecore.command.regen.success=Regeneration complete!
 mdecore.command.regen.failure=Error occurred while regenerating chunk.
 

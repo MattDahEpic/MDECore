@@ -51,8 +51,6 @@ public class HolidayTweaks {
         } else if (month == Calendar.DECEMBER && day_of_month == 21) { //first day of winter
             player.addChatComponentMessage(new TextComponentString(TextFormatting.WHITE+"Have a happy winter!\nHave some snow."));
             player.inventory.addItemStackToInventory(new ItemStack(Items.snowball,1,0));
-        } else if (month == Calendar.JULY && day_of_month == 4) { //4th of july //TODO
-
         }
     }
 }

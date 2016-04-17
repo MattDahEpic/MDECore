@@ -11,12 +11,12 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.9-0.7"
+version = "1.9-0.6"
 group = "com.mattdahepic.mdecore" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mdecore"
 
 minecraft {
-    version = "1.9-12.16.0.1859-1.9"
+    version = "1.9-12.16.0.1865-1.9"
     runDir = "run"
 
     replace "@VERSION@", project.version

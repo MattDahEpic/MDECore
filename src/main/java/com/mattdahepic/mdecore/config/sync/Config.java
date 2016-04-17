@@ -47,5 +47,7 @@ public @interface Config {
             return prop;
         }
     }
-    interface ConfigSubValue {}
+    interface ConfigSubValue {
+        String getConfigName ();
+    }
 }

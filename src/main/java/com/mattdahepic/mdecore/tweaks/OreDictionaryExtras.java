@@ -48,18 +48,8 @@ public class OreDictionaryExtras {
         OreDictionary.registerOre("slabQuartz",new ItemStack(Blocks.stone_slab,1,7));
         OreDictionary.registerOre("slab",Blocks.stone_slab2);
         OreDictionary.registerOre("slabSandstone",new ItemStack(Blocks.stone_slab2,1,0));
-        //smooth stone variants
-        OreDictionary.registerOre("stone",Blocks.stone);
-        OreDictionary.registerOre("stoneGranite",new ItemStack(Blocks.stone,1,1));
-        OreDictionary.registerOre("stoneDiorite",new ItemStack(Blocks.stone,1,3));
-        OreDictionary.registerOre("stoneAndesite",new ItemStack(Blocks.stone,1,5));
-        OreDictionary.registerOre("stoneGranitePolished",new ItemStack(Blocks.stone,1,2));
-        OreDictionary.registerOre("stoneDioritePolished",new ItemStack(Blocks.stone,1,4));
-        OreDictionary.registerOre("stoneAndesitePolished",new ItemStack(Blocks.stone,1,6));
         //mossy cobble
         OreDictionary.registerOre("cobblestoneMoss",Blocks.mossy_cobblestone);
-        //red sandstone
-        OreDictionary.registerOre("sandstone",Blocks.red_sandstone);
         //fences
         OreDictionary.registerOre("fence",Blocks.oak_fence);
         OreDictionary.registerOre("fenceWood",Blocks.oak_fence);

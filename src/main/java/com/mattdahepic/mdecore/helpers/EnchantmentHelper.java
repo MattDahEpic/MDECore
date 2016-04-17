@@ -65,7 +65,7 @@ public class EnchantmentHelper extends net.minecraft.enchantment.EnchantmentHelp
         ench.forEach(new Consumer<EnchantmentData>() {
             @Override
             public void accept(EnchantmentData enchantmentData) {
-                Items.enchanted_book.addEnchantment(ret,enchantmentData); //TODO: if ItemEnchantedBook.addEnchantment becomes static fix this
+                Items.enchanted_book.addEnchantment(ret,enchantmentData);
             }
         });
         return ret;

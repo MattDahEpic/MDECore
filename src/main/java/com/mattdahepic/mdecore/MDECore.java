@@ -27,18 +27,16 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.UUID;
-
 @Mod(modid = MDECore.MODID,version = MDECore.VERSION,name = MDECore.NAME,dependencies = MDECore.DEPENDENCIES,updateJSON = MDECore.UPDATE_JSON)
 public class MDECore extends DummyModContainer {
     public static final String MODID = "mdecore";
     static final String VERSION = "@VERSION@";
     static final String NAME = "MattDahEpic Core";
     static final String UPDATE_JSON = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+MODID+".json";
-    static final String DEPENDENCIES = "required-after:Forge@[12.16.0.1846,);";
+    static final String DEPENDENCIES = "required-after:Forge@[12.16.0.1855,);";
 
     public static final Logger logger = LogManager.getLogger(MODID);
-    private static final UUID MATT_UUID = UUID.fromString("c715991d-e69c-48f9-a92d-8fc60c0829fb");
+    //private static final UUID MATT_UUID = UUID.fromString("c715991d-e69c-48f9-a92d-8fc60c0829fb");
 
     public static Item debugItem = new DebugItem();
     public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.airColor);
@@ -55,7 +53,7 @@ public class MDECore extends DummyModContainer {
     public void preInit (FMLPreInitializationEvent e) {
         MinecraftForge.EVENT_BUS.register(this);
         OreDictionaryExtras.preInit();
-        new MDEConfig(MODID).initalize(e);
+        new MDEConfig().initalize(e);
         WaterproofRedstone.setup();
         proxy.setupItems();
         proxy.setupTextures();

@@ -1,5 +1,6 @@
 package com.mattdahepic.mdecore.command.logic;
 
+import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -10,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -33,32 +35,48 @@ public class RegenLogic implements ICommandLogic {
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        BlockPos pos = sender.getPosition();
-        if (!sender.getEntityWorld().isRemote) {
+        /*
+        Tested Strategies:
+        ChunkProviderServer.dropChunk
+        IChunkProvider.provideChunk with chunk.setTerrainPopulated(false)
+        set every block using new chunk
+         */
+        World world = sender.getEntityWorld();
+        Chunk chunk;
+        switch (args.length) {
+            case 3:
+                chunk = world.getChunkFromChunkCoords(Integer.parseInt(args[1]),Integer.parseInt(args[2]));
+                break;
+            case 1:
+                chunk = world.getChunkFromBlockCoords(sender.getPosition());
+                break;
+            default:
+                AbstractCommand.throwUsages(this);
+                return;
+        }
+        if (!world.isRemote) {
             try {
-                Chunk oldChunk = sender.getEntityWorld().getChunkFromBlockCoords(pos);
+                if (world instanceof WorldServer) {
+                    IChunkProvider chunkProvider = world.getChunkProvider();
 
-                if (sender.getEntityWorld() instanceof WorldServer) {
-                    WorldServer worldServer = (WorldServer) sender.getEntityWorld();
-                    IChunkProvider chunkProviderGenerate = worldServer.getChunkProvider();
-
-                    Chunk newChunk = chunkProviderGenerate.provideChunk(oldChunk.xPosition, oldChunk.zPosition);
-
+                    Chunk newChunk = chunkProvider.provideChunk(chunk.xPosition,chunk.zPosition);
                     for (int x = 0; x < 16; x++) {
-                        for (int z = 0; z < 16; z++) {
-                            for (int y = 0; y < sender.getEntityWorld().getHeight(); y++) {
-                                IBlockState blockState = newChunk.getBlockState(new BlockPos(x,y,z));
-                                
-                                worldServer.setBlockState(new BlockPos(x + oldChunk.xPosition * 16,y,z + oldChunk.zPosition * 16),blockState);
+                        for (int y = 0; y < world.getHeight(); y++) {
+                            for (int z = 0; z < 16; z++) {
+                                BlockPos chunkPos = new BlockPos(x,y,z);
+                                BlockPos worldPos = new BlockPos(x + chunk.xPosition * 16,y,z + chunk.zPosition * 16);
 
-                                TileEntity tileEntity = newChunk.getTileEntity(new BlockPos(x,y,z),null);
+                                IBlockState block = newChunk.getBlockState(chunkPos);
+                                TileEntity tile = newChunk.getTileEntity(chunkPos,null);
 
-                                if (tileEntity != null) worldServer.setTileEntity(new BlockPos(x + oldChunk.xPosition * 16,y,z + oldChunk.zPosition * 16),tileEntity);
+                                world.setBlockState(worldPos,block);
+                                if (tile != null) {
+                                    world.setTileEntity(worldPos,tile);
+                                }
                             }
                         }
                     }
-                    oldChunk.setTerrainPopulated(false);
-                    chunkProviderGenerate.provideChunk(oldChunk.xPosition,oldChunk.zPosition);
+                    chunk.setModified(true);
                     sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+I18n.translateToLocal("mdecore.command.regen.success")));
                 }
             } catch (Exception e) {

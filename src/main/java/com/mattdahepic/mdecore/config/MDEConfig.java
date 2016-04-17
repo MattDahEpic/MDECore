@@ -1,11 +1,12 @@
 package com.mattdahepic.mdecore.config;
 
+import com.mattdahepic.mdecore.MDECore;
 import com.mattdahepic.mdecore.config.sync.Config;
 import com.mattdahepic.mdecore.config.sync.ConfigSyncable;
 
 public class MDEConfig extends ConfigSyncable {
     public String getConfigVersion () {return "1";}
-    public MDEConfig (String configName) {super(configName);}
+    public String getConfigName () {return MDECore.MODID;}
     private static final String CAT_TWEAKS = "tweaks";
 
     //@Config(comment = {"If this value is true anonymous statistics about any MattDahEpic mods and their versions you are running will be sent to the author through Google Analytics."}, sync = false) public static boolean reportUsageStats = true;

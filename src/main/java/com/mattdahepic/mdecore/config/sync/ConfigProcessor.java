@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-class ConfigProcessor {
+public class ConfigProcessor {
     private final Class<? extends ConfigSyncable> configClass;
     private final Configuration config;
     final String configFileName;
@@ -46,10 +46,13 @@ class ConfigProcessor {
 
         try {
             for (Field f : configClass.getDeclaredFields()) {
-                if (f.getType().isAssignableFrom(Config.ConfigSubValue.class)) {
-                    //TODO: process all fields in sub class
+                if (f.getType().isAssignableFrom(Config.ConfigSubValue.class)) { //process annotated values in config sub values
+                    Config.ConfigSubValue sub = ((Config.ConfigSubValue)f.get(null));
+                    for (Field iF : sub.getClass().getDeclaredFields()) {
+                        processField(iF,sub.getConfigName());
+                    }
                 } else {
-                    processField(f);
+                    processField(f,"");
                 }
             }
         } catch (Exception e) {
@@ -59,15 +62,15 @@ class ConfigProcessor {
         config.save();
     }
     /** Parses value and returns true if the value changed */
-    private boolean processField (Field f) throws Exception {
+    private boolean processField (Field f, String name_prefix) throws Exception {
         Config cfg = configClass.getAnnotation(Config.class);
         if (cfg == null) return false;
 
         String name = f.getName();
-        Object value = defaultValues.get(name);
+        Object value = defaultValues.get(name_prefix+"\\"+name);
         if (value == null) {
             value = f.get(null);
-            defaultValues.put(name,value);
+            defaultValues.put(name_prefix+"\\"+name,value);
         }
 
         /* BEGIN CONFIG VALUE PROCESSING */
@@ -141,8 +144,8 @@ class ConfigProcessor {
         cfg.restartReq().apply(prop); //apply restart requirement
         /* END CONFIG VALUE PROCESSING */
 
-        currentValues.put(f.getName(), newValue);
-        originalValues.put(f.getName(), newValue);
+        currentValues.put(name_prefix+"\\"+f.getName(), newValue);
+        originalValues.put(name_prefix+"\\"+f.getName(), newValue);
         f.set(null, newValue);
 
         return !value.equals(newValue);
@@ -152,11 +155,11 @@ class ConfigProcessor {
         this.currentValues = values;
         try {
             for (Field f : configClass.getDeclaredFields()) {
-                if (currentValues.containsKey(f.getName())) {
+                if (currentValues.containsKey("\\"+f.getName())) {
                     Config annot = f.getAnnotation(Config.class);
                     if (annot != null) {
                         if (annot.sync()) {
-                            Object newVal = currentValues.get(f.getName());
+                            Object newVal = currentValues.get("\\"+f.getName());
                             Object oldVal = f.get(null);
                             if (!oldVal.equals(newVal)) {
                                 MDECore.logger.debug("Config {}.{} differs from new data. Changing from {} to {}", configClass.getName(), f.getName(), oldVal, newVal);
@@ -167,7 +170,22 @@ class ConfigProcessor {
                         }
                     }
                 } else if (f.getType().isAssignableFrom(Config.ConfigSubValue.class)) {
-                    //TODO: assign all fields in sub config value
+                    Config.ConfigSubValue sub = ((Config.ConfigSubValue)f.get(null));
+                    for (Field iF : sub.getClass().getDeclaredFields()) {
+                        Config annot = iF.getAnnotation(Config.class);
+                        if (annot != null) {
+                            if (annot.sync()) {
+                                Object newVal = currentValues.get(sub.getConfigName() + "\\" + iF.getName());
+                                Object oldVal = f.get(null);
+                                if (!oldVal.equals(newVal)) {
+                                    MDECore.logger.debug("Config {}.{}.{} differs from new data. Changing from {} to {}", configClass.getName(), sub.getConfigName(), iF.getName(), oldVal, newVal);
+                                    f.set(null, newVal);
+                                }
+                            } else {
+                                MDECore.logger.debug("Skipping syncing field {}.{}.{} as it was marked sync=false",configClass.getName(),sub.getConfigName(),iF.getName());
+                            }
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
