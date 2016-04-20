@@ -7,6 +7,7 @@ import com.mattdahepic.mdecore.config.sync.ConfigSyncable;
 public class MDEConfig extends ConfigSyncable {
     public String getConfigVersion () {return "1";}
     public String getConfigName () {return MDECore.MODID;}
+    public Class getConfigClass () {return getClass();}
     private static final String CAT_TWEAKS = "tweaks";
 
     //@Config(comment = {"If this value is true anonymous statistics about any MattDahEpic mods and their versions you are running will be sent to the author through Google Analytics."}, sync = false) public static boolean reportUsageStats = true;

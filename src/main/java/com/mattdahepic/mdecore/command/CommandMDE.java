@@ -13,7 +13,7 @@ public class CommandMDE extends AbstractCommand {
         registerCommandLogic(VersionLogic.instance);
         registerCommandLogic(KillAllLogic.instance);
         registerCommandLogic(PregenLogic.instance);
-        registerCommandLogic(RegenLogic.instance);
+        //TODO: registerCommandLogic(RegenLogic.instance);
         registerCommandLogic(TickrateLogic.instance);
         registerCommandLogic(InvseeLogic.instance);
         registerCommandLogic(EnderchestLogic.instance);

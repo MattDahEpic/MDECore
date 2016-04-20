@@ -63,14 +63,15 @@ public class ConfigProcessor {
     }
     /** Parses value and returns true if the value changed */
     private boolean processField (Field f, String name_prefix) throws Exception {
-        Config cfg = configClass.getAnnotation(Config.class);
+        Config cfg = f.getAnnotation(Config.class);
         if (cfg == null) return false;
 
         String name = f.getName();
-        Object value = defaultValues.get(name_prefix+"\\"+name);
+        String map_name = name_prefix+"\\"+name;
+        Object value = defaultValues.get(map_name);
         if (value == null) {
             value = f.get(null);
-            defaultValues.put(name_prefix+"\\"+name,value);
+            defaultValues.put(map_name,value);
         }
 
         /* BEGIN CONFIG VALUE PROCESSING */
@@ -86,10 +87,10 @@ public class ConfigProcessor {
                     case BOOLEAN_ARR:
                     case BOOLEAN_LIST:
                         if (c.isArray()) {
-                            prop = config.get(cfg.cat(),name,(boolean[]) defaultValues.get(name),comment);
+                            prop = config.get(cfg.cat(),name,(boolean[]) defaultValues.get(map_name),comment);
                             newValue = prop.getBooleanList();
                         } else {
-                            prop = config.get(cfg.cat(),name,(Boolean)defaultValues.get(name),comment);
+                            prop = config.get(cfg.cat(),name,(Boolean)defaultValues.get(map_name),comment);
                             newValue = prop.getBoolean();
                         }
                         break;
@@ -97,10 +98,10 @@ public class ConfigProcessor {
                     case DOUBLE_ARR:
                     case DOUBLE_LIST:
                         if (c.isArray()) {
-                            prop = config.get(cfg.cat(),name,(double[])defaultValues.get(name),comment);
+                            prop = config.get(cfg.cat(),name,(double[])defaultValues.get(map_name),comment);
                             newValue = range.clampArr(Arrays.asList(prop.getDoubleList())).toArray();
                         } else {
-                            prop = config.get(cfg.cat(),name,(Double)defaultValues.get(name),comment);
+                            prop = config.get(cfg.cat(),name,(Double)defaultValues.get(map_name),comment);
                             newValue = range.clamp(prop.getDouble());
                         }
                         break;
@@ -108,10 +109,10 @@ public class ConfigProcessor {
                     case INTEGER_ARR:
                     case INTEGER_LIST:
                         if (c.isArray()) {
-                            prop = config.get(cfg.cat(),name,(int[])defaultValues.get(name),comment);
+                            prop = config.get(cfg.cat(),name,(int[])defaultValues.get(map_name),comment);
                             newValue = range.clampArr(Arrays.asList(prop.getIntList())).toArray();
                         } else {
-                            prop = config.get(cfg.cat(),name,(Integer)defaultValues.get(name),comment);
+                            prop = config.get(cfg.cat(),name,(Integer)defaultValues.get(map_name),comment);
                             newValue = range.clamp(prop.getInt());
                         }
                         break;
@@ -119,10 +120,10 @@ public class ConfigProcessor {
                     case STRING_ARR:
                     case STRING_LIST:
                         if (c.isArray()) {
-                            prop = config.get(cfg.cat(),name,(String[])defaultValues.get(name),comment);
+                            prop = config.get(cfg.cat(),name,(String[])defaultValues.get(map_name),comment);
                             newValue = prop.getStringList();
                         } else {
-                            prop = config.get(cfg.cat(),name,(String)defaultValues.get(name),comment);
+                            prop = config.get(cfg.cat(),name,(String)defaultValues.get(map_name),comment);
                             newValue = prop.getString();
                         }
                         break;
@@ -144,8 +145,8 @@ public class ConfigProcessor {
         cfg.restartReq().apply(prop); //apply restart requirement
         /* END CONFIG VALUE PROCESSING */
 
-        currentValues.put(name_prefix+"\\"+f.getName(), newValue);
-        originalValues.put(name_prefix+"\\"+f.getName(), newValue);
+        currentValues.put(map_name, newValue);
+        originalValues.put(map_name, newValue);
         f.set(null, newValue);
 
         return !value.equals(newValue);

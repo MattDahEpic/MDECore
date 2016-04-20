@@ -10,6 +10,7 @@ import java.io.File;
 public abstract class ConfigSyncable {
     public abstract String getConfigVersion ();
     public abstract String getConfigName ();
+    public abstract Class<? extends ConfigSyncable> getConfigClass ();
 
     private final String configFileName;
     public Configuration config;
@@ -29,7 +30,7 @@ public abstract class ConfigSyncable {
     }
     public final void initalize (FMLPreInitializationEvent e) {
         config = new Configuration(new File(e.getModConfigurationDirectory().getAbsolutePath()+ File.separator+"mattdahepic"+File.separator+configFileName+".cfg"),getConfigVersion());
-        ConfigProcessor processor = new ConfigProcessor(getClass(),config,configFileName);
+        ConfigProcessor processor = new ConfigProcessor(getConfigClass(),config,configFileName);
         processor.process(true);
     }
 
