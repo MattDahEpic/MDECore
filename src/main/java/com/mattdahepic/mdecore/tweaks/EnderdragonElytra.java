@@ -13,7 +13,7 @@ public class EnderdragonElytra {
     public void entityDeath (LivingDeathEvent e) {
         if (e.getEntity() instanceof EntityDragon) {
             if (MDEConfig.dragonDropsElytra) {
-                e.getEntity().worldObj.spawnEntityInWorld(new EntityItem(e.getEntity().worldObj,e.getEntity().posX,e.getEntity().posY,e.getEntity().posZ,new ItemStack(Items.elytra,1,0)));
+                e.getEntity().worldObj.spawnEntityInWorld(new EntityItem(e.getEntity().worldObj,e.getEntity().posX,e.getEntity().posY,e.getEntity().posZ,new ItemStack(Items.ELYTRA,1,0)));
             }
         }
     }

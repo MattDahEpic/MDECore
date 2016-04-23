@@ -13,7 +13,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class DebugItem extends Item {
     public DebugItem () {
         super();
-        this.setCreativeTab(CreativeTabs.tabAllSearch);
+        this.setCreativeTab(CreativeTabs.SEARCH);
         this.setUnlocalizedName("debugItem");
     }
     public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn) {

@@ -39,7 +39,7 @@ public class MDECore extends DummyModContainer {
     //private static final UUID MATT_UUID = UUID.fromString("c715991d-e69c-48f9-a92d-8fc60c0829fb");
 
     public static Item debugItem = new DebugItem();
-    public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.airColor);
+    public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.AIR);
 
     @SidedProxy(clientSide = "com.mattdahepic.mdecore.proxy.ClientProxy",serverSide = "com.mattdahepic.mdecore.proxy.CommonProxy")
     public static CommonProxy proxy;
@@ -57,6 +57,7 @@ public class MDECore extends DummyModContainer {
         WaterproofRedstone.setup();
         proxy.setupItems();
         proxy.setupTextures();
+        proxy.registerRecipeTypes();
         if (e.getSide().isClient()) {
             MinecraftForge.EVENT_BUS.register(new com.mattdahepic.mdecore.client.MattRenderTweaks());
         }

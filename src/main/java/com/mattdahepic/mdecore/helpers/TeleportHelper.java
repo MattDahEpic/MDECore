@@ -31,7 +31,7 @@ public class TeleportHelper {
             player.playerNetServerHandler.sendPacket(new SPacketRespawn(dimension, worldServerNew.getDifficulty(), worldServerNew.getWorldType(), player.interactionManager.getGameType()));
             if (player.isBeingRidden()) player.dismountRidingEntity();
             if (player.isRiding()) player.getRidingEntity().dismountRidingEntity();
-            worldServerOld.removePlayerEntityDangerously(player);
+            worldServerOld.removeEntityDangerously(player);
             player.isDead = false;
 
             //move
@@ -86,6 +86,6 @@ public class TeleportHelper {
         } catch (Exception e) {}
     }
     public static boolean isSafeLandingPosition (World world, BlockPos pos) {
-        return world.getBlockState(pos).getBlock() == Blocks.air && world.getBlockState(pos.up()).getBlock() == Blocks.air && world.isSideSolid(pos.down(), EnumFacing.UP);
+        return world.getBlockState(pos).getBlock() == Blocks.AIR && world.getBlockState(pos.up()).getBlock() == Blocks.AIR && world.isSideSolid(pos.down(), EnumFacing.UP);
     }
 }

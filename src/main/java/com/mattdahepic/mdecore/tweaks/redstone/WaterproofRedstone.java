@@ -17,7 +17,7 @@ public class WaterproofRedstone {
                 modifiersField.setAccessible(true);
 
                 MDECore.logger.info("Waterproofing redstone components");
-                Block[] waterproofable = new Block[]{Blocks.redstone_wire,Blocks.powered_repeater,Blocks.unpowered_repeater,Blocks.redstone_torch,Blocks.unlit_redstone_torch,Blocks.powered_comparator,Blocks.unpowered_comparator,Blocks.rail,Blocks.activator_rail,Blocks.detector_rail,Blocks.golden_rail};
+                Block[] waterproofable = new Block[]{Blocks.REDSTONE_WIRE,Blocks.POWERED_REPEATER,Blocks.UNPOWERED_REPEATER,Blocks.REDSTONE_TORCH,Blocks.UNLIT_REDSTONE_TORCH,Blocks.POWERED_COMPARATOR,Blocks.UNPOWERED_COMPARATOR,Blocks.RAIL,Blocks.ACTIVATOR_RAIL,Blocks.DETECTOR_RAIL,Blocks.GOLDEN_RAIL};
                 for (Block block : waterproofable) {
                     Class c = block.getClass();
                     while (c != Block.class) {

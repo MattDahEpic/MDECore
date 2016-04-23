@@ -25,9 +25,9 @@ public class EnchantmentHelper extends net.minecraft.enchantment.EnchantmentHelp
         return ret;
     }
     public static List<EnchantmentData> getEnchantmentsFromBook (ItemStack enchantedBook) {
-        if (enchantedBook.getItem() != Items.enchanted_book) throw new RuntimeException("Attempted to retrieve enchantments on an ItemStack that isn't a book!");
+        if (enchantedBook.getItem() != Items.ENCHANTED_BOOK) throw new RuntimeException("Attempted to retrieve enchantments on an ItemStack that isn't a book!");
         List<EnchantmentData> ret = new ArrayList<EnchantmentData>();
-        NBTTagList enchantmentsRaw = Items.enchanted_book.getEnchantments(enchantedBook);
+        NBTTagList enchantmentsRaw = Items.ENCHANTED_BOOK.getEnchantments(enchantedBook);
         for (int i = 0; i < enchantmentsRaw.tagCount(); i++) {
             NBTTagCompound enchantRaw = enchantmentsRaw.getCompoundTagAt(i);
             ret.add(new EnchantmentData(Enchantment.getEnchantmentByID(enchantRaw.getShort("id")),enchantRaw.getShort("lvl")));
@@ -61,11 +61,11 @@ public class EnchantmentHelper extends net.minecraft.enchantment.EnchantmentHelp
         return flag;
     }
     public static ItemStack getEnchantedBookWithEnchants (List<EnchantmentData> ench) {
-        final ItemStack ret = new ItemStack(Items.enchanted_book,1,0);
+        final ItemStack ret = new ItemStack(Items.ENCHANTED_BOOK,1,0);
         ench.forEach(new Consumer<EnchantmentData>() {
             @Override
             public void accept(EnchantmentData enchantmentData) {
-                Items.enchanted_book.addEnchantment(ret,enchantmentData);
+                Items.ENCHANTED_BOOK.addEnchantment(ret,enchantmentData);
             }
         });
         return ret;
