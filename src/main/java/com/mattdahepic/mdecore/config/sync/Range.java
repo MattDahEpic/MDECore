@@ -24,7 +24,7 @@ final class Range<T extends Number & Comparable<T>> {
     }
 
     public T clamp (T value) {
-        return value.compareTo(min) < 0 ? min : value.compareTo(max) > 0 ? max : value;
+        return value.doubleValue() < min.doubleValue() ? min : value.doubleValue() > max.doubleValue() ? max : value;
     }
     public List<T> clampArr (List<T> value) {
         List<T> ret = new ArrayList<T>(value.size());
