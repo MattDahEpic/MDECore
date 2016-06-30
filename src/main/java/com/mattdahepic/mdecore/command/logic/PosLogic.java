@@ -2,6 +2,7 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -10,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class PosLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.translateToLocal("mdecore.command.pos.usage");
+        return I18n.format("mdecore.command.pos.usage");
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -35,8 +35,8 @@ public class PosLogic implements ICommandLogic {
             try {
                 EntityPlayerMP senderPlayer = CommandBase.getCommandSenderAsPlayer(sender);
                 EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, args[1]);
-                String playerName = I18n.translateToLocalFormatted((senderPlayer.equals(targetPlayer) ? "mdecore.command.pos.success.player.self" : "mdecore.command.pos.success.player.other"), targetPlayer.getDisplayNameString());
-                sender.addChatMessage(new TextComponentString(playerName + " " + I18n.translateToLocalFormatted("mdecore.command.pos.success", (int) targetPlayer.posX, (int) targetPlayer.posY, (int) targetPlayer.posZ, targetPlayer.dimension)));
+                String playerName = I18n.format((senderPlayer.equals(targetPlayer) ? "mdecore.command.pos.success.player.self" : "mdecore.command.pos.success.player.other"), targetPlayer.getDisplayNameString());
+                sender.addChatMessage(new TextComponentString(playerName + " " + I18n.format("mdecore.command.pos.success", (int) targetPlayer.posX, (int) targetPlayer.posY, (int) targetPlayer.posZ, targetPlayer.dimension)));
             } catch (PlayerNotFoundException e) {
                 AbstractCommand.throwNoPlayer();
             }

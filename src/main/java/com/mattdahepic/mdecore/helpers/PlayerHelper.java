@@ -14,12 +14,12 @@ public class PlayerHelper {
     public static boolean isPlayerFake (EntityPlayerMP player) {
         if(player.getClass() != EntityPlayerMP.class) {
             return true;
-        } else if(player.playerNetServerHandler == null) {
+        } else if(player.connection == null) {
             return true;
         } else {
             try {
                 player.getPlayerIP().length();
-                player.playerNetServerHandler.netManager.getRemoteAddress().toString();
+                player.connection.netManager.getRemoteAddress().toString();
             } catch (Exception e) {
                 return true;
             }

@@ -33,7 +33,7 @@ public class MDECore extends DummyModContainer {
     static final String VERSION = "@VERSION@";
     static final String NAME = "MattDahEpic Core";
     static final String UPDATE_JSON = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+MODID+".json";
-    static final String DEPENDENCIES = "required-after:Forge@[12.16.0.1855,);";
+    static final String DEPENDENCIES = "required-after:Forge@[12.18.0.2005,);";
 
     public static final Logger logger = LogManager.getLogger(MODID);
     //private static final UUID MATT_UUID = UUID.fromString("c715991d-e69c-48f9-a92d-8fc60c0829fb");

@@ -3,6 +3,7 @@ package com.mattdahepic.mdecore.command.logic;
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TeleportHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -12,7 +13,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.DimensionManager;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class TPXLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.translateToLocal("mdecore.command.tpx.usage");
+        return I18n.format("mdecore.command.tpx.usage");
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -49,7 +49,7 @@ public class TPXLogic implements ICommandLogic {
                             player.setPositionAndUpdate(playerSender.posX, playerSender.posY, playerSender.posZ);
                         }
                     } else {
-                        sender.addChatMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+I18n.translateToLocal("mdecore.command.tpx.selftp")));
+                        sender.addChatMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+I18n.format("mdecore.command.tpx.selftp")));
                     }
                     break;
                 } catch (PlayerNotFoundException t) {
@@ -80,7 +80,7 @@ public class TPXLogic implements ICommandLogic {
                             player.setPositionAndUpdate(otherPlayer.posX, otherPlayer.posY, otherPlayer.posZ);
                         }
                     } else {
-                        sender.addChatMessage(new TextComponentString(TextFormatting.AQUA+I18n.translateToLocal("mdecore.command.tpx.tptoself")));
+                        sender.addChatMessage(new TextComponentString(TextFormatting.AQUA+I18n.format("mdecore.command.tpx.tptoself")));
                     }
                     break;
                 } catch (PlayerNotFoundException t) {

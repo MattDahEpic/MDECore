@@ -4,13 +4,13 @@ import com.google.common.base.Throwables;
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.world.TickHandlerWorld;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayDeque;
@@ -29,7 +29,7 @@ public class PregenLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.translateToLocal("mdecore.command.pregen.usage");
+        return I18n.format("mdecore.command.pregen.usage");
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -39,11 +39,11 @@ public class PregenLogic implements ICommandLogic {
         World world = sender.getEntityWorld();
         if (world.isRemote) return;
 
-        ChunkCoordIntPair center = null;
+        ChunkPos center = null;
         int i = 1;
         int xS, xL;
         if ("@".equals(args[i])) {
-            center = new ChunkCoordIntPair(sender.getPosition().getX(),sender.getPosition().getZ());
+            center = new ChunkPos(sender.getPosition().getX(),sender.getPosition().getZ());
             i++;
             xS = CommandBase.parseInt(args[i++]);
         } else {
@@ -51,7 +51,7 @@ public class PregenLogic implements ICommandLogic {
                 xS = CommandBase.parseInt(args[i++]);
             } catch (Throwable t) {
                 ICommandSender senderTemp = CommandBase.getPlayer(server, sender, args[i - 1]);
-                center = new ChunkCoordIntPair(senderTemp.getPosition().getX(),senderTemp.getPosition().getZ());
+                center = new ChunkPos(senderTemp.getPosition().getX(),senderTemp.getPosition().getZ());
                 xS = CommandBase.parseInt(args[i++]);
             }
         }
@@ -90,14 +90,14 @@ public class PregenLogic implements ICommandLogic {
         }
 
         synchronized (TickHandlerWorld.chunksToPreGen) {
-            ArrayDeque<ChunkCoordIntPair> chunks = TickHandlerWorld.chunksToPreGen.get(world.provider.getDimension());
+            ArrayDeque<ChunkPos> chunks = TickHandlerWorld.chunksToPreGen.get(world.provider.getDimension());
             if (chunks == null) {
-                chunks = new ArrayDeque<ChunkCoordIntPair>();
+                chunks = new ArrayDeque<ChunkPos>();
             }
 
             for (int x = xS; x <= xL; ++x) {
                 for (int z = zS; z <= zL; ++z) {
-                    chunks.addLast(new ChunkCoordIntPair(x, z));
+                    chunks.addLast(new ChunkPos(x, z));
                 }
             }
             TickHandlerWorld.chunksToPreGen.put(world.provider.getDimension(), chunks);

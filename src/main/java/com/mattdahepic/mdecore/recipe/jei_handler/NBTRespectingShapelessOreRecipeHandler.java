@@ -23,6 +23,10 @@ public class NBTRespectingShapelessOreRecipeHandler implements IRecipeHandler<NB
         return VanillaRecipeCategoryUid.CRAFTING;
     }
     @Override
+    public String getRecipeCategoryUid (NBTRespectingShapelessOreRecipe r) {
+        return VanillaRecipeCategoryUid.CRAFTING;
+    }
+    @Override
     public IRecipeWrapper getRecipeWrapper (@Nonnull NBTRespectingShapelessOreRecipe recipe) {
         return new NBTRespectingShapelessOreRecipeWrapper(recipe.getInput(),recipe.getRecipeOutput());
     }

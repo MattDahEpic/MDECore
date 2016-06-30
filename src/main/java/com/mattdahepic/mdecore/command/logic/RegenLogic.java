@@ -3,6 +3,7 @@ package com.mattdahepic.mdecore.command.logic;
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -10,7 +11,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -31,7 +31,7 @@ public class RegenLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.translateToLocal("mdecore.command.regen.usage");
+        return I18n.format("mdecore.command.regen.usage");
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -77,10 +77,10 @@ public class RegenLogic implements ICommandLogic {
                         }
                     }
                     chunk.setModified(true);
-                    sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+I18n.translateToLocal("mdecore.command.regen.success")));
+                    sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+I18n.format("mdecore.command.regen.success")));
                 }
             } catch (Exception e) {
-                throw new CommandException(I18n.translateToLocal("mdecore.command.regen.failure"));
+                throw new CommandException(I18n.format("mdecore.command.regen.failure"));
             }
         }
     }

@@ -290,7 +290,7 @@ public class JGoogleAnalyticsTracker {
      *            the host name for the url
      */
     public void trackPageView(String argPageURL, String argPageTitle, String argHostName) {
-        trackPageViewFromReferrer(argPageURL, argPageTitle, argHostName, "http://www.dmurph.com", "/");
+        trackPageViewFromReferrer(argPageURL, argPageTitle, argHostName, "minecraft", "/");
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -10,7 +11,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.WorldServer;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class KillAllLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.translateToLocal("mdecore.command.killall.usage");
+        return I18n.format("mdecore.command.killall.usage");
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {

@@ -28,7 +28,7 @@ public class TeleportHelper {
 
             //prepare and remove player
             player.dimension = dimension;
-            player.playerNetServerHandler.sendPacket(new SPacketRespawn(dimension, worldServerNew.getDifficulty(), worldServerNew.getWorldType(), player.interactionManager.getGameType()));
+            player.connection.sendPacket(new SPacketRespawn(dimension, worldServerNew.getDifficulty(), worldServerNew.getWorldType(), player.interactionManager.getGameType()));
             if (player.isBeingRidden()) player.dismountRidingEntity();
             if (player.isRiding()) player.getRidingEntity().dismountRidingEntity();
             worldServerOld.removeEntityDangerously(player);
@@ -41,12 +41,12 @@ public class TeleportHelper {
             list.preparePlayer(player, worldServerOld);
             //BlockPos spawn = worldServerNew.getTopSolidOrLiquidBlock(worldServerNew.getSpawnCoordinate()); //TODO: fix crash here
             //player.playerNetServerHandler.setPlayerLocation(spawn.getX(), spawn.getY(), spawn.getZ(), player.rotationYaw, player.rotationPitch);
-            player.playerNetServerHandler.setPlayerLocation(player.posX,player.posY,player.posZ,player.rotationYaw,player.rotationPitch);
+            player.connection.setPlayerLocation(player.posX,player.posY,player.posZ,player.rotationYaw,player.rotationPitch);
             player.interactionManager.setWorld(worldServerNew);
             list.updateTimeAndWeatherForPlayer(player, worldServerNew);
             list.syncPlayerInventory(player);
             for (PotionEffect effect : player.getActivePotionEffects()) {
-                player.playerNetServerHandler.sendPacket(new SPacketEntityEffect(player.getEntityId(), effect));
+                player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), effect));
             }
 
             //cleanup

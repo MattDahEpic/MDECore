@@ -1,10 +1,10 @@
 package com.mattdahepic.mdecore.command;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import java.util.*;
@@ -99,7 +99,7 @@ public abstract class AbstractCommand extends CommandBase {
         throw new NumberInvalidException("commands.generic.num.invalid",notNumber);
     }
     public static void throwNoWorld () throws CommandException {
-        throw new CommandException(I18n.translateToLocal("mdecore.worldnotfound"));
+        throw new CommandException(I18n.format("mdecore.worldnotfound"));
     }
     public static void throwNoCommand () throws CommandNotFoundException {
         throw new CommandNotFoundException();

@@ -1,7 +1,7 @@
 package com.mattdahepic.mdecore.world;
 
 import com.mattdahepic.mdecore.MDECore;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -14,8 +14,8 @@ import java.util.Random;
 public class TickHandlerWorld {
     public static TickHandlerWorld instance = new TickHandlerWorld();
 
-    public static HashMap<Integer,ArrayDeque<ChunkCoordIntPair>> chunksToPreGen = new HashMap<Integer,ArrayDeque<ChunkCoordIntPair>>();
-    public static HashMap<Integer,ArrayDeque<ChunkCoordIntPair>> chunksToGen = new HashMap<Integer,ArrayDeque<ChunkCoordIntPair>>();
+    public static HashMap<Integer,ArrayDeque<ChunkPos>> chunksToPreGen = new HashMap<Integer,ArrayDeque<ChunkPos>>();
+    public static HashMap<Integer,ArrayDeque<ChunkPos>> chunksToGen = new HashMap<Integer,ArrayDeque<ChunkPos>>();
 
     private static byte pregenC, retroC;
     @SubscribeEvent
@@ -27,10 +27,10 @@ public class TickHandlerWorld {
         int dim = world.provider.getDimension();
 
         if (event.phase == TickEvent.Phase.END) {
-            ArrayDeque<ChunkCoordIntPair> chunks = chunksToGen.get(dim);
+            ArrayDeque<ChunkPos> chunks = chunksToGen.get(dim);
 
             if (chunks != null && chunks.size() > 0) {
-                ChunkCoordIntPair c = chunks.pollFirst();
+                ChunkPos c = chunks.pollFirst();
                 if (retroC++ == 0 || chunks.size() < 3) {
                     MDECore.logger.info("RetroGening " + c.toString() + ".");
                 } else {
@@ -49,10 +49,10 @@ public class TickHandlerWorld {
                 MDECore.logger.info("RetroGening complete!");
             }
         } else {
-            ArrayDeque<ChunkCoordIntPair> chunks = chunksToPreGen.get(dim);
+            ArrayDeque<ChunkPos> chunks = chunksToPreGen.get(dim);
 
             if (chunks != null && chunks.size() > 0) {
-                ChunkCoordIntPair c = chunks.pollFirst();
+                ChunkPos c = chunks.pollFirst();
                 if (pregenC++ == 0 || chunks.size() < 5) {
                     MDECore.logger.info("PreGening " + c.toString() + ".");
                 } else {
@@ -67,7 +67,7 @@ public class TickHandlerWorld {
         }
     }
 
-    public void generateWorld(Random random, ChunkCoordIntPair chunk, World world, boolean newGen) {
+    public void generateWorld(Random random, ChunkPos chunk, World world, boolean newGen) {
         if (!newGen) {
             world.getChunkFromChunkCoords(chunk.chunkXPos,chunk.chunkZPos).setChunkModified();
         }

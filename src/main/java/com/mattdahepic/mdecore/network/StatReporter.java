@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
 public class StatReporter {
-    //By using the mod you agree to the EULA: http://mattdahepic.com/code/mods/eula
+    //By using the mod you agree to the EULA: http://mattdahepic.com/mods/eula
     public static void gatherAndReport () {
         //setup google analytics tracker
         JGoogleAnalyticsTracker.setProxy(System.getenv("http_proxy"));

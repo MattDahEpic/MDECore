@@ -13,7 +13,7 @@ public class DaySleepToNight {
     @SubscribeEvent
     public void playerSleep (PlayerSleepInBedEvent e) {
         if (MDEConfig.sleepDuringDayChangesToNight && !e.getEntityPlayer().worldObj.isRemote) { //server only
-            e.setResult(EntityPlayer.EnumStatus.OK); //i will sleep whenever i want thank you very much
+            e.setResult(EntityPlayer.SleepResult.OK); //i will sleep whenever i want thank you very much
             if (e.getEntityPlayer().isRiding()) {e.getEntityPlayer().dismountRidingEntity();} //get off your high horse/pig/boat
             e.getEntityPlayer().setPosition((double) ((float) e.getPos().getX() + 0.5F), (double) ((float) e.getPos().getY() + 0.6875F), (double) ((float) e.getPos().getZ() + 0.5F));
             try {
