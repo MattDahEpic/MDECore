@@ -3,7 +3,6 @@ package com.mattdahepic.mdecore.command.logic;
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TickrateHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -31,40 +30,40 @@ public class TickrateLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.format("mdecore.command.tickrate.usage");
+        return "/mde tickrate <tickrate> <all|server|client|player name>";
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 1) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+I18n.format("mdecore.command.tickrate.noargs", TickrateHelper.getClientTickrate(), TickrateHelper.getServerTickrate())));
+            sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+String.format("Client: %dtps | Server: %dtps", TickrateHelper.getClientTickrate(), TickrateHelper.getServerTickrate())));
             return;
         }
         try {
             float inputTicks = Float.parseFloat(args[1]);
             if (!TickrateHelper.isTickrateValid(inputTicks)) {
-                sender.addChatMessage(new TextComponentString(TextFormatting.RED + I18n.format("mdecore.command.tickrate.failure.invalidtickrate")));
+                sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Invalid tickrate, must be greater than 0. You can't just go around stopping time!"));
                 return;
             }
             if (args.length == 2 || args[2].equals("all")) {
                 TickrateHelper.setTickrate(server,inputTicks);
-                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + I18n.format("mdecore.command.tickrate.success.all", inputTicks)));
+                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + String.format("Tickrate changed to %dtps.", inputTicks)));
             } else if (args[2].equals("server")) {
                 TickrateHelper.setServerTickrate(inputTicks);
-                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + I18n.format("mdecore.command.tickrate.success.server",inputTicks)));
+                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + String.format("Server tickrate changed to %dtps.",inputTicks)));
             } else if (args[2].equals("client")) {
                 TickrateHelper.setAllClientTickrate(server,inputTicks);
-                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + I18n.format("mdecore.command.tickrate.success.client",inputTicks)));
+                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + String.format("All connected players tickrate set to %dtps.",inputTicks)));
             } else {
                 EntityPlayer p = CommandBase.getPlayer(server,sender,args[1]);
                 TickrateHelper.setClientTickrate(p, inputTicks);
-                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN+I18n.format("mdecore.command.tickrate.success.name",p.getName(),inputTicks)));
+                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN+String.format("%s's client tickrate set to %dtps.",p.getName(),inputTicks)));
             }
         } catch (NumberFormatException ne) {
             AbstractCommand.throwInvalidNumber(args[1]);
         } catch (PlayerNotFoundException e) {
             AbstractCommand.throwNoPlayer();
         } catch (Exception ex) {
-            throw new CommandException(I18n.format("mdecore.commanderror"));
+            throw new CommandException("Something went wrong! Try again.");
         }
     }
     @Override

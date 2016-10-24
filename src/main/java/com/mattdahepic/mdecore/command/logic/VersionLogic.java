@@ -1,7 +1,6 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +25,7 @@ public class VersionLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.format("mdecore.command.version.usage");
+        return "/mde version";
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {
@@ -36,7 +35,7 @@ public class VersionLogic implements ICommandLogic {
                 mods.add(mod);
             }
         }
-        StringBuilder output = new StringBuilder(I18n.format("mdecore.command.version.success.title")+" ");
+        StringBuilder output = new StringBuilder("Loaded MattDahEpic mods are: ");
         if (mods.size() == 1) {
             ModContainer mod = mods.get(0);
             output.append(TextFormatting.YELLOW+mod.getModId()+TextFormatting.WHITE+" at version "+TextFormatting.AQUA+mod.getVersion()+TextFormatting.WHITE);

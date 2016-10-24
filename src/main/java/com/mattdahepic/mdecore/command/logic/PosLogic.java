@@ -2,7 +2,6 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -27,7 +26,7 @@ public class PosLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.format("mdecore.command.pos.usage");
+        return "/mde pos <player>";
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -35,8 +34,8 @@ public class PosLogic implements ICommandLogic {
             try {
                 EntityPlayerMP senderPlayer = CommandBase.getCommandSenderAsPlayer(sender);
                 EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, args[1]);
-                String playerName = I18n.format((senderPlayer.equals(targetPlayer) ? "mdecore.command.pos.success.player.self" : "mdecore.command.pos.success.player.other"), targetPlayer.getDisplayNameString());
-                sender.addChatMessage(new TextComponentString(playerName + " " + I18n.format("mdecore.command.pos.success", (int) targetPlayer.posX, (int) targetPlayer.posY, (int) targetPlayer.posZ, targetPlayer.dimension)));
+                String playerName = String.format((senderPlayer.equals(targetPlayer) ? "You are" : "%s is"), targetPlayer.getDisplayNameString());
+                sender.addChatMessage(new TextComponentString(playerName + " " + String.format("at the coordinates (%d, %d, %d) in the dimension %d.", (int) targetPlayer.posX, (int) targetPlayer.posY, (int) targetPlayer.posZ, targetPlayer.dimension)));
             } catch (PlayerNotFoundException e) {
                 AbstractCommand.throwNoPlayer();
             }

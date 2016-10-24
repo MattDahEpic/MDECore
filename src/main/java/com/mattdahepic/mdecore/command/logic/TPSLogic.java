@@ -2,13 +2,12 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkProviderServer;
 
@@ -28,7 +27,7 @@ public class TPSLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.format("mdecore.ocmmand.tps.usage");
+        return "/mde tps [{o | a | <dimension>}]";
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -36,27 +35,27 @@ public class TPSLogic implements ICommandLogic {
             double tps = getTps(server,null);
             double tickms = getTickMs(server,null);
 
-            sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.noargs.overall", tps, tickms, (int) (tps / 20D * 100D)));
+            sender.addChatMessage(new TextComponentString(String.format("Overall: %.2f TPS/%.2fMS (%s%%)", tps, tickms, (int) (tps / 20D * 100D))));
 
             for (World world : server.worldServers) {
                 tps = getTps(server,world);
                 tickms = getTickMs(server,world);
-                sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.noargs.world",world.getWorldType().getWorldTypeName(),world.provider.getDimension(),tps,tickms,(int)(tps/20D*100D)));
+                sender.addChatMessage(new TextComponentString(String.format("%s [%d]: %.2f TPS/%.2fMS (%d%%)",world.getWorldType().getWorldTypeName(),world.provider.getDimension(),tps,tickms,(int)(tps/20D*100D))));
             }
         } else if (args[1].toLowerCase().charAt(0) == 'o') { //overall
             double tickms = getTickMs(server,null);
             double tps = getTps(server,null);
 
-            sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.overall.title"));
-            sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.overall.tps", tps, 20L, (int) (tps / 20D * 100D)));
-            sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.overall.time",tickms,50L));
+            sender.addChatMessage(new TextComponentString("Overall server tick"));
+            sender.addChatMessage(new TextComponentString(String.format("TPS: %.2f TPS of %.2f TPS (%d%%)", tps, 20L, (int) (tps / 20D * 100D))));
+            sender.addChatMessage(new TextComponentString(String.format("Tick time: %.2f ms of %.2f ms.",tickms,50L)));
         } else if (args[1].toLowerCase().charAt(0) == 'a') { //all
             double tickms = getTickMs(server,null);
             double tps = getTps(server,null);
-
-            sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.overall.title"));
-            sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.overall.tps", tps, 20L, (int) (tps / 20D * 100D)));
-            sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.overall.time",tickms,50L));
+    
+            sender.addChatMessage(new TextComponentString("Overall server tick"));
+            sender.addChatMessage(new TextComponentString(String.format("TPS: %.2f TPS of %.2f TPS (%d%%)", tps, 20L, (int) (tps / 20D * 100D))));
+            sender.addChatMessage(new TextComponentString(String.format("Tick time: %.2f ms of %.2f ms.",tickms,50L)));
 
             int loadedChunks = 0;
             int entities = 0;
@@ -69,8 +68,8 @@ public class TPSLogic implements ICommandLogic {
                 te += world.loadedTileEntityList.size();
                 worlds += 1;
             }
-            sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.all.world",worlds,loadedChunks));
-            sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.all.entity",entities,te));
+            sender.addChatMessage(new TextComponentString(String.format("Total Loaded Worlds/Chunks: %d/%d",worlds,loadedChunks)));
+            sender.addChatMessage(new TextComponentString(String.format("Total Entities/TileEntities: %d/%d",entities,te)));
         } else { //dimension
             try {
                 int dim = Integer.parseInt(args[1]);
@@ -80,9 +79,9 @@ public class TPSLogic implements ICommandLogic {
                 double tickms = getTickMs(server,world);
                 double tps = getTps(server,world);
 
-                sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.dimension.world",world.provider.getDimension(),world.getWorldType().getWorldTypeName(),((ChunkProviderServer)world.getChunkProvider()).getLoadedChunkCount()));
-                sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.dimension.time",tps,20L,(int)(tps/20D*100D),tickms,50L));
-                sender.addChatMessage(new TextComponentTranslation("mdecore.command.tps.success.dimension.entity",world.loadedEntityList.size(),world.loadedTileEntityList.size()));
+                sender.addChatMessage(new TextComponentString(String.format("World %s: %s - Loaded chunks: %d",world.provider.getDimension(),world.getWorldType().getWorldTypeName(),((ChunkProviderServer)world.getChunkProvider()).getLoadedChunkCount())));
+                sender.addChatMessage(new TextComponentString(String.format("TPS: %.2f/%.2f TPS (%d%%) - Tick: %.2f ms of %.2f ms",tps,20L,(int)(tps/20D*100D),tickms,50L)));
+                sender.addChatMessage(new TextComponentString(String.format("Entities: %d - Tile Entities: %d",world.loadedEntityList.size(),world.loadedTileEntityList.size())));
             } catch (NumberFormatException e) {
                 AbstractCommand.throwInvalidNumber(args[1]);
             }

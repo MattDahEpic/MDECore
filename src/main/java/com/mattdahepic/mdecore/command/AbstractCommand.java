@@ -1,6 +1,5 @@
 package com.mattdahepic.mdecore.command;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -99,7 +98,7 @@ public abstract class AbstractCommand extends CommandBase {
         throw new NumberInvalidException("commands.generic.num.invalid",notNumber);
     }
     public static void throwNoWorld () throws CommandException {
-        throw new CommandException(I18n.format("mdecore.worldnotfound"));
+        throw new CommandException("Specified world not found!");
     }
     public static void throwNoCommand () throws CommandNotFoundException {
         throw new CommandNotFoundException();

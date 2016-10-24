@@ -3,7 +3,6 @@ package com.mattdahepic.mdecore.command.logic;
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -31,7 +30,7 @@ public class RegenLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.format("mdecore.command.regen.usage");
+        return "/mde regen [x,z coords of chunk to regenerate]";
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -77,10 +76,10 @@ public class RegenLogic implements ICommandLogic {
                         }
                     }
                     chunk.setModified(true);
-                    sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+I18n.format("mdecore.command.regen.success")));
+                    sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+"Regeneration complete!"));
                 }
             } catch (Exception e) {
-                throw new CommandException(I18n.format("mdecore.command.regen.failure"));
+                throw new CommandException("Error occurred while regenerating chunk.");
             }
         }
     }

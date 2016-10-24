@@ -1,7 +1,6 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -9,7 +8,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldServer;
 
@@ -31,7 +30,7 @@ public class KillAllLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.format("mdecore.command.killall.usage");
+        return "/mde killall [partial name]";
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {
@@ -70,9 +69,9 @@ public class KillAllLogic implements ICommandLogic {
                 finalNames = finalNames + TextFormatting.RED + names.get(name) + TextFormatting.WHITE + "x" + TextFormatting.YELLOW + name + TextFormatting.WHITE + ", ";
             }
             finalNames = finalNames.substring(0, finalNames.length() - 2);
-            sender.addChatMessage(new TextComponentTranslation((target != null ? "mdecore.command.killall.success.normal" : "mdecore.command.killall.success.hostile"), killCount, finalNames));
+            sender.addChatMessage(new TextComponentString(String.format((target != null ? "Removed %d entities. (%s)" : "Removed %d hostile mobs. (%s)"), killCount, finalNames)));
         } else {
-            sender.addChatMessage(new TextComponentTranslation(target != null ? "mdecore.command.killall.failure.normal" : "mdecore.command.killall.failure.hostile"));
+            sender.addChatMessage(new TextComponentString((target != null ? "No matching entities found!" : "No hostile mobs found!")));
         }
     }
     @Override

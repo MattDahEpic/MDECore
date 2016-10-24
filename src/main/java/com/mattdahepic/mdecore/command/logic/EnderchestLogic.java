@@ -2,7 +2,6 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -27,7 +26,7 @@ public class EnderchestLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.format("mdecore.command.enderchest.usage");
+        return "/mde enderchest <player>";
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -35,7 +34,7 @@ public class EnderchestLogic implements ICommandLogic {
             EntityPlayer looker = CommandBase.getCommandSenderAsPlayer(sender);
             if (!looker.worldObj.isRemote) {
                 EntityPlayer lookee = CommandBase.getPlayer(server,sender,args[1]);
-                if (looker.getName().equals(lookee.getName())) throw new CommandException(I18n.format("mdecore.command.invsee.selflook"));
+                if (looker.getName().equals(lookee.getName())) throw new CommandException("That's you, silly!");
                 looker.closeScreen();
                 InventoryEnderChest enderChest = lookee.getInventoryEnderChest();
                 enderChest.setCustomName(lookee.getName()+"'s Ender Chest");

@@ -4,7 +4,6 @@ import com.google.common.base.Throwables;
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.world.TickHandlerWorld;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -29,64 +28,63 @@ public class PregenLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return I18n.format("mdecore.command.pregen.usage");
+        return "/mde pregen {<user> <x chunk radius> <z chunk radius> | <x chunk start> <z chunk start> <x chunk end> <z chunk end>}";
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length < 4) {
-            AbstractCommand.throwUsages(instance);
-        }
+        if (args.length < 4) AbstractCommand.throwUsages(instance);
+        
         World world = sender.getEntityWorld();
         if (world.isRemote) return;
 
         ChunkPos center = null;
-        int i = 1;
-        int xS, xL;
-        if ("@".equals(args[i])) {
+        int argNum = 1;
+        int xFirst, xLast;
+        if ("@".equals(args[argNum])) {
             center = new ChunkPos(sender.getPosition().getX(),sender.getPosition().getZ());
-            i++;
-            xS = CommandBase.parseInt(args[i++]);
+            argNum++;
+            xFirst = CommandBase.parseInt(args[argNum++]);
         } else {
             try {
-                xS = CommandBase.parseInt(args[i++]);
+                xFirst = CommandBase.parseInt(args[argNum++]);
             } catch (Throwable t) {
-                ICommandSender senderTemp = CommandBase.getPlayer(server, sender, args[i - 1]);
+                ICommandSender senderTemp = CommandBase.getPlayer(server, sender, args[argNum - 1]);
                 center = new ChunkPos(senderTemp.getPosition().getX(),senderTemp.getPosition().getZ());
-                xS = CommandBase.parseInt(args[i++]);
+                xFirst = CommandBase.parseInt(args[argNum++]);
             }
         }
-        int zS = CommandBase.parseInt(args[i++]), zL;
-        int t = i + 1;
+        int zFirst = CommandBase.parseInt(args[argNum++]), zLast;
+        int t = argNum + 1;
 
         try {
-            xL = CommandBase.parseInt(args[i++]);
-            zL = CommandBase.parseInt(args[i++]);
+            xLast = CommandBase.parseInt(args[argNum++]);
+            zLast = CommandBase.parseInt(args[argNum++]);
         } catch (Throwable e) {
-            if (i > t || center == null) {
+            if (argNum > t || center == null) {
                 throw Throwables.propagate(e);
             }
-            --i;
-            xL = xS;
-            zL = zS;
+            --argNum;
+            xLast = xFirst;
+            zLast = zFirst;
         }
 
-        if (center != null) {
-            xS = (center.chunkXPos / 16) - xS;
-            zS = (center.chunkZPos / 16) - zS;
+        if (center != null) { //determine corner locations if centered on player
+            xFirst = (center.chunkXPos / 16) - xFirst;
+            zFirst = (center.chunkZPos / 16) - zFirst;
 
-            xL = (center.chunkXPos / 16) + xL;
-            zL = (center.chunkZPos / 16) + zL;
+            xLast = (center.chunkXPos / 16) + xLast;
+            zLast = (center.chunkZPos / 16) + zLast;
         }
 
-        if (xL < xS) {
-            t = xS;
-            xS = xL;
-            xL = t;
+        if (xLast < xFirst) { //sanity check
+            t = xFirst;
+            xFirst = xLast;
+            xLast = t;
         }
-        if (zL < zS) {
-            t = zS;
-            zS = zL;
-            zL = t;
+        if (zLast < zFirst) { //sanity check
+            t = zFirst;
+            zFirst = zLast;
+            zLast = t;
         }
 
         synchronized (TickHandlerWorld.chunksToPreGen) {
@@ -95,8 +93,8 @@ public class PregenLogic implements ICommandLogic {
                 chunks = new ArrayDeque<ChunkPos>();
             }
 
-            for (int x = xS; x <= xL; ++x) {
-                for (int z = zS; z <= zL; ++z) {
+            for (int x = xFirst; x <= xLast; ++x) {
+                for (int z = zFirst; z <= zLast; ++z) {
                     chunks.addLast(new ChunkPos(x, z));
                 }
             }
