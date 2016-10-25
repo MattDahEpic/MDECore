@@ -20,7 +20,7 @@ public class TickrateTransformer implements IClassTransformer {
                 classReader.accept(classNode,0);
 
                 for (MethodNode method : classNode.methods) {
-                    if (method.name.equals("run") && method.desc.equals("()V")) { //TODO: update this if name changes
+                    if (method.name.equals("run") && method.desc.equals("()V")) {
                         InsnList list = new InsnList();
                         for (AbstractInsnNode node : method.instructions.toArray()) {
                             if (node instanceof LdcInsnNode) {

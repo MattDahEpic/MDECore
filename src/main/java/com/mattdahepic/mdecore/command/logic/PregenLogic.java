@@ -3,7 +3,7 @@ package com.mattdahepic.mdecore.command.logic;
 import com.google.common.base.Throwables;
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
-import com.mattdahepic.mdecore.world.TickHandlerWorld;
+import com.mattdahepic.mdecore.world.WorldEventHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -87,8 +87,8 @@ public class PregenLogic implements ICommandLogic {
             zLast = t;
         }
 
-        synchronized (TickHandlerWorld.chunksToPreGen) {
-            ArrayDeque<ChunkPos> chunks = TickHandlerWorld.chunksToPreGen.get(world.provider.getDimension());
+        synchronized (WorldEventHandler.chunksToGenerate) {
+            ArrayDeque<ChunkPos> chunks = WorldEventHandler.chunksToGenerate.get(world.provider.getDimension());
             if (chunks == null) {
                 chunks = new ArrayDeque<ChunkPos>();
             }
@@ -98,7 +98,7 @@ public class PregenLogic implements ICommandLogic {
                     chunks.addLast(new ChunkPos(x, z));
                 }
             }
-            TickHandlerWorld.chunksToPreGen.put(world.provider.getDimension(), chunks);
+            WorldEventHandler.chunksToGenerate.put(world.provider.getDimension(), chunks);
         }
     }
     @Override

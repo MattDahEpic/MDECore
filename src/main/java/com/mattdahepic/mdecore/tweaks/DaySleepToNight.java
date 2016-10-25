@@ -26,7 +26,7 @@ public class DaySleepToNight {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            e.getEntityPlayer().playerLocation = e.getPos();
+            e.getEntityPlayer().setPosition(e.getPos().getX(),e.getPos().getY(),e.getPos().getZ());
             e.getEntityPlayer().motionX = e.getEntityPlayer().motionZ = e.getEntityPlayer().motionY = 0.0D;
             e.getEntityPlayer().worldObj.updateAllPlayersSleepingFlag();
         }
