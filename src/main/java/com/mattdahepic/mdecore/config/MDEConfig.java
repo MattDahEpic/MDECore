@@ -16,6 +16,6 @@ public class MDEConfig extends ConfigSyncable {
     @Config(cat = CAT_TWEAKS, comment = {"If true, water will wash away redstone.","True is vanilla behaviour."}, restartReq = Config.RestartReqs.REQUIRES_MC_RESTART) public static boolean waterBreaksRedstone = true;
     @Config(cat = CAT_TWEAKS, comment = {"If true, water bottles will fill cauldrons by 1 level.","False is vanilla behaviour."}) public static boolean waterBottlesFillCauldrons = true;
     @Config(cat = CAT_TWEAKS, comment = {"If true, you can sleep through the day to the next night.","False is vanilla behaviour."}) public static boolean sleepDuringDayChangesToNight = false;
-    @Config(cat = CAT_TWEAKS, comment = {"If true, any time the ender dragon is killed, it will drop an elytra."}) public static boolean dragonDropsElytra = true;
+    @Config(cat = CAT_TWEAKS, comment = {"What the ender dragon drops when killed.","Default is elytra."}) public static String dragonDrop = "minecraft:elytra@0";
     @Config(cat = CAT_TWEAKS, comment = {"Should players get a message and sometimes an item on holidays?"}) public static boolean holidayRewards = true;
 }

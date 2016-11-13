@@ -67,7 +67,7 @@ public class MDECore extends DummyModContainer {
         PacketHandler.initPackets();
         MinecraftForge.EVENT_BUS.register(new WaterBottleCauldron());
         MinecraftForge.EVENT_BUS.register(new DaySleepToNight());
-        MinecraftForge.EVENT_BUS.register(new EnderdragonElytra());
+        MinecraftForge.EVENT_BUS.register(new EnderdragonDrop());
         MinecraftForge.EVENT_BUS.register(WorldEventHandler.instance);
     }
     @Mod.EventHandler

@@ -16,7 +16,7 @@ public class ItemHelper {
         return getItemFromName(name.substring(0,name.indexOf(":")),name.substring(name.indexOf(":")+1),meta);
     }
     public static ItemStack getItemFromName (String nameAndMeta) throws NumberFormatException {
-        return getItemFromName(nameAndMeta.substring(0,nameAndMeta.indexOf('@')),Integer.parseInt(nameAndMeta.substring(nameAndMeta.indexOf('@'))));
+        return getItemFromName(nameAndMeta.substring(0,nameAndMeta.indexOf('@')),Integer.parseInt(nameAndMeta.substring(nameAndMeta.indexOf('@')+1)));
     }
     public static String getNameFromItemStack (ItemStack item) {
         return Item.REGISTRY.getNameForObject(item.getItem()).toString()+"@"+item.getMetadata();

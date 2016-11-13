@@ -16,7 +16,7 @@ public class CommandMDE extends AbstractCommand {
         registerCommandLogic(TickrateLogic.instance);
         registerCommandLogic(InvseeLogic.instance);
         registerCommandLogic(EnderchestLogic.instance);
-        registerCommandLogic(TrimLogic.instance);
+        //registerCommandLogic(TrimLogic.instance);
     }
 
     @Override
