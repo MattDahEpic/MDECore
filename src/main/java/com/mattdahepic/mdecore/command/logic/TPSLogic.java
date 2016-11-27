@@ -1,6 +1,7 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
+import com.mattdahepic.mdecore.command.AbstractSingleLogicCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -14,7 +15,7 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TPSLogic implements ICommandLogic {
+public class TPSLogic extends AbstractSingleLogicCommand implements ICommandLogic {
     public static TPSLogic instance = new TPSLogic();
 
     @Override
@@ -31,7 +32,7 @@ public class TPSLogic implements ICommandLogic {
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 1) { //empty arguments
+        if (args.length == 1 || args.length == 0) { //empty arguments
             double tps = getTps(server,null);
             double tickms = getTickMs(server,null);
 

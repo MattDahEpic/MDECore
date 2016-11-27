@@ -5,7 +5,7 @@ import com.mattdahepic.mdecore.command.logic.*;
 public class CommandMDE extends AbstractCommand {
     public static CommandMDE instance = new CommandMDE();
 
-    static {
+    public CommandMDE () {
         registerCommandLogic(PosLogic.instance);
         registerCommandLogic(TPSLogic.instance);
         registerCommandLogic(TPXLogic.instance);
@@ -17,6 +17,7 @@ public class CommandMDE extends AbstractCommand {
         registerCommandLogic(InvseeLogic.instance);
         registerCommandLogic(EnderchestLogic.instance);
         //registerCommandLogic(TrimLogic.instance);
+        registerCommandLogic(TPALogic.instance);
     }
 
     @Override

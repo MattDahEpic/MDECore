@@ -1,6 +1,10 @@
 package com.mattdahepic.mdecore;
 
+import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.CommandMDE;
+import com.mattdahepic.mdecore.command.logic.TPALogic;
+import com.mattdahepic.mdecore.command.logic.TPSLogic;
+import com.mattdahepic.mdecore.command.logic.TPXLogic;
 import com.mattdahepic.mdecore.config.MDEConfig;
 import com.mattdahepic.mdecore.debug.DebugItem;
 import com.mattdahepic.mdecore.helpers.EnvironmentHelper;
@@ -33,7 +37,7 @@ public class MDECore extends DummyModContainer {
     static final String VERSION = "@VERSION@";
     static final String NAME = "MattDahEpic Core";
     static final String UPDATE_JSON = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+MODID+".json";
-    static final String DEPENDENCIES = "required-after:Forge@[12.18.2.2113,);";
+    static final String DEPENDENCIES = "required-after:Forge@[12.18.2.2113,);"; //TODO 1.11: change to lowercase
 
     public static final Logger logger = LogManager.getLogger(MODID);
     //private static final UUID MATT_UUID = UUID.fromString("c715991d-e69c-48f9-a92d-8fc60c0829fb");
@@ -77,6 +81,10 @@ public class MDECore extends DummyModContainer {
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent e) {
         CommandMDE.instance.init(e);
+        //only register commands as their base level name if another command with that name does not already exist
+        if (!AbstractCommand.doesCommandExist(e.getServer(),"tpa")) TPALogic.instance.init(e);
+        if (!AbstractCommand.doesCommandExist(e.getServer(),"tps")) TPSLogic.instance.init(e);
+        if (!AbstractCommand.doesCommandExist(e.getServer(),"tpx")) TPXLogic.instance.init(e);
     }
     @SubscribeEvent
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent e) {

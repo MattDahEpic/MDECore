@@ -9,8 +9,8 @@ public class MDEConfig extends ConfigSyncable {
     public String getConfigName () {return MDECore.MODID;}
     public Class getConfigClass () {return getClass();}
     private static final String CAT_TWEAKS = "tweaks";
+    private static final String CAT_COMMANDS = "commands";
 
-    //@Config(comment = {"If this value is true anonymous statistics about any MattDahEpic mods and their versions you are running will be sent to the author through Google Analytics."}, sync = false) public static boolean reportUsageStats = true;
     @Config(comment = {"A message to be sent to the player every time they join the server.","Supports color codes as specified at http://minecraft.gamepedia.com/Formatting_codes#Color_codes","If this string is empty no message will be sent."}) public static String loginMessage = "";
 
     @Config(cat = CAT_TWEAKS, comment = {"If true, water will wash away redstone.","True is vanilla behaviour."}, restartReq = Config.RestartReqs.REQUIRES_MC_RESTART) public static boolean waterBreaksRedstone = true;
@@ -18,4 +18,7 @@ public class MDEConfig extends ConfigSyncable {
     @Config(cat = CAT_TWEAKS, comment = {"If true, you can sleep through the day to the next night.","False is vanilla behaviour."}) public static boolean sleepDuringDayChangesToNight = false;
     @Config(cat = CAT_TWEAKS, comment = {"What the ender dragon drops when killed.","Default is elytra."}) public static String dragonDrop = "minecraft:elytra@0";
     @Config(cat = CAT_TWEAKS, comment = {"Should players get a message and sometimes an item on holidays?"}) public static boolean holidayRewards = true;
+    
+    @Config(cat = CAT_COMMANDS, comment = {"Whould the /mde tpa command allow cross dimensional teleporting?","Default is true."}) public static boolean tpaCrossDimension = true;
+    @Config(cat = CAT_COMMANDS, comment = {"How long should players have to stand still before being TPA'd?","Default is 3"}, range = @Config.Range(min = 0, max = 20)) public static int tpaWaitTime = 3;
 }

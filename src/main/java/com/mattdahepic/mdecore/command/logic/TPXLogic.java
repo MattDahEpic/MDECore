@@ -1,6 +1,7 @@
 package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
+import com.mattdahepic.mdecore.command.AbstractSingleLogicCommand;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TeleportHelper;
 import net.minecraft.command.CommandBase;
@@ -16,7 +17,7 @@ import net.minecraftforge.common.DimensionManager;
 
 import java.util.List;
 
-public class TPXLogic implements ICommandLogic {
+public class TPXLogic extends AbstractSingleLogicCommand implements ICommandLogic {
     public static TPXLogic instance = new TPXLogic();
 
     @Override
@@ -34,6 +35,7 @@ public class TPXLogic implements ICommandLogic {
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         switch (args.length) {
+            case 0:
             case 1: // (tpx) invalid command
                 AbstractCommand.throwUsages(instance);
             case 2: // (tpx {<player>|<dimension>}) teleporting player to self, or self to dimension

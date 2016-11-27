@@ -9,36 +9,36 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import java.util.*;
 
 public abstract class AbstractCommand extends CommandBase {
-    private static Map<String, ICommandLogic> commands = new HashMap<String,ICommandLogic>();
+    private Map<String, ICommandLogic> commands = new HashMap<String,ICommandLogic>();
 
     public abstract String getCommandName ();
 
     public void init(FMLServerStartingEvent e) {
         e.registerServerCommand(this);
     }
-    public static String getCommandSyntax (String name) {
+    public String getCommandSyntax (String name) {
         if (getCommandExists(name)) {
             return commands.get(name).getCommandSyntax();
         }
         return null;
     }
-    public static boolean registerCommandLogic (ICommandLogic commandLogic) {
+    public boolean registerCommandLogic (ICommandLogic commandLogic) {
         if (!commands.containsKey(commandLogic.getCommandName())) {
             commands.put(commandLogic.getCommandName(), commandLogic);
             return true;
         }
         return false;
     }
-    public static Set<String> getCommandList() {
+    public Set<String> getCommandList() {
         return commands.keySet();
     }
-    public static int getCommandPermission (String command) {
+    public int getCommandPermission (String command) {
         return getCommandExists(command) ? commands.get(command).getPermissionLevel() : Integer.MAX_VALUE;
     }
-    public static boolean getCommandExists (String command) {
+    public boolean getCommandExists (String command) {
         return commands.containsKey(command);
     }
-    public static boolean canUseCommand (ICommandSender sender, int requiredPermission, AbstractCommand baseCommand, String name) {
+    public boolean canUseCommand (ICommandSender sender, int requiredPermission, AbstractCommand baseCommand, String name) {
         if (getCommandExists(name)) {
             return sender.canCommandSenderUseCommand(requiredPermission, baseCommand.getCommandName()+" "+name) || (sender instanceof EntityPlayerMP && requiredPermission <= 0);
         }
@@ -102,5 +102,8 @@ public abstract class AbstractCommand extends CommandBase {
     }
     public static void throwNoCommand () throws CommandNotFoundException {
         throw new CommandNotFoundException();
+    }
+    public static boolean doesCommandExist (MinecraftServer server, String commandName) {
+        return server.commandManager.getCommands().containsKey(commandName);
     }
 }
