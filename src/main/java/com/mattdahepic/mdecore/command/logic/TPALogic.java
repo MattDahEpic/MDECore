@@ -99,6 +99,6 @@ public class TPALogic extends AbstractSingleLogicCommand implements ICommandLogi
     }
     @Override
     public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
-        return args.length == 2 ? AbstractCommand.getPlayerNamesStartingWithLastArg(server,args) : null;
+        return args.length == 1 ? AbstractCommand.getPlayerNamesStartingWithLastArg(server,args) : null;
     }
 }
