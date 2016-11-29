@@ -24,14 +24,15 @@ public abstract class AbstractCommand extends CommandBase {
         return null;
     }
     public boolean registerCommandLogic (ICommandLogic commandLogic) {
+        MDECore.logger.debug("Registering command "+commandLogic.getClass().getName());
         try {
             if (!commands.containsKey(commandLogic.getCommandName())) {
                 commands.put(commandLogic.getCommandName(), commandLogic);
                 return true;
             }
             return false;
-        } catch (Exception e) {
-            MDECore.logger.error("Error initializing command "+commandLogic.getClass().getName()+". Please report this to the mod author.");
+        } catch (Error e) {
+            MDECore.logger.fatal("Error initializing command "+commandLogic.getClass().getName()+". Please report this to the mod author.");
             throw new RuntimeException(e);
         }
     }

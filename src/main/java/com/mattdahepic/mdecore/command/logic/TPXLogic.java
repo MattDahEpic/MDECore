@@ -2,7 +2,6 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.AbstractSingleLogicCommand;
-import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.helpers.TeleportHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -14,10 +13,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.DimensionManager;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
 
-public class TPXLogic extends AbstractSingleLogicCommand implements ICommandLogic {
+public class TPXLogic extends AbstractSingleLogicCommand {
     public static TPXLogic instance = new TPXLogic();
 
     @Override
@@ -34,6 +34,7 @@ public class TPXLogic extends AbstractSingleLogicCommand implements ICommandLogi
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if (args[0].equals(getCommandName())) args = ArrayUtils.remove(args,0);
         switch (args.length) {
             case 0:
             case 1: // (tpx) invalid command

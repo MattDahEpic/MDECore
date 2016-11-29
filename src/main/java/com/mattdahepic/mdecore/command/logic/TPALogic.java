@@ -2,7 +2,6 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.AbstractSingleLogicCommand;
-import com.mattdahepic.mdecore.command.ICommandLogic;
 import com.mattdahepic.mdecore.config.MDEConfig;
 import com.mattdahepic.mdecore.helpers.TeleportHelper;
 import net.minecraft.command.CommandException;
@@ -13,12 +12,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimerTask;
 
-public class TPALogic extends AbstractSingleLogicCommand implements ICommandLogic {
+public class TPALogic extends AbstractSingleLogicCommand {
     public static TPALogic instance = new TPALogic();
     
     private static HashMap<String,String> pendingConfirms = new HashMap<String, String>(); //target, sender
@@ -38,6 +38,7 @@ public class TPALogic extends AbstractSingleLogicCommand implements ICommandLogi
     }
     @Override
     public void handleCommand (final MinecraftServer server, final ICommandSender sender, String[] args) throws CommandException {
+        if (args[0].equals(getCommandName())) args = ArrayUtils.remove(args,0);
         if (args.length < 1) AbstractCommand.throwUsages(instance);
         
         final EntityPlayerMP senderPlayer = AbstractCommand.getCommandSenderAsPlayer(sender);
@@ -99,6 +100,6 @@ public class TPALogic extends AbstractSingleLogicCommand implements ICommandLogi
     }
     @Override
     public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
-        return args.length == 1 ? AbstractCommand.getPlayerNamesStartingWithLastArg(server,args) : null;
+        return args.length == 1 || args.length == 2 ? AbstractCommand.getPlayerNamesStartingWithLastArg(server,args) : null;
     }
 }

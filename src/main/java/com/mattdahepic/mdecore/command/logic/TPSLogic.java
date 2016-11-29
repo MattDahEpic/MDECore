@@ -2,7 +2,6 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.AbstractSingleLogicCommand;
-import com.mattdahepic.mdecore.command.ICommandLogic;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -11,11 +10,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkProviderServer;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TPSLogic extends AbstractSingleLogicCommand implements ICommandLogic {
+public class TPSLogic extends AbstractSingleLogicCommand {
     public static TPSLogic instance = new TPSLogic();
 
     @Override
@@ -32,6 +32,7 @@ public class TPSLogic extends AbstractSingleLogicCommand implements ICommandLogi
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if (args[0].equals(getCommandName())) args = ArrayUtils.remove(args,0);
         if (args.length == 1 || args.length == 0) { //empty arguments
             double tps = getTps(server,null);
             double tickms = getTickMs(server,null);
@@ -90,7 +91,7 @@ public class TPSLogic extends AbstractSingleLogicCommand implements ICommandLogi
     }
     @Override
     public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
-        if (args.length == 2) {
+        if (args.length == 2 || args.length == 3) {
             List<String> worldIDs = new ArrayList<String>();
             worldIDs.add("o");
             worldIDs.add("a");

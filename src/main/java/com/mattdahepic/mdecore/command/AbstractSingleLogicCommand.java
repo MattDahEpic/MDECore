@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractSingleLogicCommand extends CommandBase {
+public abstract class AbstractSingleLogicCommand extends CommandBase implements ICommandLogic {
     public abstract int getPermissionLevel ();
     public abstract String getCommandName ();
     public abstract String getCommandSyntax ();
