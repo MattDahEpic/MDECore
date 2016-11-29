@@ -1,5 +1,6 @@
 package com.mattdahepic.mdecore.command;
 
+import com.mattdahepic.mdecore.MDECore;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -23,11 +24,16 @@ public abstract class AbstractCommand extends CommandBase {
         return null;
     }
     public boolean registerCommandLogic (ICommandLogic commandLogic) {
-        if (!commands.containsKey(commandLogic.getCommandName())) {
-            commands.put(commandLogic.getCommandName(), commandLogic);
-            return true;
+        try {
+            if (!commands.containsKey(commandLogic.getCommandName())) {
+                commands.put(commandLogic.getCommandName(), commandLogic);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            MDECore.logger.error("Error initializing command "+commandLogic.getClass().getName()+". Please report this to the mod author.");
+            throw new RuntimeException(e);
         }
-        return false;
     }
     public Set<String> getCommandList() {
         return commands.keySet();
