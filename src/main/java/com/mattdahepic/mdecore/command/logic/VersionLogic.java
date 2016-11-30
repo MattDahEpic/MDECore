@@ -16,7 +16,7 @@ public class VersionLogic implements ICommandLogic {
     public static VersionLogic instance = new VersionLogic();
 
     @Override
-    public String getCommandName () {
+    public String getLogicalCommandName () {
         return "version";
     }
     @Override

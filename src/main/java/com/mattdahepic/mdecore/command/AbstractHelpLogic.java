@@ -16,7 +16,7 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
     public abstract AbstractCommand getBaseCommand ();
 
     @Override
-    public String getCommandName () {
+    public String getLogicalCommandName () {
         return "help";
     }
     @Override

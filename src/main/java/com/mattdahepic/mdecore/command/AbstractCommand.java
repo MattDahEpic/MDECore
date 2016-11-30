@@ -26,8 +26,8 @@ public abstract class AbstractCommand extends CommandBase {
     public boolean registerCommandLogic (ICommandLogic commandLogic) {
         MDECore.logger.debug("Registering command "+commandLogic.getClass().getName());
         try {
-            if (!commands.containsKey(commandLogic.getCommandName())) {
-                commands.put(commandLogic.getCommandName(), commandLogic);
+            if (!commands.containsKey(commandLogic.getLogicalCommandName())) {
+                commands.put(commandLogic.getLogicalCommandName(), commandLogic);
                 return true;
             }
             return false;
@@ -72,7 +72,7 @@ public abstract class AbstractCommand extends CommandBase {
         if (args.length < 1) args = new String[]{"help"};
         ICommandLogic command = commands.get(args[0]);
         if (command != null) {
-            if (canUseCommand(sender,command.getPermissionLevel(),this,command.getCommandName())) {
+            if (canUseCommand(sender,command.getPermissionLevel(),this,command.getLogicalCommandName())) {
                 command.handleCommand(server,sender,args);
                 return;
             }

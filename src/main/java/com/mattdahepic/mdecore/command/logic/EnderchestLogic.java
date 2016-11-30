@@ -17,7 +17,7 @@ public class EnderchestLogic implements ICommandLogic {
     public static EnderchestLogic instance = new EnderchestLogic();
 
     @Override
-    public String getCommandName () {
+    public String getLogicalCommandName () {
         return "enderchest";
     }
     @Override

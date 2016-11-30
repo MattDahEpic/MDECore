@@ -17,7 +17,7 @@ public class PosLogic implements ICommandLogic {
     public static PosLogic instance = new PosLogic();
 
     @Override
-    public String getCommandName () {
+    public String getLogicalCommandName () {
         return "pos";
     }
     @Override

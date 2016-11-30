@@ -21,7 +21,7 @@ public class KillAllLogic implements ICommandLogic {
     public static KillAllLogic instance = new KillAllLogic();
 
     @Override
-    public String getCommandName () {
+    public String getLogicalCommandName () {
         return "killall";
     }
     @Override

@@ -25,7 +25,7 @@ public class TrimLogic implements ICommandLogic {
     private static boolean hasConfirmed = false;
     
     @Override
-    public String getCommandName () {
+    public String getLogicalCommandName () {
         return "trim";
     }
     @Override

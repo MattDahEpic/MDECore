@@ -21,7 +21,7 @@ public class TickrateLogic implements ICommandLogic {
     public static TickrateLogic instance = new TickrateLogic();
 
     @Override
-    public String getCommandName () {
+    public String getLogicalCommandName () {
         return "tickrate";
     }
     @Override

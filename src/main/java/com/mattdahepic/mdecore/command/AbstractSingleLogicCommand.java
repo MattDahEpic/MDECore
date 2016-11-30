@@ -13,6 +13,7 @@ import java.util.List;
 public abstract class AbstractSingleLogicCommand extends CommandBase implements ICommandLogic {
     public abstract int getPermissionLevel ();
     public abstract String getCommandName ();
+    public String getLogicalCommandName () { return getCommandName(); }
     public abstract String getCommandSyntax ();
     public abstract void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException;
     public abstract List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos);
