@@ -17,7 +17,7 @@ public class InvseeLogic implements ICommandLogic {
     public static InvseeLogic instance = new InvseeLogic();
 
     @Override
-    public String getCommandName () {
+    public String getLogicalCommandName () {
         return "invsee";
     }
     @Override
