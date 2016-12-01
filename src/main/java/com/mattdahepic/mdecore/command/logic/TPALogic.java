@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,7 @@ public class TPALogic extends AbstractSingleLogicCommand {
     private static HashMap<String,String> pendingTeleports = new HashMap<String, String>();
     
     @Override
-    public String getCommandName () {
+    public String getCommandLogicName() {
         return "tpa";
     }
     @Override
@@ -38,12 +37,11 @@ public class TPALogic extends AbstractSingleLogicCommand {
     }
     @Override
     public void handleCommand (final MinecraftServer server, final ICommandSender sender, String[] args) throws CommandException {
-        if (args[0].equals(getCommandName())) args = ArrayUtils.remove(args,0);
-        if (args.length < 1) AbstractCommand.throwUsages(instance);
+        if (args.length == 1) AbstractCommand.throwUsages(instance);
         
         final EntityPlayerMP senderPlayer = AbstractCommand.getCommandSenderAsPlayer(sender);
         
-        if (args[0].equals("confirm")) {
+        if (args[1].equals("confirm")) {
             if (pendingConfirms.containsKey(sender.getName())) {
                 final String originalSender = pendingConfirms.get(sender.getName());
                 pendingTeleports.put(sender.getName(),originalSender);
@@ -80,7 +78,7 @@ public class TPALogic extends AbstractSingleLogicCommand {
                 sender.addChatMessage(new TextComponentString(TextFormatting.RED+"There are no pending teleports to you."));
             }
         } else {
-            final EntityPlayerMP target = AbstractCommand.getPlayer(server, sender, args[0]);
+            final EntityPlayerMP target = AbstractCommand.getPlayer(server, sender, args[1]);
             if (target.getName().equals(sender.getName())) throw new CommandException("That's you silly!");
             if (!MDEConfig.tpaCrossDimension) {
                 if (target.dimension != senderPlayer.dimension) throw new CommandException("Your server does not allow cross-dimension tpa. Try again when you and the target are in the same dimension.");
@@ -99,7 +97,7 @@ public class TPALogic extends AbstractSingleLogicCommand {
         }
     }
     @Override
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
-        return args.length == 1 || args.length == 2 ? AbstractCommand.getPlayerNamesStartingWithLastArg(server,args) : null;
+    public List<String> getTabCompletionList(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+        return args.length == 2 ? AbstractCommand.getPlayerNamesStartingWithLastArg(server,args) : null;
     }
 }

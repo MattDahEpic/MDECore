@@ -21,7 +21,7 @@ public class TPXLogic extends AbstractSingleLogicCommand {
     public static TPXLogic instance = new TPXLogic();
 
     @Override
-    public String getCommandName () {
+    public String getCommandLogicName() {
         return "tpx";
     }
     @Override
@@ -34,7 +34,7 @@ public class TPXLogic extends AbstractSingleLogicCommand {
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args[0].equals(getCommandName())) args = ArrayUtils.remove(args,0);
+        if (args[0].equals(getCommandLogicName())) args = ArrayUtils.remove(args,0);
         switch (args.length) {
             case 0:
             case 1: // (tpx) invalid command
@@ -155,7 +155,7 @@ public class TPXLogic extends AbstractSingleLogicCommand {
     }
     @SuppressWarnings("unchecked")
     @Override
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionList(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2 || args.length == 3) {
             return AbstractCommand.getPlayerNamesStartingWithLastArg(server,args);
         } else if (args.length >= 6) {

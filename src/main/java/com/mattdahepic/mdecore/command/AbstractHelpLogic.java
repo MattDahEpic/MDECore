@@ -16,7 +16,7 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
     public abstract AbstractCommand getBaseCommand ();
 
     @Override
-    public String getCommandName () {
+    public String getCommandLogicName() {
         return "help";
     }
     @Override
@@ -53,10 +53,17 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
                 }
                 sender.addChatMessage(new TextComponentString(output.toString()));
                 break;
+            default:
+                String commandName = args[1];
+                if (getBaseCommand().getCommandExists(commandName)) {
+                    sender.addChatMessage(new TextComponentString(TextFormatting.AQUA+"Usage: "+TextFormatting.RESET+getBaseCommand().getCommandSyntax(commandName)));
+                } else {
+                    AbstractCommand.throwNoCommand();
+                }
         }
     }
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionList(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2) {
             return CommandBase.getListOfStringsMatchingLastWord(args, getBaseCommand().getCommandList()); //get all possible commands to "/mde help" on
         }

@@ -21,7 +21,7 @@ public class KillAllLogic implements ICommandLogic {
     public static KillAllLogic instance = new KillAllLogic();
 
     @Override
-    public String getCommandName () {
+    public String getCommandLogicName() {
         return "killall";
     }
     @Override
@@ -75,7 +75,7 @@ public class KillAllLogic implements ICommandLogic {
         }
     }
     @Override
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionList(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
     }
 }

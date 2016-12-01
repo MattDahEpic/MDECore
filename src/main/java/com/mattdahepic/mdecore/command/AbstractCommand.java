@@ -9,6 +9,11 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import java.util.*;
 
+/**
+ * A command that can have several sub commands
+ *
+ * The arguments passed to the logic are as follows: {command name, arguments...}
+ */
 public abstract class AbstractCommand extends CommandBase {
     private Map<String, ICommandLogic> commands = new HashMap<String,ICommandLogic>();
 
@@ -26,8 +31,8 @@ public abstract class AbstractCommand extends CommandBase {
     public boolean registerCommandLogic (ICommandLogic commandLogic) {
         MDECore.logger.debug("Registering command "+commandLogic.getClass().getName());
         try {
-            if (!commands.containsKey(commandLogic.getCommandName())) {
-                commands.put(commandLogic.getCommandName(), commandLogic);
+            if (!commands.containsKey(commandLogic.getCommandLogicName())) {
+                commands.put(commandLogic.getCommandLogicName(), commandLogic);
                 return true;
             }
             return false;
@@ -72,7 +77,7 @@ public abstract class AbstractCommand extends CommandBase {
         if (args.length < 1) args = new String[]{"help"};
         ICommandLogic command = commands.get(args[0]);
         if (command != null) {
-            if (canUseCommand(sender,command.getPermissionLevel(),this,command.getCommandName())) {
+            if (canUseCommand(sender,command.getPermissionLevel(),this,command.getCommandLogicName())) {
                 command.handleCommand(server,sender,args);
                 return;
             }
@@ -85,7 +90,7 @@ public abstract class AbstractCommand extends CommandBase {
         if (args.length == 1) {
             return getListOfStringsMatchingLastWord(args, commands.keySet());
         } else if (commands.containsKey(args[0])) {
-            return commands.get(args[0]).getTabCompletionOptions(server, sender, args, pos);
+            return commands.get(args[0]).getTabCompletionList(server, sender, args, pos);
         }
         return null;
     }

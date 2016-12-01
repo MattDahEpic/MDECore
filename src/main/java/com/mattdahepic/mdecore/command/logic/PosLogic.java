@@ -17,7 +17,7 @@ public class PosLogic implements ICommandLogic {
     public static PosLogic instance = new PosLogic();
 
     @Override
-    public String getCommandName () {
+    public String getCommandLogicName() {
         return "pos";
     }
     @Override
@@ -44,7 +44,7 @@ public class PosLogic implements ICommandLogic {
         }
     }
     @Override
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionList(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2) {
             return AbstractCommand.getPlayerNamesStartingWithLastArg(server,args);
         }

@@ -19,7 +19,7 @@ public class TPSLogic extends AbstractSingleLogicCommand {
     public static TPSLogic instance = new TPSLogic();
 
     @Override
-    public String getCommandName () {
+    public String getCommandLogicName() {
         return "tps";
     }
     @Override
@@ -32,7 +32,7 @@ public class TPSLogic extends AbstractSingleLogicCommand {
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args[0].equals(getCommandName())) args = ArrayUtils.remove(args,0);
+        if (args[0].equals(getCommandLogicName())) args = ArrayUtils.remove(args,0);
         if (args.length == 1 || args.length == 0) { //empty arguments
             double tps = getTps(server,null);
             double tickms = getTickMs(server,null);
@@ -90,7 +90,7 @@ public class TPSLogic extends AbstractSingleLogicCommand {
         }
     }
     @Override
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionList(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2 || args.length == 3) {
             List<String> worldIDs = new ArrayList<String>();
             worldIDs.add("o");

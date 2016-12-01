@@ -17,7 +17,7 @@ public class InvseeLogic implements ICommandLogic {
     public static InvseeLogic instance = new InvseeLogic();
 
     @Override
-    public String getCommandName () {
+    public String getCommandLogicName() {
         return "invsee";
     }
     @Override
@@ -45,7 +45,7 @@ public class InvseeLogic implements ICommandLogic {
         }
     }
     @Override
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionList(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 2) {
             return AbstractCommand.getPlayerNamesStartingWithLastArg(server,args);
         }
