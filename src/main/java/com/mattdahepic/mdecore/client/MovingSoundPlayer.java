@@ -16,7 +16,7 @@ public class MovingSoundPlayer extends MovingSound {
     private final String sound;
     public MovingSoundPlayer (String sound) {
         super(new SoundEvent(new ResourceLocation(sound)), SoundCategory.MASTER);
-        this.player = Minecraft.getMinecraft().thePlayer;
+        this.player = Minecraft.getMinecraft().player;
         this.sound = sound;
         this.attenuationType = ISound.AttenuationType.NONE;
         this.repeat = false;

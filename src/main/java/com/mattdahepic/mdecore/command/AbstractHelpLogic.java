@@ -16,7 +16,7 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
     public abstract AbstractCommand getBaseCommand ();
 
     @Override
-    public String getCommandLogicName() {
+    public String getCommandName() {
         return "help";
     }
     @Override
@@ -25,7 +25,7 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
     }
     @Override
     public String getCommandSyntax () {
-        return String.format("/"+getBaseCommand().getCommandName()+" help <command>");
+        return String.format("/"+getBaseCommand().getName()+" help <command>");
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -35,7 +35,7 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
                 List<String> commandList = new ArrayList<String>(getBaseCommand().getCommandList());
                 Collections.sort(commandList,String.CASE_INSENSITIVE_ORDER);
 
-                String baseCommand = "/"+getBaseCommand().getCommandName()+" ";
+                String baseCommand = "/"+getBaseCommand().getName()+" ";
 
                 int commands = 0;
                 for (int i = 0; i < commandList.size() - 1; i++) { //all commands except last one
@@ -51,12 +51,12 @@ public abstract class AbstractHelpLogic implements ICommandLogic {
                     if (commands > 0) output.append(" and ");
                     output.append(baseCommand+TextFormatting.YELLOW+name+TextFormatting.WHITE+".");
                 }
-                sender.addChatMessage(new TextComponentString(output.toString()));
+                sender.sendMessage(new TextComponentString(output.toString()));
                 break;
             default:
                 String commandName = args[1];
                 if (getBaseCommand().getCommandExists(commandName)) {
-                    sender.addChatMessage(new TextComponentString(TextFormatting.AQUA+"Usage: "+TextFormatting.RESET+getBaseCommand().getCommandSyntax(commandName)));
+                    sender.sendMessage(new TextComponentString(TextFormatting.AQUA+"Usage: "+TextFormatting.RESET+getBaseCommand().getCommandSyntax(commandName)));
                 } else {
                     AbstractCommand.throwNoCommand();
                 }

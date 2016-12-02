@@ -23,33 +23,33 @@ public class HolidayTweaks {
         int day_of_week = cal.get(Calendar.DAY_OF_WEEK);
 
         if (month == Calendar.DECEMBER && day_of_month == 25) { //christmas
-            player.addChatComponentMessage(new TextComponentString(TextFormatting.RED+"Merry "+TextFormatting.WHITE+"Christmas!"));
+            player.sendMessage(new TextComponentString(TextFormatting.RED+"Merry "+TextFormatting.WHITE+"Christmas!"));
             if (RandomHelper.randomChance(15)) {
-                player.addChatComponentMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+"You get coal."));
+                player.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+"You get coal."));
                 player.inventory.addItemStackToInventory(new ItemStack(Items.COAL,1,0));
             } else {
-                player.addChatComponentMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+"Have a gift!"));
+                player.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+"Have a gift!"));
                 player.inventory.addItemStackToInventory(new ItemStack(Items.GOLD_NUGGET,3,0));
             }
         } else if (month == Calendar.MARCH && day_of_month >= 22 && day_of_week == Calendar.SUNDAY) { //easter
-            player.addChatComponentMessage(new TextComponentString(TextFormatting.GRAY+"Happy Easter!\n"+TextFormatting.RED+"Have an egg."));
+            player.sendMessage(new TextComponentString(TextFormatting.GRAY+"Happy Easter!\n"+TextFormatting.RED+"Have an egg."));
             player.inventory.addItemStackToInventory(new ItemStack(Items.EGG,1,0));
         } else if (month == Calendar.NOVEMBER && week_in_month == 4 && day_of_week == Calendar.THURSDAY) { //thanksgiving
-            player.addChatComponentMessage(new TextComponentString(TextFormatting.GOLD+"Happy Thanksgiving!\n"+TextFormatting.GREEN+"Have a turkey!"));
+            player.sendMessage(new TextComponentString(TextFormatting.GOLD+"Happy Thanksgiving!\n"+TextFormatting.GREEN+"Have a turkey!"));
             try {
                 player.inventory.addItemStackToInventory(new ItemStack(Items.COOKED_CHICKEN, 1, 0, JsonToNBT.getTagFromJson("{display:{Name:\"Turkey\"}}")));
             } catch (NBTException ex) {MDECore.logger.warn("Error creating nbt.");}
         } else if (month == Calendar.MARCH && day_of_month == 21) { //first day of spring
-            player.addChatComponentMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+"Have a happy spring!\n"+TextFormatting.GREEN+"Have a flower!"));
+            player.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+"Have a happy spring!\n"+TextFormatting.GREEN+"Have a flower!"));
             player.inventory.addItemStackToInventory(new ItemStack(Blocks.RED_FLOWER,1,0));
         } else if (month == Calendar.JUNE && day_of_month == 20) { //first day of summer
-            player.addChatComponentMessage(new TextComponentString(TextFormatting.GOLD+"Have a great summer!\n"+TextFormatting.RED+"Have some sand"));
+            player.sendMessage(new TextComponentString(TextFormatting.GOLD+"Have a great summer!\n"+TextFormatting.RED+"Have some sand"));
             player.inventory.addItemStackToInventory(new ItemStack(Blocks.SAND,1,0));
         } else if (month == Calendar.SEPTEMBER && day_of_month == 22) { //first day of fall
-            player.addChatComponentMessage(new TextComponentString("The leaves are "+TextFormatting.GOLD+"fall"+TextFormatting.WHITE+"ing!"));
+            player.sendMessage(new TextComponentString("The leaves are "+TextFormatting.GOLD+"fall"+TextFormatting.WHITE+"ing!"));
             player.inventory.addItemStackToInventory(new ItemStack(Blocks.LEAVES,1,0));
         } else if (month == Calendar.DECEMBER && day_of_month == 21) { //first day of winter
-            player.addChatComponentMessage(new TextComponentString(TextFormatting.WHITE+"Have a happy winter!\nHave some snow."));
+            player.sendMessage(new TextComponentString(TextFormatting.WHITE+"Have a happy winter!\nHave some snow."));
             player.inventory.addItemStackToInventory(new ItemStack(Items.SNOWBALL,1,0));
         }
     }

@@ -24,7 +24,7 @@ public class TPALogic extends AbstractSingleLogicCommand {
     private static HashMap<String,String> pendingTeleports = new HashMap<String, String>();
     
     @Override
-    public String getCommandLogicName() {
+    public String getCommandName() {
         return "tpa";
     }
     @Override
@@ -47,7 +47,7 @@ public class TPALogic extends AbstractSingleLogicCommand {
                 pendingTeleports.put(sender.getName(),originalSender);
                 pendingConfirms.remove(sender.getName(),originalSender);
                 final EntityPlayerMP teleportee = server.getPlayerList().getPlayerByUsername(originalSender);
-                teleportee.addChatMessage(new TextComponentString(TextFormatting.YELLOW+"Preparing to teleport, stand still!"));
+                teleportee.sendMessage(new TextComponentString(TextFormatting.YELLOW+"Preparing to teleport, stand still!"));
                 new java.util.Timer().schedule(new TimerTask() { //teleport after delay, if not moved
                     @Override
                     public void run() {
@@ -57,11 +57,11 @@ public class TPALogic extends AbstractSingleLogicCommand {
                                 TeleportHelper.transferPlayerToDimension(teleportee,senderPlayer.dimension,server.getPlayerList());
                             }
                             teleportee.setPositionAndUpdate(senderPlayer.posX,senderPlayer.posY,senderPlayer.posZ);
-                            sender.addChatMessage(new TextComponentString(TextFormatting.GREEN+"Teleport successful."));
-                            teleportee.addChatMessage(new TextComponentString(TextFormatting.GREEN+"Teleport successful."));
+                            sender.sendMessage(new TextComponentString(TextFormatting.GREEN+"Teleport successful."));
+                            teleportee.sendMessage(new TextComponentString(TextFormatting.GREEN+"Teleport successful."));
                         } //if not, the teleportee moved
                     }
-                }, MathHelper.floor_double(MDEConfig.tpaWaitTime*1000));
+                }, MathHelper.floor(MDEConfig.tpaWaitTime*1000));
                 (new Thread() { //cancel teleport if moved
                     @Override
                     public void run() {
@@ -69,13 +69,13 @@ public class TPALogic extends AbstractSingleLogicCommand {
                         while (cachePosition.equals(teleportee.getPosition()) || pendingTeleports.containsKey(originalSender)) {/*block execution until move or teleport*/}
                         if (pendingTeleports.containsKey(originalSender)) { //has not teleported
                             pendingTeleports.remove(sender.getName(), originalSender);
-                            sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Teleport canceled."));
-                            teleportee.addChatMessage(new TextComponentString(TextFormatting.RED + "Teleport canceled."));
+                            sender.sendMessage(new TextComponentString(TextFormatting.RED + "Teleport canceled."));
+                            teleportee.sendMessage(new TextComponentString(TextFormatting.RED + "Teleport canceled."));
                         }
                     }
                 }).start();
             } else {
-                sender.addChatMessage(new TextComponentString(TextFormatting.RED+"There are no pending teleports to you."));
+                sender.sendMessage(new TextComponentString(TextFormatting.RED+"There are no pending teleports to you."));
             }
         } else {
             final EntityPlayerMP target = AbstractCommand.getPlayer(server, sender, args[1]);
@@ -83,8 +83,8 @@ public class TPALogic extends AbstractSingleLogicCommand {
             if (!MDEConfig.tpaCrossDimension) {
                 if (target.dimension != senderPlayer.dimension) throw new CommandException("Your server does not allow cross-dimension tpa. Try again when you and the target are in the same dimension.");
             }
-            sender.addChatMessage(new TextComponentString(TextFormatting.DARK_GREEN+"Waiting for target to confirm, stand still"));
-            target.addChatMessage(new TextComponentString(TextFormatting.AQUA+sender.getName()+TextFormatting.LIGHT_PURPLE+" wants to teleport to you.\n"+TextFormatting.LIGHT_PURPLE+"Type "+TextFormatting.GREEN+"/mde tpa confirm"+TextFormatting.LIGHT_PURPLE+" to confirm or "+TextFormatting.RED+"wait 10 seconds"+TextFormatting.LIGHT_PURPLE+" to deny."));
+            sender.sendMessage(new TextComponentString(TextFormatting.DARK_GREEN+"Waiting for target to confirm, stand still"));
+            target.sendMessage(new TextComponentString(TextFormatting.AQUA+sender.getName()+TextFormatting.LIGHT_PURPLE+" wants to teleport to you.\n"+TextFormatting.LIGHT_PURPLE+"Type "+TextFormatting.GREEN+"/mde tpa confirm"+TextFormatting.LIGHT_PURPLE+" to confirm or "+TextFormatting.RED+"wait 10 seconds"+TextFormatting.LIGHT_PURPLE+" to deny."));
             pendingConfirms.put(target.getName(),sender.getName());
             new java.util.Timer().schedule(new TimerTask() { //10 seconds confirm time
                 @Override

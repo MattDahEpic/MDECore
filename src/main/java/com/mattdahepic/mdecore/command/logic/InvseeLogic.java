@@ -6,7 +6,6 @@ import com.mattdahepic.mdecore.command.ui.PlayerInvChest;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -17,7 +16,7 @@ public class InvseeLogic implements ICommandLogic {
     public static InvseeLogic instance = new InvseeLogic();
 
     @Override
-    public String getCommandLogicName() {
+    public String getCommandName() {
         return "invsee";
     }
     @Override
@@ -32,7 +31,7 @@ public class InvseeLogic implements ICommandLogic {
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         try {
             EntityPlayer looker = CommandBase.getCommandSenderAsPlayer(sender);
-            if (!looker.worldObj.isRemote) {
+            if (!looker.world.isRemote) {
                 EntityPlayer lookee = CommandBase.getPlayer(server,sender,args[1]);
                 if (looker.getName().equals(lookee.getName())) throw new CommandException("That's you, silly!");
                 looker.closeScreen();
@@ -40,8 +39,6 @@ public class InvseeLogic implements ICommandLogic {
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             AbstractCommand.throwUsages(instance);
-        } catch (PlayerNotFoundException e) {
-            AbstractCommand.throwNoPlayer();
         }
     }
     @Override

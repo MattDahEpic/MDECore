@@ -6,6 +6,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
@@ -13,10 +14,11 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class NBTRespectingShapedOreRecipe implements IRecipe {
     protected ItemStack output = null;
-    protected List<Object> input = null;
+    protected List<ItemStack> input = null;
     protected int width = 0;
     protected int height = 0;
 
@@ -53,7 +55,7 @@ public class NBTRespectingShapedOreRecipe implements IRecipe {
             throw new RuntimeException(ret);
         }
 
-        HashMap<Character, Object> itemMap = new HashMap<Character, Object>();
+        HashMap<Character, ItemStack> itemMap = new HashMap<>();
 
         for (; i < recipe.length; i++) {
             Character chr = (Character)recipe[i];
@@ -67,7 +69,12 @@ public class NBTRespectingShapedOreRecipe implements IRecipe {
             } else if (in instanceof Block) {
                 itemMap.put(chr,new ItemStack((Block)in));
             } else if (in instanceof String) {
-                itemMap.put(chr, OreDictionary.getOres((String)in));
+                OreDictionary.getOres((String)in).forEach(new Consumer<ItemStack>() {
+                    @Override
+                    public void accept(ItemStack s) {
+                        itemMap.put(chr,s);
+                    }
+                });
             } else {
                 String ret = "Invalid shaped ore recipe: ";
                 for (Object tmp :  recipe)
@@ -79,7 +86,7 @@ public class NBTRespectingShapedOreRecipe implements IRecipe {
             }
         }
 
-        input = new ArrayList<Object>(itemMap.size());
+        input = new ArrayList<>(itemMap.size());
         for (char chr : shape.toCharArray()) {
             input.add(itemMap.get(chr));
         }
@@ -88,7 +95,7 @@ public class NBTRespectingShapedOreRecipe implements IRecipe {
     @Override public ItemStack getCraftingResult(InventoryCrafting c){ return output.copy(); }
     @Override public int getRecipeSize(){ return input.size(); }
     @Override public ItemStack getRecipeOutput(){ return output; }
-    public List<Object> getInput()
+    public List<ItemStack> getInput()
     {
         return this.input;
     }
@@ -115,7 +122,7 @@ public class NBTRespectingShapedOreRecipe implements IRecipe {
         return matches == input.size();
     }
 
-    @Override public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+    @Override public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 

@@ -13,7 +13,7 @@ public class EnderdragonDrop {
     public void entityDeath (LivingDeathEvent e) {
         if (e.getEntity() instanceof EntityDragon) {
             if (!StringUtils.isNullOrEmpty(MDEConfig.dragonDrop)) {
-                e.getEntity().worldObj.spawnEntityInWorld(new EntityItem(e.getEntity().worldObj,e.getEntity().posX,e.getEntity().posY,e.getEntity().posZ, ItemHelper.getItemFromName(MDEConfig.dragonDrop)));
+                e.getEntity().world.spawnEntity(new EntityItem(e.getEntity().world,e.getEntity().posX,e.getEntity().posY,e.getEntity().posZ, ItemHelper.getItemFromName(MDEConfig.dragonDrop)));
             }
         }
     }

@@ -40,7 +40,7 @@ public class TickrateHelper {
     }
     public static void setAllClientTickrate (MinecraftServer server, float tickrate) {
         if (EnvironmentHelper.isServer) {
-            for (EntityPlayer p : server.getPlayerList().getPlayerList()) {
+            for (EntityPlayer p : server.getPlayerList().getPlayers()) {
                 setClientTickrate(p, tickrate);
             }
         } else {
@@ -48,9 +48,9 @@ public class TickrateHelper {
         }
     }
     public static void setClientTickrate (EntityPlayer p, float tickrate) {
-        if (p == null || p.worldObj.isRemote) { //client
+        if (p == null || p.world.isRemote) { //client
             if (FMLCommonHandler.instance().getSide() != Side.CLIENT) return; //sanity
-            if (p != null && p != Minecraft.getMinecraft().thePlayer) return; //sanity
+            if (p != null && p != Minecraft.getMinecraft().player) return; //sanity
             instance().updateClientTickrate(tickrate);
         } else { //server
             PacketHandler.net.sendTo(new TickratePacket.TickrateMessage(tickrate), (EntityPlayerMP) p);

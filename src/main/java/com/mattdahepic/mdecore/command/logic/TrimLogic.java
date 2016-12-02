@@ -25,7 +25,7 @@ public class TrimLogic implements ICommandLogic {
     private static boolean hasConfirmed = false;
     
     @Override
-    public String getCommandLogicName() {
+    public String getCommandName() {
         return "trim";
     }
     @Override
@@ -43,7 +43,7 @@ public class TrimLogic implements ICommandLogic {
             if (args.length == 2 && args[1].equals("confirm")) {
                 hasConfirmed = true;
                 int dim = sender.getEntityWorld().provider.getDimension();
-                sender.addChatMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "" + tempChunks.get(dim).size() + " chunks will be deleted on world unload.\n"+TextFormatting.LIGHT_PURPLE+"I hope you made a backup!"));
+                sender.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "" + tempChunks.get(dim).size() + " chunks will be deleted on world unload.\n"+TextFormatting.LIGHT_PURPLE+"I hope you made a backup!"));
                 
                 ArrayDeque<ChunkPos> chunksToDelete = WorldEventHandler.chunksToDelete.get(dim);
                 if (chunksToDelete == null) chunksToDelete = new ArrayDeque<ChunkPos>();
@@ -85,7 +85,7 @@ public class TrimLogic implements ICommandLogic {
                         if (!hasConfirmed) tempChunks.clear();
                     }
                 },10000);
-                sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+"If you run "+TextFormatting.AQUA+"/mde trim confirm"+TextFormatting.YELLOW+" in the next 10 seconds, "+TextFormatting.LIGHT_PURPLE+deleteCount+TextFormatting.YELLOW+" chunks will be deleted from this world on next unload.\n"+TextFormatting.YELLOW+"MAKE A BACKUP BEFORE RUNNING THIS COMMAND."));
+                sender.sendMessage(new TextComponentString(TextFormatting.YELLOW+"If you run "+TextFormatting.AQUA+"/mde trim confirm"+TextFormatting.YELLOW+" in the next 10 seconds, "+TextFormatting.LIGHT_PURPLE+deleteCount+TextFormatting.YELLOW+" chunks will be deleted from this world on next unload.\n"+TextFormatting.YELLOW+"MAKE A BACKUP BEFORE RUNNING THIS COMMAND."));
             } else {
                 AbstractCommand.throwUsages(instance);
             }

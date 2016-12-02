@@ -21,7 +21,7 @@ public class CommandMDE extends AbstractCommand {
     }
 
     @Override
-    public String getCommandName () {
+    public String getName () {
         return "mde";
     }
 }

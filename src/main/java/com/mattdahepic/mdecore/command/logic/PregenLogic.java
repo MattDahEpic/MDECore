@@ -19,7 +19,7 @@ public class PregenLogic implements ICommandLogic {
     public static PregenLogic instance = new PregenLogic();
 
     @Override
-    public String getCommandLogicName() {
+    public String getCommandName() {
         return "pregen";
     }
     @Override

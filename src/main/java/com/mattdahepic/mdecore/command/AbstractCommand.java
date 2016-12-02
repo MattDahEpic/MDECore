@@ -17,7 +17,7 @@ import java.util.*;
 public abstract class AbstractCommand extends CommandBase {
     private Map<String, ICommandLogic> commands = new HashMap<String,ICommandLogic>();
 
-    public abstract String getCommandName ();
+    public abstract String getName ();
 
     public void init(FMLServerStartingEvent e) {
         e.registerServerCommand(this);
@@ -31,8 +31,8 @@ public abstract class AbstractCommand extends CommandBase {
     public boolean registerCommandLogic (ICommandLogic commandLogic) {
         MDECore.logger.debug("Registering command "+commandLogic.getClass().getName());
         try {
-            if (!commands.containsKey(commandLogic.getCommandLogicName())) {
-                commands.put(commandLogic.getCommandLogicName(), commandLogic);
+            if (!commands.containsKey(commandLogic.getCommandName())) {
+                commands.put(commandLogic.getCommandName(), commandLogic);
                 return true;
             }
             return false;
@@ -52,7 +52,7 @@ public abstract class AbstractCommand extends CommandBase {
     }
     public boolean canUseCommand (ICommandSender sender, int requiredPermission, AbstractCommand baseCommand, String name) {
         if (getCommandExists(name)) {
-            return sender.canCommandSenderUseCommand(requiredPermission, baseCommand.getCommandName()+" "+name) || (sender instanceof EntityPlayerMP && requiredPermission <= 0);
+            return sender.canUseCommand(requiredPermission, baseCommand.getName()+" "+name) || (sender instanceof EntityPlayerMP && requiredPermission <= 0);
         }
         return false;
     }
@@ -61,12 +61,12 @@ public abstract class AbstractCommand extends CommandBase {
         return -1;
     }
     @Override
-    public List getCommandAliases () {
+    public List getAliases () {
         return Collections.emptyList();
     }
     @Override
-    public String getCommandUsage (ICommandSender sender) {
-        return "/"+getCommandName()+" help";
+    public String getUsage (ICommandSender sender) {
+        return "/"+getName()+" help";
     }
     @Override
     public boolean checkPermission (MinecraftServer server, ICommandSender sender) {
@@ -77,7 +77,7 @@ public abstract class AbstractCommand extends CommandBase {
         if (args.length < 1) args = new String[]{"help"};
         ICommandLogic command = commands.get(args[0]);
         if (command != null) {
-            if (canUseCommand(sender,command.getPermissionLevel(),this,command.getCommandLogicName())) {
+            if (canUseCommand(sender,command.getPermissionLevel(),this,command.getCommandName())) {
                 command.handleCommand(server,sender,args);
                 return;
             }
@@ -86,7 +86,7 @@ public abstract class AbstractCommand extends CommandBase {
         throwNoCommand();
     }
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1) {
             return getListOfStringsMatchingLastWord(args, commands.keySet());
         } else if (commands.containsKey(args[0])) {
@@ -98,13 +98,13 @@ public abstract class AbstractCommand extends CommandBase {
     /* UTILITIES */
 
     public static List<String> getPlayerNamesStartingWithLastArg (MinecraftServer server, String[] args) {
-        return CommandBase.getListOfStringsMatchingLastWord(args, server.getAllUsernames());
+        return CommandBase.getListOfStringsMatchingLastWord(args, server.getPlayerList().getOnlinePlayerNames());
     }
     public static void throwUsages (ICommandLogic command) throws WrongUsageException {
         throw new WrongUsageException(command.getCommandSyntax());
     }
-    public static void throwNoPlayer () throws PlayerNotFoundException {
-        throw new PlayerNotFoundException();
+    public static void throwNoPlayer (String name) throws PlayerNotFoundException {
+        throw new PlayerNotFoundException(name);
     }
     public static void throwInvalidNumber (String notNumber) throws NumberInvalidException {
         throw new NumberInvalidException("commands.generic.num.invalid",notNumber);

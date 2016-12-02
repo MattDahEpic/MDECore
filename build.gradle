@@ -17,18 +17,21 @@ repositories {
     }
 }
 
-version = "1.10.2-1.5"
+version = "1.11-0.1"
 group = "com.mattdahepic.mdecore" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mdecore"
 
+sourceCompatibility = targetCompatibility = "1.8"
+compileJava { sourceCompatibility = targetCompatibility = "1.8" }
+
 minecraft {
-    version = "1.10.2-12.18.2.2113"
+    version = "1.11-13.19.0.2176"
     runDir = "run"
 
     replace "@VERSION@", project.version
     replaceIn "MDECore.java"
 
-    mappings = "snapshot_20161024"
+    mappings = "snapshot_20161201"
     //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
     useDepAts = true //JEI
@@ -39,7 +42,7 @@ jar.manifest {
 }
 
 dependencies {
-    deobfCompile "mezz.jei:jei_1.10.2:3.7.3.221"
+    deobfCompile "mezz.jei:jei_1.11:4.0.4.199"
 }
 
 processResources {

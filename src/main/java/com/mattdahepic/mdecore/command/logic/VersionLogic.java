@@ -16,7 +16,7 @@ public class VersionLogic implements ICommandLogic {
     public static VersionLogic instance = new VersionLogic();
 
     @Override
-    public String getCommandLogicName() {
+    public String getCommandName() {
         return "version";
     }
     @Override
@@ -49,7 +49,7 @@ public class VersionLogic implements ICommandLogic {
             ModContainer mod = mods.get(mods.size() - 1);
             output.append(TextFormatting.YELLOW + mod.getModId() + TextFormatting.WHITE + " at version " + TextFormatting.AQUA + mod.getVersion() + TextFormatting.WHITE + ", ");
         }
-        sender.addChatMessage(new TextComponentString(output.toString()));
+        sender.sendMessage(new TextComponentString(output.toString()));
     }
     @Override
     public List<String> getTabCompletionList(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {

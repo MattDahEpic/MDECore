@@ -6,16 +6,18 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class NBTRespectingShapelessOreRecipe implements IRecipe {
     protected ItemStack output = null;
-    protected ArrayList<Object> input = new ArrayList<Object>();
+    protected ArrayList<ItemStack> input = new ArrayList<>();
 
     public NBTRespectingShapelessOreRecipe (Block result, Object... recipe) {this(new ItemStack(result),recipe);}
     public NBTRespectingShapelessOreRecipe (Item result, Object... recipe) {this(new ItemStack(result),recipe);}
@@ -37,7 +39,12 @@ public class NBTRespectingShapelessOreRecipe implements IRecipe {
             }
             else if (in instanceof String)
             {
-                input.add(OreDictionary.getOres((String)in));
+                OreDictionary.getOres((String)in).forEach(new Consumer<ItemStack>() {
+                    @Override
+                    public void accept(ItemStack s) {
+                        input.add(s);
+                    }
+                });
             }
             else
             {
@@ -55,7 +62,7 @@ public class NBTRespectingShapelessOreRecipe implements IRecipe {
     @Override public int getRecipeSize(){ return input.size(); }
     @Override public ItemStack getRecipeOutput(){ return output; }
     @Override public ItemStack getCraftingResult(InventoryCrafting c){ return output.copy(); }
-    public ArrayList<Object> getInput()
+    public ArrayList<ItemStack> getInput()
     {
         return this.input;
     }
@@ -96,7 +103,7 @@ public class NBTRespectingShapelessOreRecipe implements IRecipe {
     }
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 

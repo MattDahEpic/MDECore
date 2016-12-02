@@ -21,7 +21,7 @@ public class KillAllLogic implements ICommandLogic {
     public static KillAllLogic instance = new KillAllLogic();
 
     @Override
-    public String getCommandLogicName() {
+    public String getCommandName() {
         return "killall";
     }
     @Override
@@ -42,7 +42,7 @@ public class KillAllLogic implements ICommandLogic {
             target = args[1].toLowerCase();
             all = "*".equals(target);
         }
-        for (WorldServer world : server.worldServers) {
+        for (WorldServer world : server.worlds) {
             synchronized (world) {
                 for (Entity entity : world.loadedEntityList) {
                     if (entity != null && !(entity instanceof EntityPlayer)) { //does it exist and is it not a player?
@@ -69,9 +69,9 @@ public class KillAllLogic implements ICommandLogic {
                 finalNames = finalNames + TextFormatting.RED + names.get(name) + TextFormatting.WHITE + "x" + TextFormatting.YELLOW + name + TextFormatting.WHITE + ", ";
             }
             finalNames = finalNames.substring(0, finalNames.length() - 2);
-            sender.addChatMessage(new TextComponentString(String.format((target != null ? "Removed %d entities. (%s)" : "Removed %d hostile mobs. (%s)"), killCount, finalNames)));
+            sender.sendMessage(new TextComponentString(String.format((target != null ? "Removed %d entities. (%s)" : "Removed %d hostile mobs. (%s)"), killCount, finalNames)));
         } else {
-            sender.addChatMessage(new TextComponentString((target != null ? "No matching entities found!" : "No hostile mobs found!")));
+            sender.sendMessage(new TextComponentString((target != null ? "No matching entities found!" : "No hostile mobs found!")));
         }
     }
     @Override

@@ -6,7 +6,6 @@ import com.mattdahepic.mdecore.helpers.TickrateHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +20,7 @@ public class TickrateLogic implements ICommandLogic {
     public static TickrateLogic instance = new TickrateLogic();
 
     @Override
-    public String getCommandLogicName() {
+    public String getCommandName() {
         return "tickrate";
     }
     @Override
@@ -35,34 +34,32 @@ public class TickrateLogic implements ICommandLogic {
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 1) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW+String.format("Client: %ftps | Server: %dtps", TickrateHelper.getClientTickrate(), TickrateHelper.getServerTickrate())));
+            sender.sendMessage(new TextComponentString(TextFormatting.YELLOW+String.format("Client: %ftps | Server: %dtps", TickrateHelper.getClientTickrate(), TickrateHelper.getServerTickrate())));
             return;
         }
         try {
             float inputTicks = Float.parseFloat(args[1]);
             if (!TickrateHelper.isTickrateValid(inputTicks)) {
-                sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Invalid tickrate, must be greater than 0. You can't just go around stopping time!"));
+                sender.sendMessage(new TextComponentString(TextFormatting.RED + "Invalid tickrate, must be greater than 0. You can't just go around stopping time!"));
                 return;
             }
             if (args.length == 2 || args[2].equals("all")) {
                 TickrateHelper.setTickrate(server,inputTicks);
-                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + String.format("Tickrate changed to %dtps.", inputTicks)));
+                sender.sendMessage(new TextComponentString(TextFormatting.GREEN + String.format("Tickrate changed to %dtps.", inputTicks)));
             } else if (args[2].equals("server")) {
                 TickrateHelper.setServerTickrate(inputTicks);
-                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + String.format("Server tickrate changed to %dtps.",inputTicks)));
+                sender.sendMessage(new TextComponentString(TextFormatting.GREEN + String.format("Server tickrate changed to %dtps.",inputTicks)));
             } else if (args[2].equals("client")) {
                 TickrateHelper.setAllClientTickrate(server,inputTicks);
-                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + String.format("All connected players tickrate set to %dtps.",inputTicks)));
+                sender.sendMessage(new TextComponentString(TextFormatting.GREEN + String.format("All connected players tickrate set to %dtps.",inputTicks)));
             } else {
                 EntityPlayer p = CommandBase.getPlayer(server,sender,args[1]);
                 TickrateHelper.setClientTickrate(p, inputTicks);
-                sender.addChatMessage(new TextComponentString(TextFormatting.GREEN+String.format("%s's client tickrate set to %dtps.",p.getName(),inputTicks)));
+                sender.sendMessage(new TextComponentString(TextFormatting.GREEN+String.format("%s's client tickrate set to %dtps.",p.getName(),inputTicks)));
             }
         } catch (NumberFormatException ne) {
             AbstractCommand.throwInvalidNumber(args[1]);
-        } catch (PlayerNotFoundException e) {
-            AbstractCommand.throwNoPlayer();
-        } catch (Exception ex) {
+        }catch (Exception ex) {
             throw new CommandException("Something went wrong! Try again.");
         }
     }
@@ -86,7 +83,7 @@ public class TickrateLogic implements ICommandLogic {
             tab.add("all");
             tab.add("server");
             tab.add("client");
-            tab.addAll(Arrays.asList(server.getAllUsernames()));
+            tab.addAll(Arrays.asList(server.getPlayerList().getOnlinePlayerNames()));
         } else {
             tab = null;
         }

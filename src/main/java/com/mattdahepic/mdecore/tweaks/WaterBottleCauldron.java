@@ -20,9 +20,9 @@ public class WaterBottleCauldron {
                         if (currentLevel < 3) { //if not full
                             e.getWorld().setBlockState(e.getPos(), e.getWorld().getBlockState(e.getPos()).withProperty(BlockCauldron.LEVEL, currentLevel + 1)); //fill cauldron
                             if (!e.getEntityPlayer().capabilities.isCreativeMode) {
-                                e.getEntityPlayer().inventory.getCurrentItem().stackSize--; //remove one water bottle
+                                e.getEntityPlayer().inventory.getCurrentItem().shrink(1); //remove one water bottle
                                 if (!e.getEntityPlayer().inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) { //give the bottle back, but if they cant fit it...
-                                    e.getWorld().spawnEntityInWorld(new EntityItem(e.getWorld(), e.getPos().getX() + 0.5D, e.getPos().getY() + 0.5D, e.getPos().getZ() + 0.5D, new ItemStack(Items.GLASS_BOTTLE))); //...drop it!
+                                    e.getWorld().spawnEntity(new EntityItem(e.getWorld(), e.getPos().getX() + 0.5D, e.getPos().getY() + 0.5D, e.getPos().getZ() + 0.5D, new ItemStack(Items.GLASS_BOTTLE))); //...drop it!
                                 }
                             }
                         }

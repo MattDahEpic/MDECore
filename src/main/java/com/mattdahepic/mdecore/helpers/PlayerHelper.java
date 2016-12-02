@@ -9,7 +9,7 @@ public class PlayerHelper {
         return FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(username);
     }
     public static boolean isPlayerFake (EntityPlayer player) {
-        return player.worldObj == null || !player.worldObj.isRemote || player.getClass() != EntityPlayerMP.class || !FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().contains(player);
+        return player.world == null || !player.world.isRemote || player.getClass() != EntityPlayerMP.class || !FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers().contains(player);
     }
     public static boolean isPlayerFake (EntityPlayerMP player) {
         if(player.getClass() != EntityPlayerMP.class) {
@@ -23,7 +23,7 @@ public class PlayerHelper {
             } catch (Exception e) {
                 return true;
             }
-            return !FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().contains(player);
+            return !FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers().contains(player);
         }
     }
     public static boolean isPlayerReal (EntityPlayer player) {

@@ -21,7 +21,7 @@ public class TeleportHelper {
         Credit to CoFH
      */
     public static void transferPlayerToDimension(EntityPlayerMP player, int dimension, PlayerList list) {
-        if (!player.worldObj.isRemote) {
+        if (!player.world.isRemote) {
             int oldDim = player.dimension;
             WorldServer worldServerOld = list.getServerInstance().worldServerForDimension(oldDim);
             WorldServer worldServerNew = list.getServerInstance().worldServerForDimension(dimension);
@@ -63,13 +63,13 @@ public class TeleportHelper {
         double x = entity.posX * moveFactor;
         double z = entity.posZ * moveFactor;
 
-        x = MathHelper.clamp_double(x, -29999872, 29999872);
-        z = MathHelper.clamp_double(z, -29999872, 29999872);
+        x = MathHelper.clamp(x, -29999872, 29999872);
+        z = MathHelper.clamp(z, -29999872, 29999872);
 
         entity.setWorld(newWorld);
 
         entity.setLocationAndAngles(x, entity.posY, z, entity.rotationYaw, entity.rotationPitch);
-        newWorld.spawnEntityInWorld(entity);
+        newWorld.spawnEntity(entity);
         newWorld.updateEntityWithOptionalForce(entity, false);
     }
     public static void sendPlayerToSpawnInCurrentWorld (ICommandSender sender) {

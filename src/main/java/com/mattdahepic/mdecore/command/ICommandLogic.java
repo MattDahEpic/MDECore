@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ICommandLogic {
     int getPermissionLevel ();
-    String getCommandLogicName ();
+    String getCommandName ();
     String getCommandSyntax ();
     void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException;
     List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos);

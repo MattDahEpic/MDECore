@@ -13,7 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.DimensionManager;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class TPXLogic extends AbstractSingleLogicCommand {
     public static TPXLogic instance = new TPXLogic();
 
     @Override
-    public String getCommandLogicName() {
+    public String getCommandName() {
         return "tpx";
     }
     @Override
@@ -34,9 +33,7 @@ public class TPXLogic extends AbstractSingleLogicCommand {
     }
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args[0].equals(getCommandLogicName())) args = ArrayUtils.remove(args,0);
         switch (args.length) {
-            case 0:
             case 1: // (tpx) invalid command
                 AbstractCommand.throwUsages(instance);
             case 2: // (tpx {<player>|<dimension>}) teleporting player to self, or self to dimension
@@ -51,7 +48,7 @@ public class TPXLogic extends AbstractSingleLogicCommand {
                             player.setPositionAndUpdate(playerSender.posX, playerSender.posY, playerSender.posZ);
                         }
                     } else {
-                        sender.addChatMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+"Don't teleport yourself!"));
+                        sender.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE+"Don't teleport yourself!"));
                     }
                     break;
                 } catch (PlayerNotFoundException t) {
@@ -82,7 +79,7 @@ public class TPXLogic extends AbstractSingleLogicCommand {
                             player.setPositionAndUpdate(otherPlayer.posX, otherPlayer.posY, otherPlayer.posZ);
                         }
                     } else {
-                        sender.addChatMessage(new TextComponentString(TextFormatting.AQUA+"Don't teleport to yourself!"));
+                        sender.sendMessage(new TextComponentString(TextFormatting.AQUA+"Don't teleport to yourself!"));
                     }
                     break;
                 } catch (PlayerNotFoundException t) {
@@ -90,7 +87,7 @@ public class TPXLogic extends AbstractSingleLogicCommand {
                     try {
                         dimension = Integer.parseInt(args[2]);
                     } catch (Exception e) { // not a number, assume they wanted a player
-                        AbstractCommand.throwNoPlayer();
+                        throw t;
                     }
                     if (!DimensionManager.isDimensionRegistered(dimension)) {
                         AbstractCommand.throwNoWorld();
