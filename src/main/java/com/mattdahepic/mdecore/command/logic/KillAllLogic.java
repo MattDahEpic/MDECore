@@ -42,8 +42,8 @@ public class KillAllLogic implements ICommandLogic {
             target = args[1].toLowerCase();
             all = "*".equals(target);
         }
-        for (WorldServer world : server.worlds) {
-            synchronized (world) {
+        synchronized (server.worlds) {
+            for (WorldServer world : server.worlds) {
                 for (Entity entity : world.loadedEntityList) {
                     if (entity != null && !(entity instanceof EntityPlayer)) { //does it exist and is it not a player?
                         String entityName = EntityList.getEntityString(entity);
