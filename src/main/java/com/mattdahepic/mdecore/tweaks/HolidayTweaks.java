@@ -11,11 +11,16 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class HolidayTweaks {
+    private static ArrayList<String> alreadyDone = new ArrayList<String>();
     public static void doooooo (EntityPlayer player) {
+        if (alreadyDone.contains(player.getDisplayNameString())) return;
+        alreadyDone.add(player.getDisplayNameString());
+        
         Calendar cal = GregorianCalendar.getInstance();
         int month = cal.get(Calendar.MONTH);
         int day_of_month = cal.get(Calendar.DAY_OF_MONTH);

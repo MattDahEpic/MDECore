@@ -1,6 +1,8 @@
 package com.mattdahepic.mdecore.world;
 
 import com.mattdahepic.mdecore.MDECore;
+import com.mattdahepic.mdecore.config.MDEConfig;
+import com.mattdahepic.mdecore.helpers.WorldHelper;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.storage.RegionFile;
@@ -9,7 +11,6 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Field;
@@ -20,26 +21,46 @@ import java.util.HashMap;
 
 public class WorldEventHandler {
     public static WorldEventHandler instance = new WorldEventHandler();
-
+    
     public static HashMap<Integer,ArrayDeque<ChunkPos>> chunksToGenerate = new HashMap<Integer,ArrayDeque<ChunkPos>>();
     public static HashMap<Integer,ArrayDeque<ChunkPos>> chunksToDelete = new HashMap<Integer,ArrayDeque<ChunkPos>>();
     
+    public static boolean pregenPause = false;
+    private static boolean lagPause = false;
+    
     @SubscribeEvent
     public void tickEnd(TickEvent.WorldTickEvent event) {
-
+        
         if (event.side != Side.SERVER) return;
-
+        
         World world = event.world;
         int dim = world.provider.getDimension();
         ChunkProviderServer cps = world.getMinecraftServer().worldServerForDimension(dim).getChunkProvider();
         
         ArrayDeque<ChunkPos> chunks = chunksToGenerate.get(dim);
-
+        
         if (chunks != null && chunks.size() > 0) {
-            ChunkPos c = chunks.pollFirst();
-            if (!cps.chunkExists(c.chunkXPos,c.chunkZPos) && !cps.provideChunk(c.chunkXPos,c.chunkZPos).isPopulated()) {
-                MDECore.logger.info("PreGening " + c.toString() + ".");
-                GameRegistry.generateWorld(c.chunkXPos,c.chunkZPos,world,cps.chunkGenerator,world.getChunkProvider());
+            if (WorldHelper.getTps(world.getMinecraftServer(),world) < MDEConfig.pregenMinTPS) { //stop generation if server is lagging
+                if (!lagPause) {
+                    MDECore.logger.info("TPS below configured minimum, pausing pregeneration.");
+                    lagPause = true;
+                }
+            } else {
+                if (lagPause) {
+                    MDECore.logger.info("TPS is above configured minimum, resuming pregeneration.");
+                    lagPause = false;
+                }
+            }
+            if (!pregenPause && !lagPause) {
+                ChunkPos c = chunks.pollFirst();
+                if (!cps.chunkExists(c.chunkXPos, c.chunkZPos) && !cps.provideChunk(c.chunkXPos, c.chunkZPos).isPopulated()) {
+                    MDECore.logger.info("PreGening " + c.toString() + ".");
+                    //generate enough chunks for mc to call generate() by itself
+                    cps.provideChunk(c.chunkXPos,c.chunkZPos).needsSaving(true); //(x,z)
+                    cps.provideChunk(c.chunkXPos + 1, c.chunkZPos).needsSaving(true); //(x+1,z)
+                    cps.provideChunk(c.chunkXPos, c.chunkZPos + 1).needsSaving(true); //(x,z+1)
+                    cps.provideChunk(c.chunkXPos+1,c.chunkZPos+1).needsSaving(true); //(x+1,z+1)
+                }
             }
         } else if (chunks != null) {
             chunksToGenerate.remove(dim);
@@ -58,7 +79,7 @@ public class WorldEventHandler {
                 //reflections
                 Field methodModifiers = Method.class.getDeclaredField("modifiers");
                 methodModifiers.setAccessible(true);
-    
+                
                 Method setOffsetMethod = findMethod(RegionFile.class, new String[]{"setOffset", "func_76711_a"}, int.class, int.class, int.class);
                 setOffsetMethod.setAccessible(true);
                 setOffsetMethod = RegionFile.class.getDeclaredMethod("setOffset", int.class, int.class, int.class);
