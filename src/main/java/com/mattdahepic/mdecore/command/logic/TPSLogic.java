@@ -2,6 +2,7 @@ package com.mattdahepic.mdecore.command.logic;
 
 import com.mattdahepic.mdecore.command.AbstractCommand;
 import com.mattdahepic.mdecore.command.AbstractSingleLogicCommand;
+import com.mattdahepic.mdecore.helpers.WorldHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -32,26 +33,26 @@ public class TPSLogic extends AbstractSingleLogicCommand {
     @Override
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 1) { //empty arguments
-            double tps = getTps(server,null);
-            double tickms = getTickMs(server,null);
+            double tps = WorldHelper.getTps(server,null);
+            double tickms = WorldHelper.getTickMs(server,null);
 
             sender.sendMessage(new TextComponentString(String.format("Overall: %.2f TPS/%.2fMS (%s%%)", tps, tickms, (int) (tps / 20D * 100D))));
 
             for (World world : server.worlds) {
-                tps = getTps(server,world);
-                tickms = getTickMs(server,world);
+                tps = WorldHelper.getTps(server,world);
+                tickms = WorldHelper.getTickMs(server,world);
                 sender.sendMessage(new TextComponentString(String.format("%s [%d]: %.2f TPS/%.2fMS (%d%%)",world.getWorldType().getName(),world.provider.getDimension(),tps,tickms,(int)(tps/20D*100D))));
             }
         } else if (args[1].toLowerCase().charAt(0) == 'o') { //overall
-            double tickms = getTickMs(server,null);
-            double tps = getTps(server,null);
+            double tickms = WorldHelper.getTickMs(server,null);
+            double tps = WorldHelper.getTps(server,null);
 
             sender.sendMessage(new TextComponentString("Overall server tick"));
             sender.sendMessage(new TextComponentString(String.format("TPS: %.2f TPS of %.2f TPS (%d%%)", tps, 20L, (int) (tps / 20D * 100D))));
             sender.sendMessage(new TextComponentString(String.format("Tick time: %.2f ms of %.2f ms.",tickms,50L)));
         } else if (args[1].toLowerCase().charAt(0) == 'a') { //all
-            double tickms = getTickMs(server,null);
-            double tps = getTps(server,null);
+            double tickms = WorldHelper.getTickMs(server,null);
+            double tps = WorldHelper.getTps(server,null);
     
             sender.sendMessage(new TextComponentString("Overall server tick"));
             sender.sendMessage(new TextComponentString(String.format("TPS: %.2f TPS of %.2f TPS (%d%%)", tps, 20L, (int) (tps / 20D * 100D))));
@@ -76,8 +77,8 @@ public class TPSLogic extends AbstractSingleLogicCommand {
                 World world = server.worldServerForDimension(dim);
                 if (world == null) AbstractCommand.throwNoWorld();
 
-                double tickms = getTickMs(server,world);
-                double tps = getTps(server,world);
+                double tickms = WorldHelper.getTickMs(server,world);
+                double tps = WorldHelper.getTps(server,world);
 
                 sender.sendMessage(new TextComponentString(String.format("World %s: %s - Loaded chunks: %d",world.provider.getDimension(),world.getWorldType().getName(),((ChunkProviderServer)world.getChunkProvider()).getLoadedChunkCount())));
                 sender.sendMessage(new TextComponentString(String.format("TPS: %.2f/%.2f TPS (%d%%) - Tick: %.2f ms of %.2f ms",tps,20L,(int)(tps/20D*100D),tickms,50L)));
@@ -99,24 +100,5 @@ public class TPSLogic extends AbstractSingleLogicCommand {
             return CommandBase.getListOfStringsMatchingLastWord(args, worldIDs.toArray(new String[]{""}));
         }
         return null;
-    }
-    private static double getTickTimeSum(long[] times) {
-        long timesum = 0L;
-        if (times == null) {
-            return 0.0D;
-        }
-        for (int i = 0; i < times.length; i++) {
-            timesum += times[i];
-        }
-
-        return timesum / times.length;
-    }
-    private static double getTickMs(MinecraftServer server, World world) {
-        return getTickTimeSum(world == null ? server.tickTimeArray : server.worldTickTimes.get(world.provider.getDimension())) * 1.0E-006D;
-    }
-
-    private static double getTps(MinecraftServer server, World world) {
-        double tps = 1000.0D / getTickMs(server, world);
-        return tps > 20.0D ? 20.0D : tps;
     }
 }

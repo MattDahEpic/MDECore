@@ -21,4 +21,6 @@ public class MDEConfig extends ConfigSyncable {
     
     @Config(cat = CAT_COMMANDS, comment = {"Whould the /mde tpa command allow cross dimensional teleporting?","Default is true."}) public static boolean tpaCrossDimension = true;
     @Config(cat = CAT_COMMANDS, comment = {"How long should players have to stand still before being TPA'd?","Default is 3"}, range = @Config.Range(min = 0, max = 20)) public static int tpaWaitTime = 3;
+    
+    @Config(cat = CAT_COMMANDS,comment = {"Below how many ticks pre second should the pregenerator wait before generating more chunks?","0 to disable, 5 is default."},range = @Config.Range(min = 0, max = 19),sync = false) public static double pregenMinTPS = 5D;
 }
