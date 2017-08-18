@@ -10,12 +10,13 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class NBTRespectingShapelessOreRecipe implements IRecipe {
+public class NBTRespectingShapelessOreRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
     protected ItemStack output = null;
     protected ArrayList<ItemStack> input = new ArrayList<>();
 
@@ -59,7 +60,7 @@ public class NBTRespectingShapelessOreRecipe implements IRecipe {
         }
     }
 
-    @Override public int getRecipeSize(){ return input.size(); }
+    @Override public boolean canFit(int width, int height){ return input.size() <= width * height; }
     @Override public ItemStack getRecipeOutput(){ return output; }
     @Override public ItemStack getCraftingResult(InventoryCrafting c){ return output.copy(); }
     public ArrayList<ItemStack> getInput()
