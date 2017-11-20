@@ -4,6 +4,8 @@ import com.mattdahepic.mdecore.MDECore;
 import com.mattdahepic.mdecore.helpers.EnvironmentHelper;
 import com.mattdahepic.mdecore.recipe.NBTRespectingShapedOreRecipe;
 import com.mattdahepic.mdecore.recipe.NBTRespectingShapelessOreRecipe;
+
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 
@@ -11,7 +13,7 @@ public class CommonProxy {
     public void setupTextures () {}
     public void setupItems () {
         if (EnvironmentHelper.isDeobf) {
-            GameRegistry.register(MDECore.debugItem.setRegistryName("debug_item"));
+           ForgeRegistries.ITEMS.register(MDECore.debugItem.setRegistryName("debug_item"));
         }
     }
     public void registerRecipeTypes () {

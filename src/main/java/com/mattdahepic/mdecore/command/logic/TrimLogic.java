@@ -71,8 +71,8 @@ public class TrimLogic implements ICommandLogic {
                 } else { //delete
                     Chunk corner1 = world.getChunkFromChunkCoords(Integer.parseInt(args[2]),Integer.parseInt(args[3]));
                     Chunk corner2 = world.getChunkFromChunkCoords(Integer.parseInt(args[4]),Integer.parseInt(args[5]));
-                    for (int x = corner1.xPosition; x < corner2.xPosition; x++) {
-                        for (int z = corner1.zPosition; z < corner2.zPosition; z++) {
+                    for (int x = corner1.x; x < corner2.x; x++) {
+                        for (int z = corner1.z; z < corner2.z; z++) {
                             chunksToDeleteIfConfirmed.add(new ChunkPos(x,z));
                             deleteCount++;
                         }
