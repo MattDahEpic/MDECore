@@ -10,7 +10,6 @@ import com.mattdahepic.mdecore.debug.DebugItem;
 import com.mattdahepic.mdecore.helpers.EnvironmentHelper;
 import com.mattdahepic.mdecore.helpers.TickrateHelper;
 import com.mattdahepic.mdecore.network.PacketHandler;
-import com.mattdahepic.mdecore.network.StatReporter;
 import com.mattdahepic.mdecore.proxy.CommonProxy;
 import com.mattdahepic.mdecore.tweaks.*;
 import com.mattdahepic.mdecore.tweaks.redstone.MaterialWaterproofCircuits;
@@ -24,7 +23,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -37,10 +39,9 @@ public class MDECore extends DummyModContainer {
     static final String VERSION = "@VERSION@";
     static final String NAME = "MattDahEpic Core";
     static final String UPDATE_JSON = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+MODID+".json";
-    static final String DEPENDENCIES = "required-after:forge@[13.19.1.2189,);";
+    static final String DEPENDENCIES = "required-after:forge@[14.23.0.2549,);";
 
     public static final Logger logger = LogManager.getLogger(MODID);
-    //private static final UUID MATT_UUID = UUID.fromString("c715991d-e69c-48f9-a92d-8fc60c0829fb");
 
     public static Item debugItem = new DebugItem();
     public static Material waterproof_circuits = new MaterialWaterproofCircuits(MapColor.AIR);
@@ -73,10 +74,6 @@ public class MDECore extends DummyModContainer {
         MinecraftForge.EVENT_BUS.register(new DaySleepToNight());
         MinecraftForge.EVENT_BUS.register(new EnderdragonDrop());
         MinecraftForge.EVENT_BUS.register(WorldEventHandler.instance);
-    }
-    @Mod.EventHandler
-    public void finishedLoading (FMLLoadCompleteEvent e) {
-        StatReporter.gatherAndReport();
     }
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent e) {
