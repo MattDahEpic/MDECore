@@ -74,7 +74,7 @@ public class TPSLogic extends AbstractSingleLogicCommand {
         } else { //dimension
             try {
                 int dim = Integer.parseInt(args[1]);
-                World world = server.worldServerForDimension(dim);
+                World world = server.getWorld(dim);
                 if (world == null) AbstractCommand.throwNoWorld();
 
                 double tickms = WorldHelper.getTickMs(server,world);

@@ -23,8 +23,8 @@ public class TeleportHelper {
     public static void transferPlayerToDimension(EntityPlayerMP player, int dimension, PlayerList list) {
         if (!player.world.isRemote) {
             int oldDim = player.dimension;
-            WorldServer worldServerOld = list.getServerInstance().worldServerForDimension(oldDim);
-            WorldServer worldServerNew = list.getServerInstance().worldServerForDimension(dimension);
+            WorldServer worldServerOld = list.getServerInstance().getWorld(oldDim);
+            WorldServer worldServerNew = list.getServerInstance().getWorld(dimension);
 
             //prepare and remove player
             player.dimension = dimension;

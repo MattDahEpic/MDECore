@@ -77,10 +77,10 @@ public class PregenLogic implements ICommandLogic {
                 ChunkPos center = new ChunkPos(p.chunkCoordX,p.chunkCoordZ);
                 int xR = Integer.parseInt(args[3]);
                 int zR = Integer.parseInt(args[4]);
-                xFirst = center.chunkXPos - xR;
-                zFirst = center.chunkZPos - zR;
-                xLast = center.chunkXPos + xR;
-                zLast = center.chunkZPos + zR;
+                xFirst = center.x - xR;
+                zFirst = center.z - zR;
+                xLast = center.x + xR;
+                zLast = center.z + zR;
             }
             int t;
             if (xLast < xFirst) { //sanity check
