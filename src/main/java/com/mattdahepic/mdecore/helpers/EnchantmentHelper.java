@@ -27,7 +27,7 @@ public class EnchantmentHelper extends net.minecraft.enchantment.EnchantmentHelp
     public static List<EnchantmentData> getEnchantmentsFromBook (ItemStack enchantedBook) {
         if (enchantedBook.getItem() != Items.ENCHANTED_BOOK) throw new RuntimeException("Attempted to retrieve enchantments on an ItemStack that isn't a book!");
         List<EnchantmentData> ret = new ArrayList<EnchantmentData>();
-        NBTTagList enchantmentsRaw = Items.ENCHANTED_BOOK.getEnchantments(enchantedBook);
+        NBTTagList enchantmentsRaw = enchantedBook.getEnchantmentTagList();
         for (int i = 0; i < enchantmentsRaw.tagCount(); i++) {
             NBTTagCompound enchantRaw = enchantmentsRaw.getCompoundTagAt(i);
             ret.add(new EnchantmentData(Enchantment.getEnchantmentByID(enchantRaw.getShort("id")),enchantRaw.getShort("lvl")));
@@ -45,7 +45,7 @@ public class EnchantmentHelper extends net.minecraft.enchantment.EnchantmentHelp
         boolean flag = false;
         for (int i = 0; i < item.getEnchantmentTagList().tagCount(); i++) {
             EnchantmentData enchantmentData = new EnchantmentData(Enchantment.getEnchantmentByID(item.getEnchantmentTagList().getCompoundTagAt(i).getShort("id")),item.getEnchantmentTagList().getCompoundTagAt(i).getShort("lvl"));
-            if (enchantmentData.enchantmentobj == ench.enchantmentobj) {
+            if (enchantmentData.enchantment == ench.enchantment) {
                 if (ench.enchantmentLevel < enchantmentData.enchantmentLevel) {
                     NBTTagCompound tag = item.getEnchantmentTagList().getCompoundTagAt(i);
                     tag.setShort("lvl",(short)(enchantmentData.enchantmentLevel-ench.enchantmentLevel));
@@ -65,7 +65,7 @@ public class EnchantmentHelper extends net.minecraft.enchantment.EnchantmentHelp
         ench.forEach(new Consumer<EnchantmentData>() {
             @Override
             public void accept(EnchantmentData enchantmentData) {
-                Items.ENCHANTED_BOOK.addEnchantment(ret,enchantmentData);
+                ret.addEnchantment(enchantmentData.enchantment, enchantmentData.enchantmentLevel);
             }
         });
         return ret;
