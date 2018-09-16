@@ -22,5 +22,15 @@ public class MDEConfig extends ConfigSyncable {
     @Config(cat = CAT_COMMANDS, comment = {"Whould the /mde tpa command allow cross dimensional teleporting?","Default is true."}) public static boolean tpaCrossDimension = true;
     @Config(cat = CAT_COMMANDS, comment = {"How long should players have to stand still before being TPA'd?","Default is 3"}, range = @Config.Range(min = 0, max = 20)) public static int tpaWaitTime = 3;
     
-    @Config(cat = CAT_COMMANDS,comment = {"Below how many ticks pre second should the pregenerator wait before generating more chunks?","0 to disable, 5 is default."},range = @Config.Range(min = 0, max = 19),sync = false) public static double pregenMinTPS = 5D;
+    @Config(cat = CAT_COMMANDS, comment = {"Below how many ticks pre second should the pregenerator wait before generating more chunks?","0 to disable, 5 is default."},range = @Config.Range(min = 0, max = 19),sync = false) public static double pregenMinTPS = 5D;
+    
+    @Config(cat = CAT_COMMANDS, comment = {"Enable the /mde pos command?"}) public static boolean enablePos = true;
+    @Config(cat = CAT_COMMANDS, comment = {"Enable the /mde tpa command?"}) public static boolean enableTPA = true;
+    @Config(cat = CAT_COMMANDS, comment = {"Enable the /mde tps command?"}) public static boolean enableTPS = true;
+    @Config(cat = CAT_COMMANDS, comment = {"Enable the /mde tpx command?"}) public static boolean enableTPX = true;
+    @Config(cat = CAT_COMMANDS, comment = {"Enable the /mde killall command?"}) public static boolean enableKillall = true;
+    @Config(cat = CAT_COMMANDS, comment = {"Enable the /mde pregen command?"}) public static boolean enablePregen = true;
+    @Config(cat = CAT_COMMANDS, comment = {"Enable the /mde tickrate command?"}) public static boolean enableTickrate = true;
+    @Config(cat = CAT_COMMANDS, comment = {"Enable the /mde invsee command?"}) public static boolean enableInvsee = true;
+    @Config(cat = CAT_COMMANDS, comment = {"Enable the /mde enderchest command?"}) public static boolean enableEnderchest = true;
 }
