@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="[34,)"
+license="All rights reserved"
+issueTrackerURL="https://github.com/MattDahEpic/MDECore/issues"
+
+[[mods]]
+    modId="mdecore"
+    version="${file.jarVersion}"
+    displayName="MattDahEpic Core"
+    updateJSONURL="https://raw.githubusercontent.com/MattDahEpic/Version/master/mdecore.json"
+    displayURL="http://minecraft.curseforge.com/projects/mattdahepic-core"
+    credits="Thanks to the entire open source mod community from which I used code."
+    authors="MattDahEpic"
+    description='''
+    Base Mod for all MattDahEpic mods.
+    '''
+
+    [[dependencies.mdecore]]
+        modId="forge"
+        mandatory=true
+        versionRange="[34,)"
+        ordering="NONE"
+        side="BOTH"
+    [[dependencies.mdecore]]
+        modId="minecraft"
+        mandatory=true
+        versionRange="[1.16.3]"
+        ordering="NONE"
+        side="BOTH"
