@@ -53,7 +53,9 @@ public class CommandMDE {
                 .then(Commands.literal("generate")
                         .executes(CommandRegistry::missingArgument)
                         .then(Commands.argument("center", BlockPosArgument.blockPos())
+                                .executes(CommandRegistry::missingArgument)
                                 .then(Commands.argument("size", IntegerArgumentType.integer(1))
+                                        .executes(CommandRegistry::missingArgument)
                                         .then(Commands.argument("dimension", DimensionArgument.getDimension())
                                                 .executes(CommandMDE::generate)))))
                 .then(Commands.literal("tpx")
@@ -71,7 +73,7 @@ public class CommandMDE {
     public static int pos (CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         PlayerEntity player = EntityArgument.getPlayer(ctx,"player");
         if (player == null) throw EntityArgument.PLAYER_NOT_FOUND.create();
-        ctx.getSource().sendFeedback(new TranslationTextComponent("mdecore.command.mde.pos",player.getDisplayName(),Math.floor(player.getPosX()),Math.floor(player.getPosY()),Math.floor(player.getPosZ()),player.world.dimension.field_240900_c_.toString()), false);
+        ctx.getSource().sendFeedback(new TranslationTextComponent("mdecore.command.mde.pos",player.getDisplayName(),Math.floor(player.getPosX()),Math.floor(player.getPosY()),Math.floor(player.getPosZ()),player.world.dimension.location.toString()), false);
         return Command.SINGLE_SUCCESS;
     }
     public static int enderchest (CommandContext<CommandSource> ctx) throws CommandSyntaxException {
@@ -81,7 +83,7 @@ public class CommandMDE {
         if (!looker.world.isRemote) {
             looker.closeScreen();
             EnderChestInventory ec = lookee.getInventoryEnderChest();
-            ITextComponent title =  ((TextComponent)lookee.getDisplayName()).func_230529_a_(new StringTextComponent("'s ")).func_230529_a_(new TranslationTextComponent("container.enderchest"));
+            ITextComponent title =  ((TextComponent)lookee.getDisplayName()).append(new StringTextComponent("'s ")).append(new TranslationTextComponent("container.enderchest"));
             looker.openContainer(new SimpleNamedContainerProvider((id,player,entity) -> ChestContainer.createGeneric9X3(id,player,ec),title));
         }
         return Command.SINGLE_SUCCESS;
@@ -93,7 +95,7 @@ public class CommandMDE {
         if (!looker.world.isRemote) {
             looker.closeScreen();
             PlayerInventory pi = lookee.inventory;
-            ITextComponent title = ((TextComponent)lookee.getDisplayName()).func_230529_a_(new StringTextComponent("'s ")).func_230529_a_(new TranslationTextComponent("container.inventory"));
+            ITextComponent title = ((TextComponent)lookee.getDisplayName()).append(new StringTextComponent("'s ")).append(new TranslationTextComponent("container.inventory"));
             looker.openContainer(new SimpleNamedContainerProvider((id,player,entity) -> new ChestContainer(ContainerType.GENERIC_9X4,id,player,lookee.inventory,4),title));
         }
         return Command.SINGLE_SUCCESS;

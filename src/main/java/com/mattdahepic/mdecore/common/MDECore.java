@@ -21,7 +21,6 @@ public class MDECore {
 
     public MDECore () {
         ConfigRegistry.registerConfig(null, MDEConfig.COMMON_SPEC);
-        //TODO proxy
 
         //mod bus events
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();

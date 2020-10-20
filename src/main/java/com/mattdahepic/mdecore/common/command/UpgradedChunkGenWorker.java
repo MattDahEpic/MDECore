@@ -34,6 +34,6 @@ class UpgradedChunkGenWorker extends ChunkGenWorker {
 
     @Override
     public TextComponent getStartMessage(CommandSource sender) {
-        return new TranslationTextComponent("mdecore.command.mde.generate.start",Math.sqrt(total),start.getX(),start.getZ(),dimension.func_234923_W_().func_240901_a_());
+        return new TranslationTextComponent("mdecore.command.mde.generate.start",Math.sqrt(total),start.getX(),start.getZ(),dimension.dimension.location);
     }
 }
