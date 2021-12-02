@@ -5,8 +5,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.command.CommandSource;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -15,19 +15,19 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class CommandRegistry {
-    public static final SimpleCommandExceptionType MISSING_ARGUMENT = new SimpleCommandExceptionType(new TranslationTextComponent("commands.missingargument"));
-    public static int missingArgument (CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+    public static final SimpleCommandExceptionType MISSING_ARGUMENT = new SimpleCommandExceptionType(new TranslatableComponent("commands.missingargument"));
+    public static int missingArgument (CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         throw MISSING_ARGUMENT.create();
     }
 
-    private static List<Consumer<CommandDispatcher<CommandSource>>> commands = new ArrayList<>();
+    private static List<Consumer<CommandDispatcher<CommandSourceStack>>> commands = new ArrayList<>();
 
-    public static void registerCommand (Consumer<CommandDispatcher<CommandSource>> command) {
+    public static void registerCommand (Consumer<CommandDispatcher<CommandSourceStack>> command) {
         commands.add(command);
     }
 
     public static void register (RegisterCommandsEvent event) {
-        for (Consumer<CommandDispatcher<CommandSource>> source : commands) {
+        for (Consumer<CommandDispatcher<CommandSourceStack>> source : commands) {
             source.accept(event.getDispatcher());
         }
     }

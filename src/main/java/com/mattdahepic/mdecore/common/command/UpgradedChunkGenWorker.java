@@ -1,19 +1,19 @@
 package com.mattdahepic.mdecore.common.command;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.server.command.ChunkGenWorker;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 class UpgradedChunkGenWorker extends ChunkGenWorker {
-    private final ServerWorld dimension;
+    private final ServerLevel dimension;
 
-    public UpgradedChunkGenWorker(CommandSource listener, BlockPos chunkcenter, int chunksize, ServerWorld dimension) {
+    public UpgradedChunkGenWorker(CommandSourceStack listener, BlockPos chunkcenter, int chunksize, ServerLevel dimension) {
         super(listener,chunkcenter,chunksize*chunksize,dimension,-1);
         this.dimension = dimension;
     }
@@ -33,7 +33,7 @@ class UpgradedChunkGenWorker extends ChunkGenWorker {
     }
 
     @Override
-    public TextComponent getStartMessage(CommandSource sender) {
-        return new TranslationTextComponent("mdecore.command.mde.generate.start",Math.sqrt(total),start.getX(),start.getZ(),dimension.dimension.location);
+    public BaseComponent getStartMessage(CommandSourceStack sender) {
+        return new TranslatableComponent("mdecore.command.mde.generate.start",Math.sqrt(total),start.getX(),start.getZ(),dimension.dimension.location);
     }
 }

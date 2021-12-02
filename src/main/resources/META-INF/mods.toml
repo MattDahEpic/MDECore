@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[35,)"
+loaderVersion="[38,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/MattDahEpic/MDECore/issues"
 
@@ -18,12 +18,12 @@ issueTrackerURL="https://github.com/MattDahEpic/MDECore/issues"
     [[dependencies.mdecore]]
         modId="forge"
         mandatory=true
-        versionRange="[34,)"
+        versionRange="[38,)"
         ordering="NONE"
         side="BOTH"
     [[dependencies.mdecore]]
         modId="minecraft"
         mandatory=true
-        versionRange="[1.16.3]"
+        versionRange="[1.18]"
         ordering="NONE"
         side="BOTH"

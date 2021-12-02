@@ -1,6 +1,6 @@
 package com.mattdahepic.mdecore.common.registries;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 

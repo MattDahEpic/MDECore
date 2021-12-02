@@ -38,6 +38,6 @@ public class MDECore {
     }
 
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent e) {
-        if (!MDEConfig.COMMON.loginMessage.get().isEmpty()) e.getPlayer().sendStatusMessage(new net.minecraft.util.text.StringTextComponent(MDEConfig.COMMON.loginMessage.get()),false);
+        if (!MDEConfig.COMMON.loginMessage.get().isEmpty()) e.getPlayer().displayClientMessage(new net.minecraft.network.chat.TextComponent(MDEConfig.COMMON.loginMessage.get()),false);
     }
 }
