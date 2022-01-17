@@ -24,6 +24,6 @@ issueTrackerURL="https://github.com/MattDahEpic/MDECore/issues"
     [[dependencies.mdecore]]
         modId="minecraft"
         mandatory=true
-        versionRange="[1.18]"
+        versionRange="[1.18,)"
         ordering="NONE"
         side="BOTH"
