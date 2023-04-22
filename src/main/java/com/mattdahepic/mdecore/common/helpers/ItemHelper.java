@@ -8,7 +8,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ItemHelper {
     public static ItemStack getItemFromName (String modid, String item_name, int meta) {
-        ItemStack ret = new ItemStack(RegistryObject.of(new ResourceLocation(modid, item_name), ForgeRegistries.ITEMS).get());
+        ItemStack ret = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(modid, item_name)));
         return ret;
     }
     public static ItemStack getItemFromName (String name, int meta) {
