@@ -13,6 +13,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
@@ -21,9 +22,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.WorldWorkerManager;
 
@@ -55,21 +53,21 @@ public class CommandMDE {
                                         .then(Commands.argument("dimension", DimensionArgument.dimension())
                                                 .executes(CommandMDE::generate)))))
                 .then(Commands.literal("tpx")
-                        .executes(ctx -> { ctx.getSource().sendSuccess(new TextComponent("Vanilla now lets you teleport across dimensions with /execute in <dimension> run tp @p <location>"),false); return Command.SINGLE_SUCCESS; }));
+                        .executes(ctx -> { ctx.getSource().sendSuccess(Component.literal("Vanilla now lets you teleport across dimensions with /execute in <dimension> run tp @p <location>"),false); return Command.SINGLE_SUCCESS; }));
         LiteralCommandNode<CommandSourceStack> command = dispatcher.register(builder);
         dispatcher.register(Commands.literal("mde").redirect(command));
     }
 
     public static int help (CommandContext<CommandSourceStack> ctx) {
         for (int i = 0; i < 5; i++) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("mdecore.command.mde.help."+i),false);
+            ctx.getSource().sendSuccess(Component.translatable("mdecore.command.mde.help."+i),false);
         }
         return Command.SINGLE_SUCCESS;
     }
     public static int pos (CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Player player = EntityArgument.getPlayer(ctx,"player");
         if (player == null) throw EntityArgument.NO_PLAYERS_FOUND.create();
-        ctx.getSource().sendSuccess(new TranslatableComponent("mdecore.command.mde.pos",player.getDisplayName(),Math.floor(player.getX()),Math.floor(player.getY()),Math.floor(player.getZ()),player.level.dimension.location.toString()), false);
+        ctx.getSource().sendSuccess(Component.translatable("mdecore.command.mde.pos",player.getDisplayName(),Math.floor(player.getX()),Math.floor(player.getY()),Math.floor(player.getZ()),player.level.dimension.location.toString()), false);
         return Command.SINGLE_SUCCESS;
     }
     public static int enderchest (CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
@@ -79,7 +77,7 @@ public class CommandMDE {
         if (!looker.level.isClientSide) {
             looker.closeContainer();
             PlayerEnderChestContainer ec = lookee.getEnderChestInventory();
-            Component title =  ((BaseComponent)lookee.getDisplayName()).append(new TextComponent("'s ")).append(new TranslatableComponent("container.enderchest"));
+            Component title =  ((MutableComponent)lookee.getDisplayName()).append(Component.literal("'s ")).append(Component.translatable("container.enderchest"));
             looker.openMenu(new SimpleMenuProvider((id,player,entity) -> ChestMenu.threeRows(id,player,ec),title));
         }
         return Command.SINGLE_SUCCESS;
@@ -91,7 +89,7 @@ public class CommandMDE {
         if (!looker.level.isClientSide) {
             looker.closeContainer();
             Inventory pi = lookee.getInventory();
-            Component title = ((BaseComponent)lookee.getDisplayName()).append(new TextComponent("'s ")).append(new TranslatableComponent("container.inventory"));
+            Component title = ((MutableComponent)lookee.getDisplayName()).append(Component.literal("'s ")).append(Component.translatable("container.inventory"));
             looker.openMenu(new SimpleMenuProvider((id,player,entity) -> new ChestMenu(MenuType.GENERIC_9x4,id,player,lookee.getInventory(),4),title));
         }
         return Command.SINGLE_SUCCESS;

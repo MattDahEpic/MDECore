@@ -4,6 +4,7 @@ import com.mattdahepic.mdecore.common.command.CommandMDE;
 import com.mattdahepic.mdecore.common.config.MDEConfig;
 import com.mattdahepic.mdecore.common.registries.CommandRegistry;
 import com.mattdahepic.mdecore.common.registries.ConfigRegistry;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -38,6 +39,6 @@ public class MDECore {
     }
 
     public void playerJoinedServer (PlayerEvent.PlayerLoggedInEvent e) {
-        if (!MDEConfig.COMMON.loginMessage.get().isEmpty()) e.getPlayer().displayClientMessage(new net.minecraft.network.chat.TextComponent(MDEConfig.COMMON.loginMessage.get()),false);
+        if (!MDEConfig.COMMON.loginMessage.get().isEmpty()) e.getEntity().displayClientMessage(Component.literal(MDEConfig.COMMON.loginMessage.get()),false);
     }
 }

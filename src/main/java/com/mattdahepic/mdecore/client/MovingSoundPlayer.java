@@ -7,6 +7,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -14,8 +15,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MovingSoundPlayer extends AbstractTickableSoundInstance {
     private final LocalPlayer player;
     private final String sound;
-    public MovingSoundPlayer (String sound) {
-        super(new SoundEvent(new ResourceLocation(sound)), SoundSource.MASTER);
+    public MovingSoundPlayer (String sound, RandomSource randomSource) {
+        super(new SoundEvent(new ResourceLocation(sound)), SoundSource.MASTER, randomSource);
         this.player = Minecraft.getInstance().player;
         this.sound = sound;
         this.attenuation = SoundInstance.Attenuation.NONE;

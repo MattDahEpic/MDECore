@@ -2,8 +2,8 @@ package com.mattdahepic.mdecore.common.command;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.server.command.ChunkGenWorker;
 
@@ -33,7 +33,7 @@ class UpgradedChunkGenWorker extends ChunkGenWorker {
     }
 
     @Override
-    public BaseComponent getStartMessage(CommandSourceStack sender) {
-        return new TranslatableComponent("mdecore.command.mde.generate.start",Math.sqrt(total),start.getX(),start.getZ(),dimension.dimension.location);
+    public MutableComponent getStartMessage(CommandSourceStack sender) {
+        return Component.translatable("mdecore.command.mde.generate.start",Math.sqrt(total),start.getX(),start.getZ(),dimension.dimension.location);
     }
 }
